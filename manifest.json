@@ -1,25 +1,31 @@
-// manifest.json
 {
-    "name": "QuizMaster Pro",
-    "short_name": "QuizMaster",
-    "description": "A professional quiz app with multiple features and modern design",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#0f1724",
-    "theme_color": "#7c3aed",
-    "orientation": "portrait",
-    "icons": [
-        {
-            "src": "assets/icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "assets/icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ],
-    "categories": ["education", "productivity"],
-    "lang": "en"
+  "name": "Mock Test Pro",
+  "short_name": "MockTest",
+  "description": "Professional mock test platform better than Testbook",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#4f46e5",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%234f46e5'/><text x='96' y='120' text-anchor='middle' fill='white' font-size='100' font-family='Arial'>📝</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%234f46e5'/><text x='256' y='320' text-anchor='middle' fill='white' font-size='280' font-family='Arial'>📝</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'><rect width='1280' height='720' fill='%23f8fafc'/><rect x='40' y='40' width='1200' height='80' fill='%234f46e5' rx='8'/><text x='640' y='90' text-anchor='middle' fill='white' font-size='24' font-family='Arial'>Mock Test Pro Dashboard</text></svg>",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ]
 }
