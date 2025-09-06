@@ -1,0 +1,48 @@
+// data/questions.json
+[
+    {
+        "question": {
+            "en": "What is 2 + 2?",
+            "hi": "2+2 कितना होता है?"
+        },
+        "options": {
+            "en": ["2", "3", "4", "5"],
+            "hi": ["२", "३", "४", "५"]
+        },
+        "answer": "4",
+        "explanation": {
+            "en": "Because 2 added to 2 equals 4.",
+            "hi": "क्योंकि 2 में 2 जोड़ने से 4 होता है।"
+        }
+    },
+    {
+        "question": {
+            "en": "Which planet is known as the Red Planet?",
+            "hi": "लाल ग्रह के रूप में किस ग्रह को जाना जाता है?"
+        },
+        "options": {
+            "en": ["Venus", "Mars", "Jupiter", "Saturn"],
+            "hi": ["शुक्र", "मंगल", "बृहस्पति", "शनि"]
+        },
+        "answer": "Mars",
+        "explanation": {
+            "en": "Mars is often called the Red Planet due to its reddish appearance.",
+            "hi": "मंगल ग्रह को अक्सर इसके लाल रंग की उपस्थिति के कारण लाल ग्रह कहा जाता है।"
+        }
+    },
+    {
+        "question": {
+            "en": "What is the capital of France?",
+            "hi": "फ्रांस की राजधानी क्या है?"
+        },
+        "options": {
+            "en": ["London", "Berlin", "Paris", "Madrid"],
+            "hi": ["लंदन", "बर्लिन", "पेरिस", "मैड्रिड"]
+        },
+        "answer": "Paris",
+        "explanation": {
+            "en": "Paris is the capital and most populous city of France.",
+            "hi": "पेरिस फ्रांस की राजधानी और सबसे अधिक आबादी वाला शहर है।"
+        }
+    }
+]

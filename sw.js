@@ -1,63 +1,55 @@
-// ✅ Service Worker for Practice App
-const CACHE_NAME = "PRACTICE-APP-v1";
+// sw.js - Service Worker
+const CACHE_NAME = 'quizmaster-v1';
 const urlsToCache = [
-  "/",              // root
-  "/index.html",    // main page
-  "/manifest.json"  // PWA manifest
+    '/',
+    '/index.html',
+    '/style.css',
+    '/script.js',
+    '/js/utils.js',
+    '/js/quiz.js',
+    '/js/review.js',
+    '/js/settings.js',
+    '/js/profile.js',
+    '/js/leaderboard.js',
+    '/manifest.json',
+    '/assets/icon.png',
+    '/assets/default-dp.png',
+    '/assets/click.mp3',
+    '/data/questions.json'
 ];
 
-// ✅ Install event - cache app files
-self.addEventListener("install", event => {
-  console.log("[SW] Installing...");
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log("[SW] Caching app files");
-        return cache.addAll(urlsToCache);
-      })
-      .then(() => self.skipWaiting())
-  );
+// Install event
+self.addEventListener('install', event => {
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                return cache.addAll(urlsToCache);
+            })
+    );
 });
 
-// ✅ Activate event - clean old caches
-self.addEventListener("activate", event => {
-  console.log("[SW] Activating...");
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log("[SW] Deleting old cache:", cacheName);
-            return caches.delete(cacheName);
-          }
+// Fetch event
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        caches.match(event.request)
+            .then(response => {
+                // Return cached version or fetch from network
+                return response || fetch(event.request);
+            })
+    );
+});
+
+// Activate event
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cache => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
         })
-      );
-    }).then(() => self.clients.claim())
-  );
-});
-
-// ✅ Fetch event - cache first, fallback to network
-self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return; // only handle GET requests
-
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      if (cachedResponse) {
-        return cachedResponse; // return from cache
-      }
-
-      // fetch from network and cache it
-      return fetch(event.request).then(networkResponse => {
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, networkResponse.clone());
-          return networkResponse;
-        });
-      }).catch(() => {
-        // optional: offline fallback page
-        if (event.request.mode === "navigate") {
-          return caches.match("/index.html");
-        }
-      });
-    })
-  );
+    );
 });
