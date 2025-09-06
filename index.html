@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRACTICE APP</title>
+    <!-- ✅ PWA Essentials -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png">
+    <meta name="theme-color" content="#0f1724">
+    <style>
+        :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --muted: #93a0b3;
+            --accent: #7c3aed;
+            --glass: rgba(255, 255, 255, 0.03);
+            --correct: #10b981;
+            --incorrect: #ef4444;
+            --selected: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, Arial, sans-serif;
+            background: linear-gradient(180deg, #071129 0%, #051028 100%);
+            color: #e6eef8;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(90deg, var(--accent), #5b21b6);
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: #7c1b1b;
+        }
+
+        .btn-success {
+            background: var(--correct);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--glass);
+            color: inherit;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .tab.active {
+            background: linear-gradient(90deg, var(--accent), #5b21b6);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .option {
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .option.selected {
+            background: var(--selected);
+            color: white;
+        }
+
+        .option.correct {
+            background: var(--correct);
+            color: white;
+        }
+
+        .option.incorrect {
+            background: var(--incorrect);
+            color: white;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .timer {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #5b21b6);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .results-summary {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--accent);
+        }
+
+        .result-details {
+            margin-top: 20px;
+        }
+
+        .explanation {
+            margin-top: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .history-item {
+            padding: 16px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 12px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .question-count {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .question-count input {
+            width: 80px;
+        }
+
+        .bank-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .result-question {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .question-grid-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, var(--accent), #5b21b6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .question-grid {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+            z-index: 100;
+            max-width: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .question-grid.active {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .grid-item {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .grid-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .grid-item.current {
+            background: var(--selected);
+        }
+
+        .grid-item.answered {
+            background: var(--correct);
+        }
+
+        .grid-item.viewed {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .review-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .tab-container {
+                flex-wrap: wrap;
+            }
+            .navigation {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+            .question-grid {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            .question-grid-toggle {
+                bottom: 70px;
+                right: 10px;
+            }
+        }
+
+        .question-container {
+            transition: opacity 0.3s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .pwa-fix-note {
+            padding: 10px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PRACTICE APP</h1>
+            <div class="tab-container">
+                <div class="tab active" data-tab="setup">Test Setup</div>
+                <div class="tab" data-tab="questions">Question Bank</div>
+                <div class="tab" data-tab="history">History</div>
+            </div>
+        </header>
+
+        <!-- Setup Tab -->
+        <div class="tab-content active" id="setup-tab">
+            <div class="card">
+                <h2>Test Configuration</h2>
+                <div class="pwa-fix-note">
+                    If buttons don't work after installation, try refreshing the app or check browser permissions.
+                </div>
+                <div class="form-group">
+                    <label for="quizName">Test Name</label>
+                    <input type="text" id="quizName" placeholder="Enter test name" value="Practice Test">
+                </div>
+                <div class="form-group">
+                    <label for="numQuestions">Number of Questions</label>
+                    <div class="question-count">
+                        <input type="number" id="numQuestions" min="1" max="100" value="10">
+                        <span>Max available: <span id="maxQuestions">0</span></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="timeLimit">Time Limit (minutes)</label>
+                    <input type="number" id="timeLimit" min="1" value="10">
+                </div>
+                <button id="startTest" class="btn">Start Test</button>
+            </div>
+        </div>
+
+        <!-- Questions Tab -->
+        <div class="tab-content" id="questions-tab">
+            <div class="card">
+                <h2>Question Bank Management</h2>
+                <div class="form-group">
+                    <label for="questionBank">Question Bank (JSON format)</label>
+                    <textarea id="questionBank" placeholder='[{"q": "Question?", "options": ["Option1", "Option2", "Option3", "Option4"], "answer": 0, "explanation": "Explanation"}]'></textarea>
+                </div>
+                <div class="bank-info">
+                    <p>Total questions in bank: <span id="bankCount">0</span></p>
+                    <p>Format: Each question must have "q", "options" (array), "answer" (index), and "explanation"</p>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button id="loadBank" class="btn">Load Question Bank</button>
+                    <button id="addSample" class="btn btn-secondary">Add Sample Questions</button>
+                    <button id="exportBank" class="btn btn-secondary">Export Bank</button>
+                    <button id="importBank" class="btn btn-secondary">Import Bank</button>
+                    <input type="file" id="bankFile" accept=".json" style="display: none;">
+                </div>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div class="tab-content" id="history-tab">
+            <div class="card">
+                <h2>Test History</h2>
+                <div id="historyList"></div>
+                <div style="display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
+                    <button id="clearHistory" class="btn btn-danger">Clear History</button>
+                    <button id="exportHistory" class="btn btn-secondary">Export History</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Interface -->
+        <div id="test-interface" class="hidden">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap;">
+                    <h2 id="currentQuizName">Test</h2>
+                    <div class="timer" id="timer">10:00</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress" style="width: 0%"></div>
+                </div>
+                <div id="question-container" class="question-container">
+                    <!-- Question will be inserted here -->
+                </div>
+                <div class="navigation">
+                    <button id="prevQuestion" class="btn btn-secondary">Previous</button>
+                    <div>
+                        <span id="currentQuestionNumber">1</span> of <span id="totalQuestions">10</span>
+                    </div>
+                    <button id="nextQuestion" class="btn">Next</button>
+                    <button id="submitTest" class="btn btn-success">Submit Test</button>
+                </div>
+            </div>
+
+            <!-- Question Grid Toggle -->
+            <div class="question-grid-toggle" id="gridToggle">•••</div>
+            <div class="question-grid" id="questionGrid">
+                <!-- Grid items will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Results Interface -->
+        <div id="results-interface" class="hidden">
+            <div class="card">
+                <div class="results-summary">
+                    <h2>Test Results: <span id="resultQuizName">Practice Test</span></h2>
+                    <div class="score" id="finalScore">0/0</div>
+                    <p id="percentage">0%</p>
+                    <p id="resultDate">Date: </p>
+                </div>
+                <div class="review-options">
+                    <button class="btn btn-secondary active" data-filter="all">All Questions</button>
+                    <button class="btn btn-secondary" data-filter="correct">Correct Answers</button>
+                    <button class="btn btn-secondary" data-filter="incorrect">Incorrect Answers</button>
+                </div>
+                <div id="results-details">
+                    <!-- Results will be inserted here -->
+                </div>
+                <div class="result-actions">
+                    <button id="reviewTest" class="btn">Review Answers</button>
+                    <button id="newTest" class="btn">New Test</button>
+                    <button id="saveResult" class="btn btn-secondary">Save Results</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">Operation successful!</div>
+    <button id="installBtn" class="btn install-btn">Install App</button>
+
+    <script>
+        // DOM Elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const questionBankTextarea = document.getElementById('questionBank');
+        const loadBankBtn = document.getElementById('loadBank');
+        const addSampleBtn = document.getElementById('addSample');
+        const exportBankBtn = document.getElementById('exportBank');
+        const importBankBtn = document.getElementById('importBank');
+        const bankFileInput = document.getElementById('bankFile');
+        const startTestBtn = document.getElementById('startTest');
+        const testInterface = document.getElementById('test-interface');
+        const resultsInterface = document.getElementById('results-interface');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistory');
+        const exportHistoryBtn = document.getElementById('exportHistory');
+        const notification = document.getElementById('notification');
+        const bankCountEl = document.getElementById('bankCount');
+        const maxQuestionsEl = document.getElementById('maxQuestions');
+        const gridToggle = document.getElementById('gridToggle');
+        const questionGrid = document.getElementById('questionGrid');
+        const installBtn = document.getElementById('installBtn');
+
+        // State variables
+        let questionBank = [];
+        let currentTest = {
+            questions: [],
+            answers: [],
+            currentQuestionIndex: 0,
+            timeLimit: 0,
+            timeRemaining: 0,
+            timerInterval: null,
+            quizName: '',
+            viewedQuestions: new Set()
+        };
+        let testResults = [];
+        let currentResult = null;
+        let deferredPrompt; // For PWA installation
+
+        // Initialize the app
+        function init() {
+            console.log('Initializing Quiz App...');
+            
+            // Check if we're running as an installed PWA
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                window.navigator.standalone === true) {
+                console.log('Running as installed PWA');
+                document.body.classList.add('pwa-mode');
+            }
+            
+            loadFromLocalStorage();
+            renderHistory();
+            setupEventListeners();
+            updateBankInfo();
+            
+// ✅ PWA FIX: This is the corrected code
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js') // <--- CORRECTED LINE
+        .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+        .catch(err => console.error('❌ Service Worker failed:', err));
+}
+
+            
+            // Listen for before install prompt
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.style.display = 'block';
+            });
+
+            // Handle install button click
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            });
+            
+            // Add a global error handler to catch any issues
+            window.addEventListener('error', (e) => {
+                console.error('Global error:', e.error);
+                showNotification('An error occurred. Please refresh the app.');
+            });
+        }
+
+        // Load data from localStorage with fallback
+        function loadFromLocalStorage() {
+            try {
+                const savedBank = localStorage.getItem('quizQuestionBank');
+                const savedResults = localStorage.getItem('quizResults');
+                
+                if (savedBank) {
+                    questionBank = JSON.parse(savedBank);
+                    questionBankTextarea.value = JSON.stringify(questionBank, null, 2);
+                }
+                
+                if (savedResults) {
+                    testResults = JSON.parse(savedResults);
+                }
+            } catch (e) {
+                console.error('Error loading from localStorage:', e);
+                showNotification('Error loading saved data');
+                // Initialize with empty arrays if loading fails
+                questionBank = [];
+                testResults = [];
+            }
+        }
+
+        // Save data to localStorage with error handling
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('quizQuestionBank', JSON.stringify(questionBank));
+                localStorage.setItem('quizResults', JSON.stringify(testResults));
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+                showNotification('Error saving data. Storage might be full.');
+            }
+        }
+
+        // Update bank information
+        function updateBankInfo() {
+            bankCountEl.textContent = questionBank.length;
+            maxQuestionsEl.textContent = questionBank.length;
+            
+            // Update max attribute for question input
+            const numQuestionsInput = document.getElementById('numQuestions');
+            numQuestionsInput.setAttribute('max', questionBank.length);
+            
+            if (parseInt(numQuestionsInput.value) > questionBank.length) {
+                numQuestionsInput.value = questionBank.length;
+            }
+        }
+
+        // Set up event listeners with better error handling
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            
+            // Tab navigation
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+
+            // Question bank management
+            loadBankBtn.addEventListener('click', loadQuestionBank);
+            addSampleBtn.addEventListener('click', addSampleQuestions);
+            exportBankBtn.addEventListener('click', exportQuestionBank);
+            importBankBtn.addEventListener('click', () => bankFileInput.click());
+            bankFileInput.addEventListener('change', importQuestionBank);
+
+            // Test management
+            startTestBtn.addEventListener('click', startTest);
+            
+            // Use event delegation for dynamically created elements
+            document.addEventListener('click', (e) => {
+                if (e.target.id === 'prevQuestion') showPreviousQuestion();
+                if (e.target.id === 'nextQuestion') showNextQuestion();
+                if (e.target.id === 'submitTest') confirmSubmitTest();
+                if (e.target.id === 'reviewTest') reviewTest();
+                if (e.target.id === 'newTest') newTest();
+                if (e.target.id === 'saveResult') saveCurrentResult();
+                if (e.target.id === 'clearHistory') clearHistory();
+                if (e.target.id === 'exportHistory') exportHistory();
+                
+                // Option selection
+                if (e.target.classList.contains('option')) {
+                    const optionIndex = parseInt(e.target.getAttribute('data-index'));
+                    const questionIndex = currentTest.currentQuestionIndex;
+                    currentTest.answers[questionIndex] = optionIndex;
+                    
+                    // Update UI
+                    document.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    e.target.classList.add('selected');
+                    
+                    // Update question grid
+                    updateQuestionGrid();
+                }
+                
+                // Filter buttons
+                if (e.target.hasAttribute('data-filter')) {
+                    const filter = e.target.getAttribute('data-filter');
+                    filterResults(filter);
+                    
+                    // Update active button
+                    document.querySelectorAll('.review-options button').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+                }
+                
+                // Grid items
+                if (e.target.classList.contains('grid-item')) {
+                    const index = parseInt(e.target.getAttribute('data-index'));
+                    showQuestion(index);
+                    questionGrid.classList.remove('active');
+                }
+            });
+
+            // Question grid toggle
+            gridToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleQuestionGrid();
+            });
+
+            // Close question grid when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!questionGrid.contains(e.target) && e.target !== gridToggle && 
+                    questionGrid.classList.contains('active')) {
+                    questionGrid.classList.remove('active');
+                }
+            });
+
+            // Update question bank info when textarea changes
+            questionBankTextarea.addEventListener('input', updateBankInfoFromTextarea);
+            
+            console.log('Event listeners setup complete');
+        }
+
+        // Update bank info from textarea
+        function updateBankInfoFromTextarea() {
+            try {
+                const bank = JSON.parse(questionBankTextarea.value);
+                if (Array.isArray(bank)) {
+                    bankCountEl.textContent = bank.length;
+                    maxQuestionsEl.textContent = bank.length;
+                }
+            } catch (e) {
+                // Ignore parsing errors during typing
+            }
+        }
+
+        // Toggle question grid
+        function toggleQuestionGrid() {
+            questionGrid.classList.toggle('active');
+        }
+
+        // Load question bank from textarea
+        function loadQuestionBank() {
+            try {
+                const bank = JSON.parse(questionBankTextarea.value);
+                if (!Array.isArray(bank)) {
+                    throw new Error('Question bank must be an array');
+                }
+
+                // Validate each question
+                for (let i = 0; i < bank.length; i++) {
+                    const question = bank[i];
+                    if (!question.q || !question.options || !Array.isArray(question.options) || 
+                        question.answer === undefined || question.answer === null) {
+                        throw new Error(`Question ${i+1} is missing required fields`);
+                    }
+                }
+
+                questionBank = bank;
+                saveToLocalStorage();
+                updateBankInfo();
+                showNotification('Question bank loaded successfully');
+            } catch (e) {
+                showNotification('Error parsing question bank: ' + e.message);
+                console.error(e);
+            }
+        }
+
+        // Add sample questions
+        function addSampleQuestions() {
+            const sampleQuestions = [
+                {
+                    q: "What is 2 + 2?",
+                    options: ["3", "4", "5", "6"],
+                    answer: 1,
+                    explanation: "2 + 2 equals 4"
+                },
+                {
+                    q: "Which planet is known as the Red Planet?",
+                    options: ["Venus", "Mars", "Jupiter", "Saturn"],
+                    answer: 1,
+                    explanation: "Mars is often called the Red Planet due to its reddish appearance"
+                },
+                {
+                    q: "What is the capital of France?",
+                    options: ["Berlin", "Madrid", "Paris", "Rome"],
+                    answer: 2,
+                    explanation: "Paris is the capital city of France"
+                },
+                {
+                    q: "Which language is primarily used for web development?",
+                    options: ["Python", "JavaScript", "C++", "Java"],
+                    answer: 1,
+                    explanation: "JavaScript is the primary language for client-side web development"
+                },
+                {
+                    q: "What does HTML stand for?",
+                    options: [
+                        "Hyper Text Markup Language",
+                        "High Tech Modern Language",
+                        "Hyper Transfer Markup Language",
+                        "Home Tool Markup Language"
+                    ],
+                    answer: 0,
+                    explanation: "HTML stands for Hyper Text Markup Language"
+                }
+            ];
+
+            // Merge with existing bank
+            questionBank = [...questionBank, ...sampleQuestions];
+            questionBankTextarea.value = JSON.stringify(questionBank, null, 2);
+            saveToLocalStorage();
+            updateBankInfo();
+            showNotification('Sample questions added');
+        }
+
+        // Export question bank
+        function exportQuestionBank() {
+            try {
+                const data = JSON.stringify(questionBank, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'question_bank.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showNotification('Question bank exported');
+            } catch (e) {
+                showNotification('Error exporting question bank');
+                console.error(e);
+            }
+        }
+
+        // Import question bank from file
+        function importQuestionBank(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const bank = JSON.parse(e.target.result);
+                    if (!Array.isArray(bank)) {
+                        throw new Error('Invalid question bank format');
+                    }
+
+                    questionBank = bank;
+                    questionBankTextarea.value = JSON.stringify(questionBank, null, 2);
+                    saveToLocalStorage();
+                    updateBankInfo();
+                    showNotification('Question bank imported successfully');
+                } catch (e) {
+                    showNotification('Error importing question bank: ' + e.message);
+                    console.error(e);
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset the file input
+            event.target.value = '';
+        }
+
+        // Start a new test
+        function startTest() {
+            const quizName = document.getElementById('quizName').value || 'Practice Test';
+            let numQuestions = parseInt(document.getElementById('numQuestions').value);
+            const timeLimit = parseInt(document.getElementById('timeLimit').value) || 10;
+
+            if (questionBank.length === 0) {
+                showNotification('Question bank is empty. Please add questions first.');
+                return;
+            }
+
+            // Validate number of questions
+            if (isNaN(numQuestions) || numQuestions < 1) {
+                showNotification('Please enter a valid number of questions');
+                return;
+            }
+
+            // Cap at available questions
+            numQuestions = Math.min(numQuestions, questionBank.length);
+
+            // Select random questions
+            const selectedQuestions = [...questionBank]
+                .sort(() => 0.5 - Math.random())
+                .slice(0, numQuestions);
+
+            // Initialize test state
+            currentTest = {
+                questions: selectedQuestions,
+                answers: new Array(selectedQuestions.length).fill(null),
+                currentQuestionIndex: 0,
+                timeLimit: timeLimit * 60, // Convert to seconds
+                timeRemaining: timeLimit * 60,
+                timerInterval: null,
+                quizName: quizName,
+                viewedQuestions: new Set([0]) // Start with first question viewed
+            };
+
+            // Hide setup and show test interface
+            document.querySelector('.tab-content.active').classList.remove('active');
+            testInterface.classList.remove('hidden');
+
+            // Start timer
+            startTimer();
+
+            // Display first question
+            showQuestion(0);
+
+            // Update quiz name
+            document.getElementById('currentQuizName').textContent = quizName;
+            document.getElementById('totalQuestions').textContent = selectedQuestions.length;
+
+            // Create question grid
+            createQuestionGrid();
+        }
+
+        // Create question grid
+        function createQuestionGrid() {
+            questionGrid.innerHTML = '';
+            currentTest.questions.forEach((_, index) => {
+                const gridItem = document.createElement('div');
+                gridItem.className = 'grid-item';
+                gridItem.textContent = index + 1;
+                gridItem.setAttribute('data-index', index);
+
+                // Mark current question
+                if (index === currentTest.currentQuestionIndex) {
+                    gridItem.classList.add('current');
+                }
+
+                // Mark answered questions
+                if (currentTest.answers[index] !== null) {
+                    gridItem.classList.add('answered');
+                }
+
+                // Mark viewed questions
+                if (currentTest.viewedQuestions.has(index)) {
+                    gridItem.classList.add('viewed');
+                }
+
+                questionGrid.appendChild(gridItem);
+            });
+        }
+
+        // Start the timer
+        function startTimer() {
+            updateTimerDisplay();
+            currentTest.timerInterval = setInterval(() => {
+                currentTest.timeRemaining--;
+                if (currentTest.timeRemaining <= 0) {
+                    clearInterval(currentTest.timerInterval);
+                    submitTest();
+                    return;
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(currentTest.timeRemaining / 60);
+            const seconds = currentTest.timeRemaining % 60;
+            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Update progress bar
+            const progressPercent = (1 - currentTest.timeRemaining / currentTest.timeLimit) * 100;
+            document.getElementById('progress').style.width = `${progressPercent}%`;
+        }
+
+        // Show a question
+        function showQuestion(index) {
+            if (index < 0 || index >= currentTest.questions.length) return;
+
+            currentTest.currentQuestionIndex = index;
+            currentTest.viewedQuestions.add(index);
+
+            const question = currentTest.questions[index];
+
+            // Create question HTML
+            let optionsHtml = '';
+            question.options.forEach((option, i) => {
+                const isSelected = currentTest.answers[index] === i;
+                optionsHtml += `
+                    <div class="option ${isSelected ? 'selected' : ''}" data-index="${i}">
+                        ${option}
+                    </div>
+                `;
+            });
+
+            const questionHtml = `
+                <div class="question fade-in">
+                    <h3>Question ${index + 1} of ${currentTest.questions.length}</h3>
+                    <p>${question.q}</p>
+                    <div class="options">${optionsHtml}</div>
+                </div>
+            `;
+
+            document.getElementById('question-container').innerHTML = questionHtml;
+            document.getElementById('currentQuestionNumber').textContent = index + 1;
+
+            // Update navigation buttons
+            document.getElementById('prevQuestion').disabled = index === 0;
+            document.getElementById('nextQuestion').disabled = index === currentTest.questions.length - 1;
+
+            // Update question grid
+            updateQuestionGrid();
+        }
+
+        // Update question grid
+        function updateQuestionGrid() {
+            const gridItems = questionGrid.querySelectorAll('.grid-item');
+            gridItems.forEach((item, index) => {
+                item.classList.remove('current', 'answered', 'viewed');
+                
+                if (index === currentTest.currentQuestionIndex) {
+                    item.classList.add('current');
+                }
+                
+                if (currentTest.answers[index] !== null) {
+                    item.classList.add('answered');
+                }
+                
+                if (currentTest.viewedQuestions.has(index)) {
+                    item.classList.add('viewed');
+                }
+            });
+        }
+
+        // Show previous question
+        function showPreviousQuestion() {
+            if (currentTest.currentQuestionIndex > 0) {
+                showQuestion(currentTest.currentQuestionIndex - 1);
+            }
+        }
+
+        // Show next question
+        function showNextQuestion() {
+            if (currentTest.currentQuestionIndex < currentTest.questions.length - 1) {
+                showQuestion(currentTest.currentQuestionIndex + 1);
+            }
+        }
+
+        // Confirm test submission
+        function confirmSubmitTest() {
+            const unanswered = currentTest.answers.filter(a => a === null).length;
+            let message = 'Are you sure you want to submit the test?';
+            
+            if (unanswered > 0) {
+                message = `You have ${unanswered} unanswered question${unanswered > 1 ? 's' : ''}. Are you sure you want to submit?`;
+            }
+            
+            if (confirm(message)) {
+                submitTest();
+            }
+        }
+
+        // Submit the test
+        function submitTest() {
+            // Clear timer
+            if (currentTest.timerInterval) {
+                clearInterval(currentTest.timerInterval);
+            }
+
+            // Calculate score
+            let correctCount = 0;
+            currentTest.questions.forEach((question, index) => {
+                if (currentTest.answers[index] === question.answer) {
+                    correctCount++;
+                }
+            });
+
+            const score = correctCount;
+            const total = currentTest.questions.length;
+            const percentage = Math.round((score / total) * 100);
+
+            // Create result object
+            currentResult = {
+                name: currentTest.quizName,
+                date: new Date().toLocaleString(),
+                score,
+                total,
+                percentage,
+                questions: currentTest.questions.map((q, i) => ({
+                    question: q.q,
+                    options: q.options,
+                    correctAnswer: q.answer,
+                    userAnswer: currentTest.answers[i],
+                    explanation: q.explanation,
+                    isCorrect: currentTest.answers[i] === q.answer
+                }))
+            };
+
+            // Show results
+            showResults(currentResult);
+        }
+
+        // Show test results
+        function showResults(result) {
+            testInterface.classList.add('hidden');
+            resultsInterface.classList.remove('hidden');
+
+            // Update score display
+            document.getElementById('finalScore').textContent = `${result.score}/${result.total}`;
+            document.getElementById('percentage').textContent = `${result.percentage}%`;
+            document.getElementById('resultQuizName').textContent = result.name;
+            document.getElementById('resultDate').textContent = `Date: ${result.date}`;
+
+            // Generate results details
+            renderAllResults();
+
+            // Update history
+            renderHistory();
+        }
+
+        // Render all results
+        function renderAllResults() {
+            let resultsHtml = '<div class="result-details">';
+            
+            currentResult.questions.forEach((q, i) => {
+                const isCorrect = q.userAnswer === q.correctAnswer;
+                const userAnswerText = q.userAnswer !== null ? q.options[q.userAnswer] : 'Not answered';
+                
+                resultsHtml += `
+                    <div class="result-question" data-correct="${isCorrect}">
+                        <h3>Question ${i + 1}: ${q.question}</h3>
+                        <p>Your answer: <span class="${isCorrect ? 'correct' : 'incorrect'}">${userAnswerText}</span></p>
+                        <p>Correct answer: ${q.options[q.correctAnswer]}</p>
+                        <div class="explanation">
+                            <strong>Explanation:</strong> ${q.explanation || 'No explanation provided.'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsHtml += '</div>';
+            document.getElementById('results-details').innerHTML = resultsHtml;
+        }
+
+        // Filter results
+        function filterResults(filter) {
+            const allQuestions = document.querySelectorAll('.result-question');
+            
+            allQuestions.forEach(question => {
+                const isCorrect = question.getAttribute('data-correct') === 'true';
+                
+                switch(filter) {
+                    case 'all':
+                        question.style.display = 'block';
+                        break;
+                    case 'correct':
+                        question.style.display = isCorrect ? 'block' : 'none';
+                        break;
+                    case 'incorrect':
+                        question.style.display = !isCorrect ? 'block' : 'none';
+                        break;
+                }
+            });
+        }
+
+        // Save current result
+        function saveCurrentResult() {
+            if (!currentResult) return;
+
+            // Save result
+            testResults.unshift(currentResult);
+            saveToLocalStorage();
+            renderHistory();
+            showNotification('Results saved successfully');
+        }
+
+        // Review test answers
+        function reviewTest() {
+            // Already viewing results, no action needed
+            showNotification('You are currently reviewing your answers');
+        }
+
+        // Start a new test
+        function newTest() {
+            resultsInterface.classList.add('hidden');
+            document.getElementById('setup-tab').classList.add('active');
+            document.querySelector('[data-tab="setup"]').classList.add('active');
+            currentResult = null;
+        }
+
+        // Render test history
+        function renderHistory() {
+            if (testResults.length === 0) {
+                historyList.innerHTML = '<p>No test history available.</p>';
+                return;
+            }
+
+            let html = '';
+            testResults.forEach((result, index) => {
+                html += `
+                    <div class="history-item">
+                        <h3>${result.name}</h3>
+                        <p>Date: ${result.date}</p>
+                        <p>Score: ${result.score}/${result.total} (${result.percentage}%)</p>
+                        <div style="display: flex; gap: 8px; margin-top: 10px;">
+                            <button class="btn btn-secondary view-result" data-index="${index}">View Details</button>
+                            <button class="btn btn-danger delete-result" data-index="${index}">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            historyList.innerHTML = html;
+
+            // Add event listeners for dynamic buttons
+            document.querySelectorAll('.view-result').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const index = parseInt(btn.getAttribute('data-index'));
+                    showResults(testResults[index]);
+                    resultsInterface.classList.remove('hidden');
+                    document.getElementById('history-tab').classList.remove('active');
+                    document.querySelector('[data-tab="history"]').classList.remove('active');
+                });
+            });
+
+            document.querySelectorAll('.delete-result').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const index = parseInt(btn.getAttribute('data-index'));
+                    testResults.splice(index, 1);
+                    saveToLocalStorage();
+                    renderHistory();
+                    showNotification('Result deleted');
+                });
+            });
+        }
+
+        // Clear history
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all test history?')) {
+                testResults = [];
+                saveToLocalStorage();
+                renderHistory();
+                showNotification('History cleared');
+            }
+        }
+
+        // Export history
+        function exportHistory() {
+            try {
+                const data = JSON.stringify(testResults, null, 2);
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'quiz_history.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showNotification('History exported');
+            } catch (e) {
+                showNotification('Error exporting history');
+                console.error(e);
+            }
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
