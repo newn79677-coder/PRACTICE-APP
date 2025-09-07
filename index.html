@@ -2420,7 +2420,8 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
-                day: 'numeric' 
+                day: 'numeric',
+                timeZone: 'Asia/Kolkata'
             };
             document.getElementById('today-date').textContent = today.toLocaleDateString('en-US', options);
         }
@@ -2438,26 +2439,349 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
         }
 
         function updateTodaySchedule() {
-            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-            const todayEntries = scheduleEntries.filter(entry => entry.day === today);
+            const today = new Date();
+            // Get today's date in IST
+            const todayIST = new Date(today.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+            const todayDateStr = formatDateForSchedule(todayIST);
             
             const container = document.getElementById('today-schedule');
             
+            // Check if we have imported HTML timetable
+            const savedHTML = localStorage.getItem('htmlTimetable');
+            if (savedHTML) {
+                // Parse the imported timetable to get today's schedule
+                const todayScheduleFromHTML = extractTodayScheduleFromHTML(savedHTML, todayDateStr);
+                if (todayScheduleFromHTML) {
+                    container.innerHTML = todayScheduleFromHTML;
+                    return;
+                }
+            }
+            
+            // Fallback to manual entries
+            const todayEntries = scheduleEntries.filter(entry => entry.day === todayIST.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase());
+            
             if (todayEntries.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No schedule for today. Create entries or import your timetable.</p>';
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">No schedule for today (${todayDateStr})</p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="showTimetableTab('create')" style="padding: 0.5rem 1rem;">Create Entry</button>
+                            <button class="btn btn-secondary" onclick="showTimetableTab('import')" style="padding: 0.5rem 1rem;">Import HTML</button>
+                        </div>
+                    </div>
+                `;
                 return;
             }
             
             todayEntries.sort((a, b) => a.startTime.localeCompare(b.startTime));
             
-            container.innerHTML = todayEntries.map(entry => `
-                <div class="schedule-entry">
-                    <div class="schedule-time">${entry.startTime} - ${entry.endTime}</div>
-                    <div style="font-weight: 600; margin: 0.5rem 0;">${entry.subject}</div>
-                    ${entry.notes ? `<div style="color: var(--text-secondary); font-size: 0.875rem;">${entry.notes}</div>` : ''}
-                    <button class="btn btn-error" style="margin-top: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="deleteScheduleEntry(${scheduleEntries.indexOf(entry)})">Delete</button>
+            container.innerHTML = todayEntries.map((entry, index) => `
+                <div class="schedule-entry" style="position: relative;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <div class="schedule-time">${entry.startTime} - ${entry.endTime}</div>
+                            <div style="font-weight: 600; margin: 0.5rem 0; color: var(--primary);">${entry.subject}</div>
+                            ${entry.notes ? `<div style="color: var(--text-secondary); font-size: 0.875rem;">${entry.notes}</div>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; margin-left: 1rem;">
+                            <button class="btn btn-success" onclick="markTaskComplete('${todayDateStr}', ${index})" 
+                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem; white-space: nowrap;">
+                                ${isTaskCompleted(todayDateStr, index) ? 'Completed ✓' : 'Mark Done'}
+                            </button>
+                            <button class="btn btn-error" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="deleteScheduleEntry(${scheduleEntries.indexOf(entry)})">×</button>
+                        </div>
+                    </div>
                 </div>
-            `).join('');
+            `).join('') + generateDayStats(todayDateStr);
+        }
+
+        function formatDateForSchedule(date) {
+            return date.getFullYear() + '-' + 
+                   String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                   String(date.getDate()).padStart(2, '0');
+        }
+
+        function extractTodayScheduleFromHTML(htmlContent, todayDateStr) {
+            // Create a temporary container to parse the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlContent;
+            
+            // Look for schedule data in the HTML
+            const scriptContent = tempDiv.querySelector('script');
+            if (scriptContent) {
+                try {
+                    // Extract scheduleData object from the script
+                    const scriptText = scriptContent.textContent;
+                    const scheduleDataMatch = scriptText.match(/const scheduleData = ({[\s\S]*?});/);
+                    
+                    if (scheduleDataMatch) {
+                        // Safely evaluate the schedule data
+                        const scheduleDataStr = scheduleDataMatch[1];
+                        const scheduleData = new Function('return ' + scheduleDataStr)();
+                        
+                        const todaySchedule = scheduleData[todayDateStr];
+                        if (todaySchedule && todaySchedule.subjects) {
+                            return generateScheduleHTML(todaySchedule, todayDateStr);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing schedule data:', error);
+                }
+            }
+            
+            return null;
+        }
+
+        function generateScheduleHTML(todaySchedule, dateStr) {
+            const subjects = todaySchedule.subjects || [];
+            
+            let html = `
+                <div style="margin-bottom: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem; border-left: 4px solid var(--primary);">
+                    <h3 style="margin: 0 0 0.5rem 0; color: var(--primary);">${todaySchedule.week}</h3>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                        ${subjects.length} subjects planned for today
+                    </p>
+                </div>
+            `;
+            
+            subjects.forEach((subject, index) => {
+                const isCompleted = isTaskCompleted(dateStr, index);
+                html += `
+                    <div class="schedule-entry" style="position: relative; opacity: ${isCompleted ? '0.7' : '1'};">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                    <div class="schedule-time">${subject.title}</div>
+                                    <span class="subject-duration" style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem;">${subject.duration}</span>
+                                </div>
+                                <div style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; white-space: pre-line; ${isCompleted ? 'text-decoration: line-through;' : ''}">${subject.details}</div>
+                            </div>
+                            <div style="display: flex; align-items: center; flex-shrink: 0; margin-left: 1rem;">
+                                <button class="btn ${isCompleted ? 'btn-secondary' : 'btn-success'}" 
+                                        onclick="markTaskComplete('${dateStr}', ${index})" 
+                                        style="padding: 0.375rem 1rem; font-size: 0.75rem; white-space: nowrap;">
+                                    ${isCompleted ? 'Completed ✓' : 'Mark Done'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += generateDayStats(dateStr);
+            return html;
+        }
+
+        function generateDayStats(dateStr) {
+            const completedTasks = getCompletedTasksForDate(dateStr);
+            const totalTasks = getTotalTasksForDate(dateStr);
+            const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            
+            return `
+                <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; color: var(--text-primary);">Today's Progress</h4>
+                        <span style="color: var(--primary); font-weight: 600;">${completionPercentage}%</span>
+                    </div>
+                    <div style="background: var(--border); height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 1rem;">
+                        <div style="background: var(--success); height: 100%; width: ${completionPercentage}%; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${completedTasks}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Completed</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--warning);">${totalTasks - completedTasks}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Remaining</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${totalTasks}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Total</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="showAllTimeProgress()" style="padding: 0.5rem 1.5rem; font-size: 0.875rem;">
+                            View All-Time Progress
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Task completion functions
+        let completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+
+        function markTaskComplete(dateStr, taskIndex) {
+            if (!completedTasks[dateStr]) {
+                completedTasks[dateStr] = {};
+            }
+            
+            if (completedTasks[dateStr][taskIndex]) {
+                delete completedTasks[dateStr][taskIndex];
+                showNotification('Task marked as incomplete', 'warning');
+            } else {
+                completedTasks[dateStr][taskIndex] = {
+                    completedAt: new Date().toISOString(),
+                    completed: true
+                };
+                playSuccessSound();
+                showNotification('Task completed! Great job!', 'success');
+            }
+            
+            localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+            updateTodaySchedule(); // Refresh the display
+        }
+
+        function isTaskCompleted(dateStr, taskIndex) {
+            return completedTasks[dateStr] && completedTasks[dateStr][taskIndex];
+        }
+
+        function getCompletedTasksForDate(dateStr) {
+            if (!completedTasks[dateStr]) return 0;
+            return Object.keys(completedTasks[dateStr]).length;
+        }
+
+        function getTotalTasksForDate(dateStr) {
+            // Check HTML timetable first
+            const savedHTML = localStorage.getItem('htmlTimetable');
+            if (savedHTML) {
+                try {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = savedHTML;
+                    const scriptContent = tempDiv.querySelector('script');
+                    
+                    if (scriptContent) {
+                        const scriptText = scriptContent.textContent;
+                        const scheduleDataMatch = scriptText.match(/const scheduleData = ({[\s\S]*?});/);
+                        
+                        if (scheduleDataMatch) {
+                            const scheduleDataStr = scheduleDataMatch[1];
+                            const scheduleData = new Function('return ' + scheduleDataStr)();
+                            const todaySchedule = scheduleData[dateStr];
+                            
+                            if (todaySchedule && todaySchedule.subjects) {
+                                return todaySchedule.subjects.length;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing schedule data:', error);
+                }
+            }
+            
+            // Fallback to manual entries
+            const today = new Date(dateStr + 'T00:00:00');
+            const dayName = today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            return scheduleEntries.filter(entry => entry.day === dayName).length;
+        }
+
+        function showAllTimeProgress() {
+            // Calculate overall progress
+            let totalDays = 0;
+            let completedDaysCount = 0;
+            let totalTasks = 0;
+            let completedTasksCount = 0;
+            
+            // Check for HTML timetable data
+            const savedHTML = localStorage.getItem('htmlTimetable');
+            if (savedHTML) {
+                try {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = savedHTML;
+                    const scriptContent = tempDiv.querySelector('script');
+                    
+                    if (scriptContent) {
+                        const scriptText = scriptContent.textContent;
+                        const scheduleDataMatch = scriptText.match(/const scheduleData = ({[\s\S]*?});/);
+                        
+                        if (scheduleDataMatch) {
+                            const scheduleDataStr = scheduleDataMatch[1];
+                            const scheduleData = new Function('return ' + scheduleDataStr)();
+                            
+                            Object.keys(scheduleData).forEach(dateStr => {
+                                const schedule = scheduleData[dateStr];
+                                if (schedule && schedule.subjects) {
+                                    totalDays++;
+                                    const dayTasks = schedule.subjects.length;
+                                    totalTasks += dayTasks;
+                                    
+                                    const completedForDay = getCompletedTasksForDate(dateStr);
+                                    completedTasksCount += completedForDay;
+                                    
+                                    if (completedForDay === dayTasks && dayTasks > 0) {
+                                        completedDaysCount++;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error calculating progress:', error);
+                }
+            }
+            
+            const dayCompletionPercentage = totalDays > 0 ? Math.round((completedDaysCount / totalDays) * 100) : 0;
+            const taskCompletionPercentage = totalTasks > 0 ? Math.round((completedTasksCount / totalTasks) * 100) : 0;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                        <div class="modal-title">Study Progress Overview</div>
+                        <div class="modal-subtitle">Your learning journey statistics</div>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div style="font-size: 3rem; font-weight: bold; color: var(--primary); margin-bottom: 0.5rem;">${taskCompletionPercentage}%</div>
+                            <div style="color: var(--text-secondary);">Overall Task Completion</div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                            <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--success); margin-bottom: 0.5rem;">${completedDaysCount}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Days Completed</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">${dayCompletionPercentage}% of ${totalDays} days</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--primary); margin-bottom: 0.5rem;">${completedTasksCount}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Tasks Completed</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Out of ${totalTasks} total tasks</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Task Progress</span>
+                                <span style="color: var(--primary); font-weight: 600;">${taskCompletionPercentage}%</span>
+                            </div>
+                            <div style="background: var(--border); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: var(--primary); height: 100%; width: ${taskCompletionPercentage}%; transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Day Progress</span>
+                                <span style="color: var(--success); font-weight: 600;">${dayCompletionPercentage}%</span>
+                            </div>
+                            <div style="background: var(--border); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: var(--success); height: 100%; width: ${dayCompletionPercentage}%; transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: 0.5rem; border-left: 4px solid var(--primary);">
+                            <div style="font-weight: 600; margin-bottom: 0.5rem;">Keep it up!</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                ${completedTasksCount > 0 ? 'You\'re making great progress on your study journey!' : 'Start your study journey today!'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
         }
 
         function addScheduleEntry() {
@@ -2521,17 +2845,375 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
                 const preview = document.getElementById('html-preview');
                 const content = document.getElementById('html-content');
                 
+                // Apply app-compatible styling to the imported HTML
+                const styledHTML = applyAppStyling(htmlCode);
+                
                 // Sanitize and display
-                content.innerHTML = htmlCode;
+                content.innerHTML = styledHTML;
                 preview.style.display = 'block';
                 
-                localStorage.setItem('htmlTimetable', htmlCode);
+                localStorage.setItem('htmlTimetable', styledHTML);
                 playSuccessSound();
                 showNotification('HTML timetable imported successfully!', 'success');
                 
             } catch (error) {
                 showNotification('Invalid HTML code', 'error');
             }
+        }
+
+        function applyAppStyling(htmlCode) {
+            // Create a wrapper with app-compatible styling
+            return `
+                <style>
+                    .app-timetable-wrapper {
+                        font-family: system-ui, -apple-system, sans-serif !important;
+                        background: var(--bg-primary) !important;
+                        color: var(--text-primary) !important;
+                        border-radius: 0.75rem !important;
+                        overflow: hidden !important;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+                    }
+                    
+                    .app-timetable-wrapper .container {
+                        background: var(--bg-primary) !important;
+                        color: var(--text-primary) !important;
+                        padding: 1rem !important;
+                        margin: 0 !important;
+                        max-width: 100% !important;
+                    }
+                    
+                    .app-timetable-wrapper .header h1 {
+                        color: var(--primary) !important;
+                        font-size: 1.5rem !important;
+                        margin-bottom: 0.5rem !important;
+                        text-align: center !important;
+                    }
+                    
+                    .app-timetable-wrapper .header p {
+                        color: var(--text-secondary) !important;
+                        font-size: 0.9rem !important;
+                        text-align: center !important;
+                        margin-bottom: 1rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .progress-bar {
+                        background: var(--border) !important;
+                        height: 6px !important;
+                        border-radius: 3px !important;
+                        margin: 0.5rem 0 !important;
+                        overflow: hidden !important;
+                    }
+                    
+                    .app-timetable-wrapper .progress-fill {
+                        background: var(--success) !important;
+                        height: 100% !important;
+                        transition: width 0.3s ease !important;
+                    }
+                    
+                    .app-timetable-wrapper .progress-text {
+                        text-align: center !important;
+                        font-size: 0.8rem !important;
+                        color: var(--text-secondary) !important;
+                        margin-bottom: 1rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar {
+                        display: grid !important;
+                        grid-template-columns: repeat(7, 1fr) !important;
+                        gap: 0.25rem !important;
+                        margin: 0.5rem 0 !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-header {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        padding: 0.5rem !important;
+                        text-align: center !important;
+                        font-weight: 600 !important;
+                        font-size: 0.75rem !important;
+                        border-radius: 0.25rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day {
+                        background: var(--bg-secondary) !important;
+                        border: 1px solid var(--border) !important;
+                        border-radius: 0.375rem !important;
+                        padding: 0.5rem !important;
+                        min-height: 60px !important;
+                        cursor: pointer !important;
+                        transition: all 0.2s ease !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        font-size: 0.7rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day:hover {
+                        background: var(--bg-primary) !important;
+                        border-color: var(--primary) !important;
+                        transform: translateY(-1px) !important;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day.completed {
+                        background: var(--success) !important;
+                        border-color: var(--success) !important;
+                        color: white !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day.empty-day {
+                        opacity: 0.3 !important;
+                        cursor: default !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day.empty-day:hover {
+                        transform: none !important;
+                        background: var(--bg-secondary) !important;
+                        border-color: var(--border) !important;
+                        box-shadow: none !important;
+                    }
+                    
+                    .app-timetable-wrapper .day-number {
+                        font-weight: 700 !important;
+                        font-size: 0.9rem !important;
+                        margin-bottom: 0.2rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .day-week {
+                        font-size: 0.6rem !important;
+                        opacity: 0.7 !important;
+                        margin-bottom: 0.2rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .day-subjects {
+                        font-size: 0.6rem !important;
+                        line-height: 1.2 !important;
+                        overflow: hidden !important;
+                    }
+                    
+                    /* Modal styling */
+                    .app-timetable-wrapper .modal {
+                        position: fixed !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                        background: rgba(0,0,0,0.5) !important;
+                        display: none !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                        z-index: 2000 !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-content {
+                        background: var(--bg-primary) !important;
+                        border-radius: 0.75rem !important;
+                        max-width: 90% !important;
+                        max-height: 90% !important;
+                        overflow: hidden !important;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-header {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        padding: 1rem !important;
+                        position: relative !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-title {
+                        font-size: 1.2rem !important;
+                        font-weight: 600 !important;
+                        margin-bottom: 0.25rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-subtitle {
+                        opacity: 0.9 !important;
+                        font-size: 0.9rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .close {
+                        position: absolute !important;
+                        right: 1rem !important;
+                        top: 1rem !important;
+                        color: white !important;
+                        font-size: 1.5rem !important;
+                        cursor: pointer !important;
+                        width: 30px !important;
+                        height: 30px !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        border-radius: 50% !important;
+                        transition: background-color 0.3s !important;
+                    }
+                    
+                    .app-timetable-wrapper .close:hover {
+                        background-color: rgba(255,255,255,0.2) !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-body {
+                        padding: 1rem !important;
+                        max-height: 50vh !important;
+                        overflow-y: auto !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-card {
+                        background: var(--bg-secondary) !important;
+                        border-left: 4px solid var(--primary) !important;
+                        border-radius: 0.5rem !important;
+                        padding: 1rem !important;
+                        margin-bottom: 1rem !important;
+                        transition: all 0.2s ease !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-card:hover {
+                        background: rgba(99, 102, 241, 0.05) !important;
+                        transform: translateX(2px) !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-title {
+                        color: var(--text-primary) !important;
+                        font-size: 1rem !important;
+                        font-weight: 600 !important;
+                        margin-bottom: 0.5rem !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: space-between !important;
+                        flex-wrap: wrap !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-duration {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        padding: 0.25rem 0.75rem !important;
+                        border-radius: 1rem !important;
+                        font-size: 0.75rem !important;
+                        font-weight: 500 !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-details {
+                        color: var(--text-secondary) !important;
+                        line-height: 1.5 !important;
+                        font-size: 0.85rem !important;
+                        white-space: pre-line !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-footer {
+                        padding: 1rem !important;
+                        border-top: 1px solid var(--border) !important;
+                        display: flex !important;
+                        justify-content: space-between !important;
+                        align-items: center !important;
+                        flex-wrap: wrap !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-buttons {
+                        display: flex !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-btn, 
+                    .app-timetable-wrapper .complete-btn {
+                        padding: 0.5rem 1rem !important;
+                        border: none !important;
+                        border-radius: 0.375rem !important;
+                        font-weight: 500 !important;
+                        cursor: pointer !important;
+                        transition: all 0.2s ease !important;
+                        font-size: 0.85rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-btn {
+                        background: var(--bg-secondary) !important;
+                        color: var(--text-primary) !important;
+                        border: 1px solid var(--border) !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-btn:hover:not(:disabled) {
+                        background: var(--primary) !important;
+                        color: white !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-btn:disabled {
+                        opacity: 0.5 !important;
+                        cursor: not-allowed !important;
+                    }
+                    
+                    .app-timetable-wrapper .complete-btn {
+                        background: var(--success) !important;
+                        color: white !important;
+                    }
+                    
+                    .app-timetable-wrapper .complete-btn:hover {
+                        background: #059669 !important;
+                        transform: translateY(-1px) !important;
+                    }
+                    
+                    .app-timetable-wrapper .complete-btn.completed {
+                        background: var(--text-secondary) !important;
+                    }
+                    
+                    .app-timetable-wrapper .motivational-message {
+                        display: none !important;
+                        background: var(--warning) !important;
+                        color: white !important;
+                        padding: 0.75rem !important;
+                        border-radius: 0.5rem !important;
+                        margin-top: 0.75rem !important;
+                        text-align: center !important;
+                        font-weight: 600 !important;
+                        font-size: 0.9rem !important;
+                    }
+                    
+                    /* Responsive design */
+                    @media (max-width: 768px) {
+                        .app-timetable-wrapper .calendar {
+                            gap: 0.125rem !important;
+                        }
+                        
+                        .app-timetable-wrapper .calendar-day {
+                            min-height: 50px !important;
+                            padding: 0.375rem !important;
+                        }
+                        
+                        .app-timetable-wrapper .day-number {
+                            font-size: 0.8rem !important;
+                        }
+                        
+                        .app-timetable-wrapper .day-subjects,
+                        .app-timetable-wrapper .day-week {
+                            font-size: 0.55rem !important;
+                        }
+                        
+                        .app-timetable-wrapper .modal-content {
+                            max-width: 95% !important;
+                        }
+                        
+                        .app-timetable-wrapper .modal-footer {
+                            flex-direction: column !important;
+                            align-items: stretch !important;
+                        }
+                        
+                        .app-timetable-wrapper .nav-buttons {
+                            justify-content: center !important;
+                        }
+                        
+                        .app-timetable-wrapper .complete-btn {
+                            width: 100% !important;
+                        }
+                    }
+                    
+                    /* Hide original styling */
+                    .app-timetable-wrapper * {
+                        box-sizing: border-box !important;
+                    }
+                </style>
+                <div class="app-timetable-wrapper">
+                    ${htmlCode}
+                </div>
+            `;
         }
 
         function clearHTMLTimetable() {
