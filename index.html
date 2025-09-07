@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mock Test Pro - Complete Edition</title>
+    <title>Mock Test Pro</title>
+    <meta name="screen-orientation" content="auto">
     <style>
         * {
             margin: 0;
@@ -46,6 +47,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-toggle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .nav-brand {
@@ -235,6 +267,24 @@
             animation: shake 0.5s infinite;
         }
 
+        .question-timer {
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .question-timer.warning {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+        }
+
+        .question-timer.critical {
+            background: linear-gradient(135deg, var(--error), #f87171);
+        }
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -280,6 +330,13 @@
         .question-btn.marked {
             background: #a78bfa;
             color: white;
+        }
+
+        .question-btn.locked {
+            background: #6b7280;
+            color: white;
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .question-btn.current {
@@ -338,6 +395,11 @@
         .option-item.selected {
             border-color: var(--primary);
             background: rgba(99, 102, 241, 0.1);
+        }
+
+        .option-item.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .option-item.correct {
@@ -434,6 +496,8 @@
             padding: 2rem;
             max-width: 500px;
             width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .modal-actions {
@@ -441,6 +505,72 @@
             gap: 1rem;
             justify-content: flex-end;
             margin-top: 2rem;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .json-example {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .copy-container {
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .copy-container .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            z-index: 10;
+        }
+
+        .test-config {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .config-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .config-row label {
+            min-width: 150px;
+        }
+
+        .config-row input, .config-row select {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            background: var(--bg-primary);
         }
 
         .notification {
@@ -526,7 +656,6 @@
             border-left: 4px solid var(--primary);
         }
 
-        /* Desktop Mode Toggle */
         .desktop-toggle {
             position: fixed;
             bottom: 20px;
@@ -552,7 +681,6 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
-        /* Fullscreen mode styles */
         body.fullscreen-mode {
             overflow: hidden;
         }
@@ -581,9 +709,52 @@
             border-radius: 0;
         }
 
-        /* Hide toggle in non-test screens */
         body:not(.test-active) .desktop-toggle {
             display: none;
+        }
+
+        .timetable-container {
+            min-height: 400px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .timetable-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .timetable-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timetable-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .schedule-entry {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .schedule-time {
+            font-weight: 600;
+            color: var(--primary);
         }
 
         @media (max-width: 768px) {
@@ -601,21 +772,36 @@
                 padding: 1rem;
             }
 
-            /* Hide desktop toggle on mobile */
             .desktop-toggle {
                 display: none;
+            }
+        }
+
+        @media (orientation: landscape) and (max-width: 1024px) {
+            .test-layout {
+                grid-template-columns: 250px 1fr;
+            }
+            
+            .question-sidebar {
+                padding: 1rem;
             }
         }
     </style>
 </head>
 <body data-theme="light">
     <nav class="navbar">
-        <div class="nav-brand">🧠 Mock Test Pro</div>
+        <div class="nav-left">
+            <div class="profile-toggle" onclick="showScreen('profile')" id="profile-toggle">
+                <span id="profile-initial">G</span>
+                <img id="profile-image" style="display: none;" alt="Profile" />
+            </div>
+            <div class="nav-brand">🧠 Mock Test Pro</div>
+        </div>
         <div class="nav-menu">
             <a href="#" class="nav-link active" onclick="showScreen('dashboard')">Dashboard</a>
             <a href="#" class="nav-link" onclick="showScreen('my-tests')">My Tests</a>
             <a href="#" class="nav-link" onclick="showScreen('results')">Results</a>
-            <a href="#" class="nav-link" onclick="showScreen('profile')">Profile</a>
+            <a href="#" class="nav-link" onclick="showScreen('timetable')">Timetable</a>
             <a href="#" class="nav-link" onclick="showScreen('settings')">Settings</a>
             <button class="theme-toggle" onclick="toggleTheme()">
                 <span id="theme-icon">🌙</span>
@@ -637,7 +823,6 @@
                 </div>
             </div>
             
-            <h1>Mock Test Pro - Enhanced Edition</h1>
             <div class="dashboard-grid">
                 <div class="card feature-card">
                     <div class="feature-icon">📄</div>
@@ -659,6 +844,13 @@
                     <p>Access your saved tests and retake them</p>
                     <button class="btn btn-secondary" onclick="showScreen('my-tests')">Browse Tests</button>
                 </div>
+
+                <div class="card feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Timetable</h3>
+                    <p>Manage your study schedule and plan</p>
+                    <button class="btn btn-secondary" onclick="showScreen('timetable')">View Schedule</button>
+                </div>
             </div>
         </div>
     </div>
@@ -669,31 +861,100 @@
             <div class="card">
                 <div class="card-header">
                     <h2>Upload Test Questions</h2>
+                    <p>Create your custom mock test with JSON format questions</p>
                 </div>
                 <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">📝 JSON Format Instructions</label>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Use this JSON format to prepare your questions. You can also ask any AI tool to generate questions directly in this format.</p>
+                        
+                        <div class="copy-container">
+                            <div class="json-example" id="json-example">[
+  {
+    "question": "What is the capital of France?",
+    "options": ["London", "Berlin", "Paris", "Madrid"],
+    "correct": 2,
+    "explanation": "Paris is the capital and largest city of France.",
+    "marks": 1
+  },
+  {
+    "question": "Which planet is closest to the Sun?",
+    "options": ["Venus", "Mercury", "Earth", "Mars"],
+    "correct": 1,
+    "explanation": "Mercury is the smallest planet and closest to the Sun.",
+    "marks": 2
+  }
+]</div>
+                            <button class="copy-btn" onclick="copyJsonExample()">📋 Copy Format</button>
+                        </div>
+                        
+                        <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="pasteFromClipboard()">📥 Paste from Clipboard</button>
+                    </div>
+
                     <form id="upload-form">
                         <div class="form-group">
                             <label class="form-label" for="test-title">Test Title</label>
                             <input type="text" id="test-title" class="form-input" required>
                         </div>
                         
-                        <div class="form-group">
-                            <label class="form-label" for="test-duration">Duration (minutes)</label>
-                            <input type="number" id="test-duration" class="form-input" value="60" min="1" required>
+                        <div class="test-config">
+                            <h4>Test Configuration</h4>
+                            <div class="config-row">
+                                <label for="test-duration">Duration (minutes):</label>
+                                <input type="number" id="test-duration" value="60" min="1" required>
+                            </div>
+                            <div class="config-row">
+                                <label for="default-marks">Default marks per question:</label>
+                                <input type="number" id="default-marks" value="1" min="0" step="0.25">
+                            </div>
+                            <div class="config-row">
+                                <label for="negative-marks">Negative marks:</label>
+                                <input type="number" id="negative-marks" value="0" min="0" step="0.25">
+                            </div>
+                            <div class="config-row">
+                                <label for="per-question-timer">Enable per-question timer:</label>
+                                <input type="checkbox" id="per-question-timer">
+                            </div>
+                            <div class="config-row" id="question-time-row" style="display: none;">
+                                <label for="question-time">Time per question (seconds):</label>
+                                <input type="number" id="question-time" value="60" min="10">
+                            </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="questions-json">Questions JSON</label>
                             <textarea id="questions-json" class="form-input form-textarea" 
-                                placeholder='[{"question":"Sample question?","options":["A","B","C","D"],"correct":0,"explanation":"Explanation here"}]' 
+                                placeholder='Paste your questions JSON here...' 
                                 required></textarea>
                         </div>
                         
                         <div>
-                            <button type="submit" class="btn btn-primary">Create Test</button>
+                            <button type="button" class="btn btn-primary" onclick="loadQuestions()">Load Questions</button>
                             <button type="button" class="btn btn-secondary" onclick="showScreen('dashboard')">Cancel</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Preview Screen -->
+    <div class="screen" id="preview-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="preview-title">Test Preview</h2>
+                    <p>Review your test settings before starting</p>
+                </div>
+                <div class="card-body">
+                    <div id="test-info" class="test-config">
+                        <!-- Test info will be populated here -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-primary" onclick="startTestFromPreview()" style="font-size: 1.2rem; padding: 1rem 2rem;">🚀 Start Test</button>
+                        <button class="btn btn-secondary" onclick="showScreen('upload')">← Back to Edit</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -707,6 +968,11 @@
                     <div class="timer-display" id="timer-display">
                         <div>Time Remaining</div>
                         <div id="timer-text">60:00</div>
+                    </div>
+                    
+                    <div class="question-timer" id="question-timer" style="display: none;">
+                        <div>Question Time</div>
+                        <div id="question-timer-text">60</div>
                     </div>
                     
                     <h3>Questions</h3>
@@ -730,6 +996,10 @@
                             <div class="legend-item">
                                 <div class="legend-color" style="background: #a78bfa;"></div>
                                 <span>Marked</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #6b7280;"></div>
+                                <span>Locked</span>
                             </div>
                         </div>
                     </div>
@@ -853,6 +1123,11 @@
                     </div>
                     
                     <div class="form-group">
+                        <label class="form-label" for="profile-email">Email</label>
+                        <input type="email" id="profile-email" class="form-input" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
                         <label class="form-label" for="profile-bio">Bio</label>
                         <textarea id="profile-bio" class="form-input" placeholder="Tell us about yourself..." rows="3" style="resize: vertical;">Quiz enthusiast ready to learn!</textarea>
                     </div>
@@ -863,6 +1138,10 @@
                     </div>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                        <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="tests-taken">0</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Tests Taken</div>
+                        </div>
                         <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
                             <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);" id="avg-score">0%</div>
                             <div style="font-size: 0.875rem; color: var(--text-secondary);">Average Score</div>
@@ -876,6 +1155,81 @@
                     <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="saveProfile()">💾 Save Profile</button>
                         <button class="btn btn-secondary" onclick="showScreen('dashboard')">← Back to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timetable Screen -->
+    <div class="screen" id="timetable-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📅 My Timetable</h2>
+                    <p>Manage your study schedule</p>
+                </div>
+                <div class="card-body">
+                    <div class="timetable-nav">
+                        <button class="timetable-tab active" onclick="showTimetableTab('today')">Today's Schedule</button>
+                        <button class="timetable-tab" onclick="showTimetableTab('create')">Create Entry</button>
+                        <button class="timetable-tab" onclick="showTimetableTab('import')">Import HTML</button>
+                    </div>
+
+                    <div id="today-tab" class="timetable-container">
+                        <h3 id="today-date"></h3>
+                        <div id="today-schedule">
+                            <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No schedule for today. Create entries or import your timetable.</p>
+                        </div>
+                    </div>
+
+                    <div id="create-tab" class="timetable-container" style="display: none;">
+                        <h3>Create Schedule Entry</h3>
+                        <form id="schedule-form">
+                            <div class="form-group">
+                                <label class="form-label">Day</label>
+                                <select id="schedule-day" class="form-input" required>
+                                    <option value="monday">Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                    <option value="saturday">Saturday</option>
+                                    <option value="sunday">Sunday</option>
+                                </select>
+                            </div>
+                            <div class="config-row">
+                                <label>Start Time:</label>
+                                <input type="time" id="schedule-start" class="form-input" required>
+                                <label>End Time:</label>
+                                <input type="time" id="schedule-end" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Subject/Activity</label>
+                                <input type="text" id="schedule-subject" class="form-input" placeholder="e.g., Mathematics, Study Session" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes (Optional)</label>
+                                <textarea id="schedule-notes" class="form-input" placeholder="Additional details..." rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Entry</button>
+                        </form>
+                    </div>
+
+                    <div id="import-tab" class="timetable-container" style="display: none;">
+                        <h3>Import HTML Timetable</h3>
+                        <p>Paste your complete HTML timetable code below. It will be displayed seamlessly within the app.</p>
+                        <div class="form-group">
+                            <label class="form-label">HTML Code</label>
+                            <textarea id="html-timetable" class="form-input" placeholder="Paste your HTML timetable code here..." rows="10"></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="importHTMLTimetable()">Import Timetable</button>
+                        <button class="btn btn-secondary" onclick="clearHTMLTimetable()">Clear</button>
+                        
+                        <div id="html-preview" class="timetable-container" style="display: none; margin-top: 1rem; border: 2px dashed var(--border);">
+                            <h4>Preview:</h4>
+                            <div id="html-content"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -908,6 +1262,13 @@
                         <label>
                             <input type="checkbox" id="auto-submit" checked> 
                             Auto submit when time expires
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="auto-rotate" checked onchange="toggleAutoRotate()"> 
+                            Enable automatic screen rotation
                         </label>
                     </div>
                     
@@ -946,16 +1307,22 @@
         let currentQuestion = 0;
         let userAnswers = {};
         let questionStatus = {};
+        let lockedQuestions = new Set();
         let testTimer = null;
+        let questionTimer = null;
         let timeRemaining = 0;
+        let questionTimeRemaining = 0;
         let savedTests = [];
         let testResults = [];
         let currentResult = null;
         let soundEnabled = true;
+        let previewTest = null;
+        let scheduleEntries = [];
 
         // User profile data
         let userProfile = {
             name: 'Guest User',
+            email: '',
             bio: 'Quiz enthusiast ready to learn!',
             profilePicture: null,
             memberSince: new Date().toISOString()
@@ -1002,84 +1369,37 @@
             } catch (e) {}
         }
 
-        // Touch/Swipe Navigation
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchEndX = 0;
-        let touchEndY = 0;
+        // Copy JSON example function
+        function copyJsonExample() {
+            const jsonText = document.getElementById('json-example').textContent;
+            navigator.clipboard.writeText(jsonText).then(() => {
+                showNotification('JSON format copied to clipboard!', 'success');
+            }).catch(() => {
+                showNotification('Failed to copy. Please copy manually.', 'error');
+            });
+        }
 
-        function handleSwipe() {
-            const testActive = document.getElementById('test-screen').classList.contains('active');
-            const reviewActive = document.getElementById('review-screen').classList.contains('active');
-            
-            if (!testActive && !reviewActive) return;
-
-            const deltaX = touchEndX - touchStartX;
-            const deltaY = touchEndY - touchStartY;
-            const minSwipeDistance = 50;
-            
-            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
-                if (deltaX > 0) {
-                    reviewActive ? prevReview() : previousQuestion();
-                } else {
-                    reviewActive ? nextReview() : nextQuestion();
-                }
+        // Paste from clipboard function
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('questions-json').value = text;
+                showNotification('Content pasted from clipboard!', 'success');
+            } catch (err) {
+                showNotification('Failed to paste from clipboard. Please paste manually.', 'error');
             }
         }
 
-        // Desktop/Fullscreen mode
-        function toggleDesktopMode() {
-            playClickSound();
+        // Auto rotation toggle
+        function toggleAutoRotate() {
+            const enabled = document.getElementById('auto-rotate').checked;
+            localStorage.setItem('autoRotate', enabled);
             
-            const body = document.body;
-            const icon = document.getElementById('desktop-icon');
-            
-            if (body.classList.contains('fullscreen-mode')) {
-                body.classList.remove('fullscreen-mode');
-                icon.textContent = '💻';
-                
-                if (document.exitFullscreen) {
-                    document.exitFullscreen().catch(() => {});
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-                
-                showNotification('Exited fullscreen mode', 'success');
+            if (enabled) {
+                screen.orientation.unlock();
+                showNotification('Auto-rotation enabled', 'success');
             } else {
-                body.classList.add('fullscreen-mode');
-                icon.textContent = '🔲';
-                
-                const element = document.documentElement;
-                if (element.requestFullscreen) {
-                    element.requestFullscreen().catch(() => {});
-                } else if (element.webkitRequestFullscreen) {
-                    element.webkitRequestFullscreen();
-                } else if (element.mozRequestFullScreen) {
-                    element.mozRequestFullScreen();
-                } else if (element.msRequestFullscreen) {
-                    element.msRequestFullscreen();
-                }
-                
-                showNotification('Entered fullscreen mode. Press ESC or click button to exit', 'success');
-            }
-        }
-
-        function handleFullscreenChange() {
-            const isFullscreen = !!(document.fullscreenElement || 
-                                   document.webkitFullscreenElement || 
-                                   document.mozFullScreenElement || 
-                                   document.msFullscreenElement);
-            
-            const body = document.body;
-            const icon = document.getElementById('desktop-icon');
-            
-            if (!isFullscreen && body.classList.contains('fullscreen-mode')) {
-                body.classList.remove('fullscreen-mode');
-                icon.textContent = '💻';
+                showNotification('Auto-rotation disabled', 'success');
             }
         }
 
@@ -1088,32 +1408,28 @@
             loadSavedData();
             setupFormHandlers();
             showNotification('Welcome to Mock Test Pro!', 'success');
+            updateTodayDate();
             
-            // Add fullscreen change listeners
-            document.addEventListener('fullscreenchange', handleFullscreenChange);
-            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-
-            // Add touch event listeners to question content area
-            const questionContent = document.querySelector('.question-content');
-            if (questionContent) {
-                questionContent.addEventListener('touchstart', function(e) {
-                    touchStartX = e.changedTouches[0].screenX;
-                    touchStartY = e.changedTouches[0].screenY;
-                });
-
-                questionContent.addEventListener('touchend', function(e) {
-                    touchEndX = e.changedTouches[0].screenX;
-                    touchEndY = e.changedTouches[0].screenY;
-                    handleSwipe();
-                });
+            // Handle per-question timer toggle
+            document.getElementById('per-question-timer').addEventListener('change', function() {
+                document.getElementById('question-time-row').style.display = 
+                    this.checked ? 'flex' : 'none';
+            });
+            
+            // Set auto-rotate based on saved preference
+            const autoRotate = localStorage.getItem('autoRotate') !== 'false';
+            document.getElementById('auto-rotate').checked = autoRotate;
+            if (autoRotate) {
+                try {
+                    screen.orientation.unlock();
+                } catch (e) {}
             }
         });
 
         function loadSavedData() {
             const defaultProfile = {
                 name: 'Guest User',
+                email: '',
                 bio: 'Quiz enthusiast ready to learn!',
                 profilePicture: null,
                 memberSince: new Date().toISOString()
@@ -1122,14 +1438,17 @@
             savedTests = JSON.parse(localStorage.getItem('mockTests') || '[]');
             testResults = JSON.parse(localStorage.getItem('testResults') || '[]');
             userProfile = JSON.parse(localStorage.getItem('userProfile') || JSON.stringify(defaultProfile));
+            scheduleEntries = JSON.parse(localStorage.getItem('scheduleEntries') || '[]');
             soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
             
             document.getElementById('sound-enabled').checked = soundEnabled;
             updateProfileDisplay();
+            updateTodaySchedule();
         }
 
         function updateProfileDisplay() {
             document.getElementById('profile-name').value = userProfile.name;
+            document.getElementById('profile-email').value = userProfile.email || '';
             document.getElementById('profile-bio').value = userProfile.bio;
             document.getElementById('member-since').textContent = new Date(userProfile.memberSince).toLocaleDateString();
             
@@ -1137,11 +1456,13 @@
             document.getElementById('dashboard-bio').textContent = userProfile.bio;
             
             const profileElements = [
+                { toggle: 'profile-toggle', initial: 'profile-initial', image: 'profile-image' },
                 { initial: 'profile-initial', image: 'profile-image' },
                 { initial: 'dashboard-initial', image: 'dashboard-image' }
             ];
             
-            profileElements.forEach(({ initial, image }) => {
+            profileElements.forEach(({ toggle, initial, image }) => {
+                const toggleEl = toggle ? document.getElementById(toggle) : null;
                 const initialEl = document.getElementById(initial);
                 const imageEl = document.getElementById(image);
                 
@@ -1175,6 +1496,7 @@
             playClickSound();
             
             const name = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
             const bio = document.getElementById('profile-bio').value.trim();
             
             if (!name) {
@@ -1183,6 +1505,7 @@
             }
             
             userProfile.name = name;
+            userProfile.email = email;
             userProfile.bio = bio || 'Quiz enthusiast ready to learn!';
             
             localStorage.setItem('userProfile', JSON.stringify(userProfile));
@@ -1226,12 +1549,12 @@
         }
 
         function setupFormHandlers() {
-            document.getElementById('upload-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                createTest();
-            });
-            
             document.getElementById('profile-picture-input').addEventListener('change', handleProfilePictureUpload);
+            
+            document.getElementById('schedule-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addScheduleEntry();
+            });
         }
 
         function showScreen(screenId) {
@@ -1246,6 +1569,7 @@
                     (screenId === 'my-tests' && link.textContent.toLowerCase().includes('tests')) ||
                     (screenId === 'results' && link.textContent.toLowerCase().includes('results')) ||
                     (screenId === 'profile' && link.textContent.toLowerCase().includes('profile')) ||
+                    (screenId === 'timetable' && link.textContent.toLowerCase().includes('timetable')) ||
                     (screenId === 'settings' && link.textContent.toLowerCase().includes('settings'))) {
                     link.classList.add('active');
                     break;
@@ -1270,6 +1594,7 @@
                 if (screenId === 'my-tests') loadMyTests();
                 if (screenId === 'results') loadResults();
                 if (screenId === 'profile') updateProfileDisplay();
+                if (screenId === 'timetable') updateTodaySchedule();
             }
         }
 
@@ -1287,13 +1612,17 @@
             }
         }
 
-        function createTest() {
+        function loadQuestions() {
             const title = document.getElementById('test-title').value.trim();
             const duration = parseInt(document.getElementById('test-duration').value);
             const jsonText = document.getElementById('questions-json').value.trim();
+            const defaultMarks = parseFloat(document.getElementById('default-marks').value);
+            const negativeMarks = parseFloat(document.getElementById('negative-marks').value);
+            const perQuestionTimer = document.getElementById('per-question-timer').checked;
+            const questionTime = parseInt(document.getElementById('question-time').value);
 
             if (!title || !duration || !jsonText) {
-                showNotification('Please fill all fields', 'error');
+                showNotification('Please fill all required fields', 'error');
                 return;
             }
 
@@ -1301,55 +1630,116 @@
                 const questions = JSON.parse(jsonText);
                 
                 if (!Array.isArray(questions) || questions.length === 0) {
-                    throw new Error('Invalid questions format');
+                    throw new Error('Invalid questions format - must be an array');
                 }
 
                 for (let i = 0; i < questions.length; i++) {
                     const q = questions[i];
                     if (!q.question || !Array.isArray(q.options) || typeof q.correct !== 'number') {
-                        throw new Error(`Invalid question at index ${i + 1}`);
+                        throw new Error(`Invalid question at index ${i + 1} - missing required fields`);
+                    }
+                    if (!q.marks) {
+                        q.marks = defaultMarks;
                     }
                 }
 
-                const test = {
+                previewTest = {
                     id: Date.now(),
                     title,
                     duration,
                     questions,
+                    defaultMarks,
+                    negativeMarks,
+                    perQuestionTimer,
+                    questionTime,
                     created: new Date().toISOString()
                 };
 
-                savedTests.push(test);
-                localStorage.setItem('mockTests', JSON.stringify(savedTests));
-
                 playSuccessSound();
-                showNotification('Test created successfully!', 'success');
-                
-                document.getElementById('upload-form').reset();
-                setTimeout(() => startTest(test), 500);
+                showNotification('Questions loaded successfully!', 'success');
+                showTestPreview();
 
             } catch (error) {
                 showNotification('Error: ' + error.message, 'error');
             }
         }
 
-        function startTest(test) {
-            currentTest = test;
+        function showTestPreview() {
+            showScreen('preview');
+            
+            document.getElementById('preview-title').textContent = previewTest.title;
+            
+            const totalMarks = previewTest.questions.reduce((sum, q) => sum + (q.marks || previewTest.defaultMarks), 0);
+            
+            document.getElementById('test-info').innerHTML = `
+                <h4>Test Configuration</h4>
+                <div class="config-row">
+                    <strong>Title:</strong> ${previewTest.title}
+                </div>
+                <div class="config-row">
+                    <strong>Questions:</strong> ${previewTest.questions.length}
+                </div>
+                <div class="config-row">
+                    <strong>Duration:</strong> ${previewTest.duration} minutes
+                </div>
+                <div class="config-row">
+                    <strong>Total Marks:</strong> ${totalMarks}
+                </div>
+                <div class="config-row">
+                    <strong>Default Marks:</strong> ${previewTest.defaultMarks} per question
+                </div>
+                <div class="config-row">
+                    <strong>Negative Marks:</strong> ${previewTest.negativeMarks} per wrong answer
+                </div>
+                <div class="config-row">
+                    <strong>Per-Question Timer:</strong> ${previewTest.perQuestionTimer ? `Yes (${previewTest.questionTime}s each)` : 'No'}
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: 0.5rem; border-left: 4px solid var(--primary);">
+                    <h5>Instructions:</h5>
+                    <ul style="margin-left: 1rem; line-height: 1.6;">
+                        <li>Read each question carefully before selecting an answer</li>
+                        <li>You can navigate between questions using Previous/Next buttons</li>
+                        <li>Mark questions for review if you're unsure</li>
+                        <li>Clear your response if you want to change your answer</li>
+                        ${previewTest.perQuestionTimer ? '<li><strong>Time limit per question:</strong> Each question has a time limit. If time expires, the question will be locked and cannot be answered later.</li>' : ''}
+                        <li>Submit your test when completed or when time expires</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function startTestFromPreview() {
+            if (!previewTest) return;
+            
+            currentTest = previewTest;
             currentQuestion = 0;
             userAnswers = {};
             questionStatus = {};
-            timeRemaining = test.duration * 60;
+            lockedQuestions = new Set();
+            timeRemaining = currentTest.duration * 60;
+            questionTimeRemaining = currentTest.perQuestionTimer ? currentTest.questionTime : 0;
 
-            test.questions.forEach((_, index) => {
+            currentTest.questions.forEach((_, index) => {
                 questionStatus[index] = 'unvisited';
             });
+
+            // Save test if not already saved
+            if (!savedTests.find(t => t.title === currentTest.title)) {
+                savedTests.push(currentTest);
+                localStorage.setItem('mockTests', JSON.stringify(savedTests));
+            }
 
             showScreen('test');
             renderQuestionNav();
             loadQuestion();
             startTimer();
             
-            showNotification(`Started: ${test.title}`, 'success');
+            if (currentTest.perQuestionTimer) {
+                startQuestionTimer();
+            }
+            
+            showNotification(`Started: ${currentTest.title}`, 'success');
         }
 
         function startTimer() {
@@ -1366,6 +1756,26 @@
                     } else {
                         showNotification('Time expired!', 'error');
                     }
+                }
+            }, 1000);
+        }
+
+        function startQuestionTimer() {
+            if (!currentTest.perQuestionTimer) return;
+            
+            if (questionTimer) clearInterval(questionTimer);
+            
+            questionTimeRemaining = currentTest.questionTime;
+            document.getElementById('question-timer').style.display = 'block';
+            
+            questionTimer = setInterval(() => {
+                questionTimeRemaining--;
+                updateQuestionTimer();
+                
+                if (questionTimeRemaining <= 0) {
+                    clearInterval(questionTimer);
+                    lockCurrentQuestion();
+                    autoNextQuestion();
                 }
             }, 1000);
         }
@@ -1387,6 +1797,42 @@
             }
         }
 
+        function updateQuestionTimer() {
+            const display = document.getElementById('question-timer');
+            const text = document.getElementById('question-timer-text');
+            
+            text.textContent = questionTimeRemaining;
+            
+            display.className = 'question-timer';
+            if (questionTimeRemaining <= 10) {
+                display.classList.add('warning');
+            }
+            if (questionTimeRemaining <= 5) {
+                display.classList.add('critical');
+            }
+        }
+
+        function lockCurrentQuestion() {
+            lockedQuestions.add(currentQuestion);
+            if (questionStatus[currentQuestion] === 'unvisited') {
+                questionStatus[currentQuestion] = 'visited';
+            }
+            updateQuestionButtons();
+            showNotification('Question time expired! Question locked.', 'warning');
+        }
+
+        function autoNextQuestion() {
+            if (currentQuestion < currentTest.questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                if (currentTest.perQuestionTimer) {
+                    startQuestionTimer();
+                }
+            } else {
+                document.getElementById('question-timer').style.display = 'none';
+            }
+        }
+
         function renderQuestionNav() {
             const nav = document.getElementById('question-nav');
             nav.innerHTML = '';
@@ -1405,7 +1851,14 @@
         function updateQuestionButtons() {
             const buttons = document.querySelectorAll('.question-btn');
             buttons.forEach((btn, index) => {
-                btn.className = 'question-btn ' + (questionStatus[index] || 'unvisited');
+                btn.className = 'question-btn ';
+                
+                if (lockedQuestions.has(index)) {
+                    btn.classList.add('locked');
+                } else {
+                    btn.classList.add(questionStatus[index] || 'unvisited');
+                }
+                
                 if (index === currentQuestion) {
                     btn.classList.add('current');
                 }
@@ -1428,10 +1881,17 @@
             const optionsList = document.getElementById('options-list');
             optionsList.innerHTML = '';
             
+            const isLocked = lockedQuestions.has(currentQuestion);
+            
             question.options.forEach((option, index) => {
                 const li = document.createElement('li');
                 li.className = 'option-item';
-                li.onclick = () => selectOption(index);
+                
+                if (isLocked) {
+                    li.classList.add('disabled');
+                } else {
+                    li.onclick = () => selectOption(index);
+                }
                 
                 if (userAnswers[currentQuestion] === index) {
                     li.classList.add('selected');
@@ -1453,6 +1913,11 @@
         }
 
         function selectOption(optionIndex) {
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('This question is locked!', 'warning');
+                return;
+            }
+            
             playClickSound();
             userAnswers[currentQuestion] = optionIndex;
             questionStatus[currentQuestion] = 'answered';
@@ -1467,6 +1932,10 @@
         function goToQuestion(index) {
             currentQuestion = index;
             loadQuestion();
+            
+            if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                startQuestionTimer();
+            }
         }
 
         function nextQuestion() {
@@ -1474,6 +1943,10 @@
             if (currentQuestion < currentTest.questions.length - 1) {
                 currentQuestion++;
                 loadQuestion();
+                
+                if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                    startQuestionTimer();
+                }
             } else {
                 showSubmitModal();
             }
@@ -1484,11 +1957,19 @@
             if (currentQuestion > 0) {
                 currentQuestion--;
                 loadQuestion();
+                
+                if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                    startQuestionTimer();
+                }
             }
         }
 
         function markForReview() {
             playClickSound();
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('Cannot mark locked question for review!', 'warning');
+                return;
+            }
             questionStatus[currentQuestion] = 'marked';
             updateQuestionButtons();
             showNotification('Marked for review', 'success');
@@ -1496,6 +1977,11 @@
 
         function clearResponse() {
             playClickSound();
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('Cannot clear locked question!', 'warning');
+                return;
+            }
+            
             delete userAnswers[currentQuestion];
             if (questionStatus[currentQuestion] === 'answered') {
                 questionStatus[currentQuestion] = 'visited';
@@ -1515,11 +2001,12 @@
             
             const answered = Object.keys(userAnswers).length;
             const total = currentTest.questions.length;
+            const locked = lockedQuestions.size;
             const unanswered = total - answered;
             
             summary.innerHTML = `
                 <div style="margin: 1rem 0; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; text-align: center;">
                         <div>
                             <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${answered}</div>
                             <div>Answered</div>
@@ -1528,6 +2015,10 @@
                             <div style="font-size: 1.5rem; font-weight: bold; color: var(--error);">${unanswered}</div>
                             <div>Unanswered</div>
                         </div>
+                        ${locked > 0 ? `<div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--text-secondary);">${locked}</div>
+                            <div>Locked</div>
+                        </div>` : ''}
                         <div>
                             <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${total}</div>
                             <div>Total</div>
@@ -1547,6 +2038,7 @@
         function submitTest() {
             playClickSound();
             if (testTimer) clearInterval(testTimer);
+            if (questionTimer) clearInterval(questionTimer);
             
             const result = calculateResult();
             currentResult = result;
@@ -1567,22 +2059,33 @@
             let correct = 0;
             let incorrect = 0;
             let unattempted = 0;
+            let totalMarks = 0;
+            let scoredMarks = 0;
             const details = [];
             
             currentTest.questions.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
                 const correctAnswer = question.correct;
+                const questionMarks = question.marks || currentTest.defaultMarks;
+                
+                totalMarks += questionMarks;
                 
                 let status;
+                let marksScored = 0;
+                
                 if (userAnswer === undefined) {
                     unattempted++;
                     status = 'unattempted';
                 } else if (userAnswer === correctAnswer) {
                     correct++;
                     status = 'correct';
+                    marksScored = questionMarks;
+                    scoredMarks += questionMarks;
                 } else {
                     incorrect++;
                     status = 'incorrect';
+                    marksScored = -currentTest.negativeMarks;
+                    scoredMarks -= currentTest.negativeMarks;
                 }
                 
                 details.push({
@@ -1591,12 +2094,14 @@
                     correctAnswer,
                     userAnswer,
                     status,
-                    explanation: question.explanation || null
+                    explanation: question.explanation || null,
+                    marks: questionMarks,
+                    marksScored
                 });
             });
             
             const total = currentTest.questions.length;
-            const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+            const percentage = totalMarks > 0 ? Math.round((scoredMarks / totalMarks) * 100) : 0;
             
             return {
                 id: Date.now(),
@@ -1607,6 +2112,8 @@
                 incorrect,
                 unattempted,
                 percentage,
+                totalMarks,
+                scoredMarks,
                 details
             };
         }
@@ -1620,6 +2127,7 @@
                     <h1>Test Results</h1>
                     <h2>${result.testTitle}</h2>
                     <div class="score-display">${result.percentage}%</div>
+                    <p>Score: ${result.scoredMarks}/${result.totalMarks} marks</p>
                     <p>Completed on ${new Date(result.date).toLocaleDateString()}</p>
                 </div>
                 
@@ -1760,7 +2268,7 @@
 
         function retakeTest() {
             if (currentTest) {
-                startTest(currentTest);
+                showTestPreview();
             }
         }
 
@@ -1785,7 +2293,7 @@
             URL.revokeObjectURL(url);
             
             playSuccessSound();
-            showNotification('PDF downloaded!', 'success');
+            showNotification('Results downloaded!', 'success');
         }
 
         function generatePDFContent() {
@@ -1805,12 +2313,13 @@ body{font-family:Arial,sans-serif;margin:40px;color:#333}
 <div class="header">
 <h1>${currentResult.testTitle}</h1>
 <div class="score">${currentResult.percentage}%</div>
+<p>Score: ${currentResult.scoredMarks}/${currentResult.totalMarks} marks</p>
 <p>Completed: ${new Date(currentResult.date).toLocaleDateString()}</p>
-<p>Score: ${currentResult.correct}/${currentResult.total} correct</p>
+<p>Results: ${currentResult.correct}/${currentResult.total} correct</p>
 </div>
 ${currentResult.details.map((detail, index) => `
 <div class="question">
-<h3>Question ${index + 1} - ${detail.status.toUpperCase()}</h3>
+<h3>Question ${index + 1} - ${detail.status.toUpperCase()} (${detail.marksScored >= 0 ? '+' : ''}${detail.marksScored} marks)</h3>
 <p><strong>${detail.question}</strong></p>
 ${detail.options.map((option, i) => `
 <div class="option ${i === detail.correctAnswer ? 'correct' : ''} ${i === detail.userAnswer && i !== detail.correctAnswer ? 'incorrect' : ''}">
@@ -1843,13 +2352,18 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
                                 </p>
                             </div>
                             <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn btn-primary" onclick="startTest(${JSON.stringify(test).replace(/"/g, '&quot;')})">Start</button>
+                                <button class="btn btn-primary" onclick="startSavedTest(${savedTests.indexOf(test)})">Start</button>
                                 <button class="btn btn-error" onclick="deleteTest(${test.id})">Delete</button>
                             </div>
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function startSavedTest(index) {
+            previewTest = savedTests[index];
+            showTestPreview();
         }
 
         function deleteTest(testId) {
@@ -1880,7 +2394,7 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
                                 <div style="font-size: 2rem; font-weight: bold; color: ${result.percentage >= 70 ? 'var(--success)' : result.percentage >= 50 ? 'var(--warning)' : 'var(--error)'}; margin: 1rem 0;">
                                     ${result.percentage}%
                                 </div>
-                                <p>Score: ${result.correct}/${result.total}</p>
+                                <p>Score: ${result.scoredMarks || result.correct}/${result.totalMarks || result.total}</p>
                                 <p style="color: var(--text-secondary); font-size: 0.875rem;">
                                     ${new Date(result.date).toLocaleDateString()}
                                 </p>
@@ -1897,6 +2411,134 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
             if (currentResult) {
                 showResults(currentResult);
             }
+        }
+
+        // Timetable functions
+        function updateTodayDate() {
+            const today = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('today-date').textContent = today.toLocaleDateString('en-US', options);
+        }
+
+        function showTimetableTab(tabName) {
+            document.querySelectorAll('.timetable-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.timetable-container').forEach(container => container.style.display = 'none');
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+            
+            if (tabName === 'today') {
+                updateTodaySchedule();
+            }
+        }
+
+        function updateTodaySchedule() {
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            const todayEntries = scheduleEntries.filter(entry => entry.day === today);
+            
+            const container = document.getElementById('today-schedule');
+            
+            if (todayEntries.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No schedule for today. Create entries or import your timetable.</p>';
+                return;
+            }
+            
+            todayEntries.sort((a, b) => a.startTime.localeCompare(b.startTime));
+            
+            container.innerHTML = todayEntries.map(entry => `
+                <div class="schedule-entry">
+                    <div class="schedule-time">${entry.startTime} - ${entry.endTime}</div>
+                    <div style="font-weight: 600; margin: 0.5rem 0;">${entry.subject}</div>
+                    ${entry.notes ? `<div style="color: var(--text-secondary); font-size: 0.875rem;">${entry.notes}</div>` : ''}
+                    <button class="btn btn-error" style="margin-top: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="deleteScheduleEntry(${scheduleEntries.indexOf(entry)})">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function addScheduleEntry() {
+            const day = document.getElementById('schedule-day').value;
+            const startTime = document.getElementById('schedule-start').value;
+            const endTime = document.getElementById('schedule-end').value;
+            const subject = document.getElementById('schedule-subject').value.trim();
+            const notes = document.getElementById('schedule-notes').value.trim();
+
+            if (!day || !startTime || !endTime || !subject) {
+                showNotification('Please fill all required fields', 'error');
+                return;
+            }
+
+            if (startTime >= endTime) {
+                showNotification('End time must be after start time', 'error');
+                return;
+            }
+
+            const entry = {
+                id: Date.now(),
+                day,
+                startTime,
+                endTime,
+                subject,
+                notes,
+                created: new Date().toISOString()
+            };
+
+            scheduleEntries.push(entry);
+            localStorage.setItem('scheduleEntries', JSON.stringify(scheduleEntries));
+
+            document.getElementById('schedule-form').reset();
+            playSuccessSound();
+            showNotification('Schedule entry added!', 'success');
+            updateTodaySchedule();
+        }
+
+        function deleteScheduleEntry(index) {
+            if (confirm('Delete this schedule entry?')) {
+                scheduleEntries.splice(index, 1);
+                localStorage.setItem('scheduleEntries', JSON.stringify(scheduleEntries));
+                updateTodaySchedule();
+                showNotification('Schedule entry deleted', 'success');
+            }
+        }
+
+        function importHTMLTimetable() {
+            const htmlCode = document.getElementById('html-timetable').value.trim();
+            
+            if (!htmlCode) {
+                showNotification('Please paste HTML code', 'error');
+                return;
+            }
+
+            try {
+                // Basic HTML validation
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlCode;
+                
+                const preview = document.getElementById('html-preview');
+                const content = document.getElementById('html-content');
+                
+                // Sanitize and display
+                content.innerHTML = htmlCode;
+                preview.style.display = 'block';
+                
+                localStorage.setItem('htmlTimetable', htmlCode);
+                playSuccessSound();
+                showNotification('HTML timetable imported successfully!', 'success');
+                
+            } catch (error) {
+                showNotification('Invalid HTML code', 'error');
+            }
+        }
+
+        function clearHTMLTimetable() {
+            document.getElementById('html-timetable').value = '';
+            document.getElementById('html-preview').style.display = 'none';
+            localStorage.removeItem('htmlTimetable');
+            showNotification('HTML timetable cleared', 'success');
         }
 
         function toggleSound() {
@@ -1916,6 +2558,15 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
                 localStorage.clear();
                 savedTests = [];
                 testResults = [];
+                scheduleEntries = [];
+                userProfile = {
+                    name: 'Guest User',
+                    email: '',
+                    bio: 'Quiz enthusiast ready to learn!',
+                    profilePicture: null,
+                    memberSince: new Date().toISOString()
+                };
+                updateProfileDisplay();
                 showNotification('All data cleared', 'success');
                 showScreen('dashboard');
             }
@@ -1933,6 +2584,88 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
             }, 3000);
         }
 
+        // Desktop/Fullscreen mode functions
+        function toggleDesktopMode() {
+            playClickSound();
+            
+            const body = document.body;
+            const icon = document.getElementById('desktop-icon');
+            
+            if (body.classList.contains('fullscreen-mode')) {
+                body.classList.remove('fullscreen-mode');
+                icon.textContent = '💻';
+                
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                
+                showNotification('Exited fullscreen mode', 'success');
+            } else {
+                body.classList.add('fullscreen-mode');
+                icon.textContent = '🔲';
+                
+                const element = document.documentElement;
+                if (element.requestFullscreen) {
+                    element.requestFullscreen().catch(() => {});
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+                
+                showNotification('Entered fullscreen mode. Press ESC or click button to exit', 'success');
+            }
+        }
+
+        function handleFullscreenChange() {
+            const isFullscreen = !!(document.fullscreenElement || 
+                                   document.webkitFullscreenElement || 
+                                   document.mozFullScreenElement || 
+                                   document.msFullscreenElement);
+            
+            const body = document.body;
+            const icon = document.getElementById('desktop-icon');
+            
+            if (!isFullscreen && body.classList.contains('fullscreen-mode')) {
+                body.classList.remove('fullscreen-mode');
+                icon.textContent = '💻';
+            }
+        }
+
+        // Touch/Swipe Navigation
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        function handleSwipe() {
+            const testActive = document.getElementById('test-screen').classList.contains('active');
+            const reviewActive = document.getElementById('review-screen').classList.contains('active');
+            
+            if (!testActive && !reviewActive) return;
+
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const minSwipeDistance = 50;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                if (deltaX > 0) {
+                    reviewActive ? prevReview() : previousQuestion();
+                } else {
+                    reviewActive ? nextReview() : nextQuestion();
+                }
+            }
+        }
+
+        // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             const testActive = document.getElementById('test-screen').classList.contains('active');
             const reviewActive = document.getElementById('review-screen').classList.contains('active');
@@ -1975,17 +2708,52 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
                         clearResponse();
                     }
                     break;
+                case 'Escape':
+                    if (document.body.classList.contains('fullscreen-mode')) {
+                        toggleDesktopMode();
+                    }
+                    break;
             }
         });
 
+        // Event listeners setup
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add fullscreen change listeners
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+            // Add touch event listeners
+            const questionContent = document.querySelector('.question-content');
+            if (questionContent) {
+                questionContent.addEventListener('touchstart', function(e) {
+                    touchStartX = e.changedTouches[0].screenX;
+                    touchStartY = e.changedTouches[0].screenY;
+                });
+
+                questionContent.addEventListener('touchend', function(e) {
+                    touchEndX = e.changedTouches[0].screenX;
+                    touchEndY = e.changedTouches[0].screenY;
+                    handleSwipe();
+                });
+            }
+
+            // Load saved HTML timetable if exists
+            const savedHTML = localStorage.getItem('htmlTimetable');
+            if (savedHTML) {
+                document.getElementById('html-timetable').value = savedHTML;
+                document.getElementById('html-content').innerHTML = savedHTML;
+                document.getElementById('html-preview').style.display = 'block';
+            }
+        });
+
+        // Click sound for interactive elements
         document.addEventListener('click', function(e) {
-            if (e.target.matches('.btn, .option-item, .question-btn')) {
+            if (e.target.matches('.btn, .option-item, .question-btn, .timetable-tab')) {
                 playClickSound();
             }
         });
     </script>
 </body>
-</html><div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="tests-taken">0</div>
-                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Tests Taken</div>
-                        </div>
-                        <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+</html>
