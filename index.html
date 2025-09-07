@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mock Test Pro</title>
     <meta name="screen-orientation" content="auto">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#6366f1">
-    <style>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
+
+<style>
+    
         * {
             margin: 0;
             padding: 0;
@@ -42,196 +48,6 @@
             transition: all 0.3s;
         }
 
-        /* Auth Screen Styles */
-        .auth-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .auth-container {
-            max-width: 400px;
-            width: 90%;
-            background: var(--bg-primary);
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .auth-header h1 {
-            color: var(--primary);
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 2rem;
-            background: var(--bg-secondary);
-            border-radius: 0.5rem;
-            padding: 0.25rem;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 0.75rem;
-            text-align: center;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .auth-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        /* Firebase Navigation */
-        .firebase-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-primary);
-            border-top: 1px solid var(--border);
-            padding: 0.75rem;
-            display: none;
-            justify-content: space-around;
-            z-index: 1000;
-        }
-
-        .firebase-nav.show {
-            display: flex;
-        }
-
-        .firebase-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.25rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            min-width: 60px;
-        }
-
-        .firebase-nav-item.active {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-        }
-
-        .firebase-nav-icon {
-            font-size: 1.2rem;
-        }
-
-        .firebase-nav-label {
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-
-        /* Firebase Screens */
-        .firebase-screen {
-            display: none;
-            padding: 1rem 1rem 5rem 1rem;
-            min-height: 100vh;
-        }
-
-        .firebase-screen.active {
-            display: block;
-        }
-
-        .firebase-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: var(--bg-primary);
-            border-radius: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .firebase-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #818cf8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .firebase-section {
-            background: var(--bg-primary);
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 1rem;
-        }
-
-        .firebase-section-header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .firebase-items {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .firebase-item {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .firebase-item:hover {
-            background: var(--bg-secondary);
-        }
-
-        .firebase-item:last-child {
-            border-bottom: none;
-        }
-
-        .firebase-item-title {
-            font-weight: 500;
-            margin-bottom: 0.25rem;
-        }
-
-        .firebase-item-subtitle {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        /* Your existing styles continue here */
         .navbar {
             background: var(--bg-primary);
             border-bottom: 1px solid var(--border);
@@ -400,12 +216,6 @@
             color: var(--text-primary);
         }
 
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
         .form-textarea {
             min-height: 200px;
             resize: vertical;
@@ -429,110 +239,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 1rem;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-primary);
-            border-radius: 0.75rem;
-            padding: 2rem;
-            max-width: 500px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            background: var(--bg-primary);
-            border: 2px solid var(--border);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1100;
-            display: none;
-        }
-
-        .notification.show {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        .notification.success { border-color: var(--success); }
-        .notification.error { border-color: var(--error); }
-        .notification.warning { border-color: var(--warning); }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
-        }
-
-        /* Loading */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Show/Hide Firebase vs Mock Test */
-        body.firebase-mode .navbar,
-        body.firebase-mode .container,
-        body.firebase-mode .screen:not(.firebase-screen) {
-            display: none;
-        }
-
-        body.firebase-mode .firebase-nav {
-            display: flex;
-        }
-
-        body.firebase-mode .firebase-screen.active {
-            display: block;
-        }
-
-        body:not(.firebase-mode) .auth-screen {
-            display: none;
-        }
-
-        body:not(.firebase-mode) .firebase-nav,
-        body:not(.firebase-mode) .firebase-screen {
-            display: none;
-        }
-
-        /* Your existing styles continue... */
         .test-layout {
             display: grid;
             grid-template-columns: 300px 1fr;
@@ -728,7 +434,7 @@
         }
 
         .option-item.selected .option-radio::after {
-            content: '';
+            content: '✓';
             position: absolute;
             top: 50%;
             left: 50%;
@@ -750,20 +456,313 @@
             gap: 1rem;
         }
 
-        /* Add mode toggle button */
-        .mode-toggle {
+        .legend {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 0.25rem;
+        }
+
+        .modal {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .copy-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
             cursor: pointer;
             font-size: 0.875rem;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .json-example {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .copy-container {
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .copy-container .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            z-index: 10;
+        }
+
+        .test-config {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .config-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .config-row label {
+            min-width: 150px;
+        }
+
+        .config-row input, .config-row select {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            background: var(--bg-primary);
+        }
+
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1100;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success { border-color: var(--success); }
+        .notification.error { border-color: var(--error); }
+        .notification.warning { border-color: var(--warning); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .review-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .review-status.correct {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .review-status.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .review-status.unattempted {
+            background: rgba(156, 163, 175, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .desktop-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .desktop-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        body.fullscreen-mode {
+            overflow: hidden;
+        }
+
+        body.fullscreen-mode .navbar {
+            display: none;
+        }
+
+        body.fullscreen-mode .container {
+            padding: 0;
+            max-width: none;
+            margin: 0;
+            height: 100vh;
+        }
+
+        body.fullscreen-mode .test-layout {
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        body.fullscreen-mode .question-sidebar {
+            border-radius: 0;
+        }
+
+        body.fullscreen-mode .question-content {
+            border-radius: 0;
+        }
+
+        body:not(.test-active) .desktop-toggle {
+            display: none;
+        }
+
+        .timetable-container {
+            min-height: 400px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .timetable-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .timetable-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timetable-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .schedule-entry {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .schedule-time {
+            font-weight: 600;
+            color: var(--primary);
         }
 
         @media (max-width: 768px) {
@@ -781,152 +780,30 @@
                 padding: 1rem;
             }
 
-            .mode-toggle {
-                top: 10px;
-                right: 10px;
-                padding: 0.5rem 0.75rem;
-                font-size: 0.75rem;
+            .desktop-toggle {
+                display: none;
+            }
+        }
+
+        @media (orientation: landscape) and (max-width: 1024px) {
+            .test-layout {
+                grid-template-columns: 250px 1fr;
+            }
+            
+            .question-sidebar {
+                padding: 1rem;
             }
         }
     </style>
 </head>
 <body data-theme="light">
-
-    <!-- Mode Toggle Button -->
-    <button class="mode-toggle" onclick="toggleAppMode()" id="mode-toggle">
-        Switch to Study Mode
-    </button>
-
-    <!-- Authentication Screen (Firebase) -->
-    <div class="auth-screen" id="auth-screen">
-        <div class="auth-container">
-            <div class="auth-header">
-                <h1> Mock Test Pro</h1>
-                <p>Your complete learning platform</p>
-            </div>
-
-            <div class="auth-tabs">
-                <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
-                <div class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</div>
-            </div>
-
-            <form id="login-form" class="auth-form active">
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="login-email" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="login-password" required>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <span class="btn-text">Login</span>
-                    <span class="loading" style="display: none;"></span>
-                </button>
-            </form>
-
-            <form id="signup-form" class="auth-form">
-                <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" class="form-input" id="signup-name" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="signup-email" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="signup-password" required minlength="6">
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <span class="btn-text">Create Account</span>
-                    <span class="loading" style="display: none;"></span>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Firebase Study Mode -->
-    <div class="firebase-screen active" id="firebase-notes-screen">
-        <div class="firebase-header">
-            <div class="firebase-avatar" id="firebase-avatar">U</div>
-            <div>
-                <h3 id="firebase-welcome">Welcome back!</h3>
-                <p id="firebase-email" style="color: var(--text-secondary); font-size: 0.875rem;">Loading...</p>
-            </div>
-        </div>
-
-        <div class="firebase-section">
-            <div class="firebase-section-header">
-                <h3> Study Notes</h3>
-                <button class="btn btn-primary" id="add-note-btn" onclick="showAddNoteModal()" style="display: none;">Add Note</button>
-            </div>
-            <div class="firebase-items" id="firebase-notes-list">
-                <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">Loading notes...</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="firebase-screen" id="firebase-classes-screen">
-        <div class="firebase-section">
-            <div class="firebase-section-header">
-                <h3> Live Classes</h3>
-                <button class="btn btn-primary" id="add-class-btn" onclick="showAddClassModal()" style="display: none;">Add Class</button>
-            </div>
-            <div class="firebase-items" id="firebase-classes-list">
-                <div style="padding: 2rem; text-align: center; color: var(--text-secondary);">Loading classes...</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="firebase-screen" id="firebase-settings-screen">
-        <div class="firebase-section">
-            <div style="padding: 1.5rem;">
-                <h3> Settings</h3>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--border);">
-                    <span>Dark Mode</span>
-                    <button class="theme-toggle" onclick="toggleTheme()">
-                        <span id="theme-icon"></span>
-                    </button>
-                </div>
-                
-                <div style="padding: 1rem 0; border-bottom: 1px solid var(--border);">
-                    <div>Email: <span id="firebase-settings-email">Loading...</span></div>
-                    <div style="margin-top: 0.5rem;">Role: <span id="firebase-user-role">User</span></div>
-                </div>
-                
-                <button class="btn btn-error" onclick="signOut()" style="width: 100%; margin-top: 1rem;">
-                    Logout
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase Bottom Navigation -->
-    <nav class="firebase-nav" id="firebase-nav">
-        <div class="firebase-nav-item active" onclick="switchFirebaseScreen('notes')">
-            <div class="firebase-nav-icon"></div>
-            <div class="firebase-nav-label">Notes</div>
-        </div>
-        <div class="firebase-nav-item" onclick="switchFirebaseScreen('classes')">
-            <div class="firebase-nav-icon"></div>
-            <div class="firebase-nav-label">Classes</div>
-        </div>
-        <div class="firebase-nav-item" onclick="switchFirebaseScreen('settings')">
-            <div class="firebase-nav-icon"></div>
-            <div class="firebase-nav-label">Settings</div>
-        </div>
-    </nav>
-
-    <!-- Your Original Mock Test App (All existing content remains the same) -->
     <nav class="navbar">
         <div class="nav-left">
             <div class="profile-toggle" onclick="showScreen('profile')" id="profile-toggle">
                 <span id="profile-initial">G</span>
                 <img id="profile-image" style="display: none;" alt="Profile" />
             </div>
-            <div class="nav-brand"> Mock Test Pro</div>
+            <div class="nav-brand">🧠 Mock Test Pro</div>
         </div>
         <div class="nav-menu">
             <a href="#" class="nav-link active" onclick="showScreen('dashboard')">Dashboard</a>
@@ -934,13 +811,17 @@
             <a href="#" class="nav-link" onclick="showScreen('results')">Results</a>
             <a href="#" class="nav-link" onclick="showScreen('timetable')">Timetable</a>
             <a href="#" class="nav-link" onclick="showScreen('settings')">Settings</a>
+            <a href="#" class="nav-link" onclick="showScreen('notes')">Notes</a>
+            <a href="#" class="nav-link" onclick="showScreen('live-classes')">Live Classes</a>
+            <a href="#" class="nav-link" onclick="showScreen('auth')" id="auth-nav">Login</a>
+            <a href="#" class="nav-link" onclick="logout()" id="logout-nav" style="display:none;">Logout</a>
             <button class="theme-toggle" onclick="toggleTheme()">
-                <span id="theme-icon-original"></span>
+                <span id="theme-icon">🌙</span>
             </button>
         </div>
     </nav>
 
-    <!-- All your existing screens remain exactly the same -->
+    <!-- Dashboard Screen -->
     <div class="screen active" id="dashboard-screen">
         <div class="container">
             <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 3rem;">
@@ -956,21 +837,28 @@
             
             <div class="dashboard-grid">
                 <div class="card feature-card">
-                    <div class="feature-icon"></div>
+                    <div class="feature-icon">📄</div>
+                    <h3>Create New Test</h3>
+                    <p>Upload questions via JSON and start your mock test</p>
+                    <button class="btn btn-primary" onclick="showScreen('upload')">Get Started</button>
+                </div>
+                
+                <div class="card feature-card">
+                    <div class="feature-icon">📊</div>
                     <h3>View Results</h3>
                     <p>Analyze your performance and track progress</p>
                     <button class="btn btn-secondary" onclick="showScreen('results')">View Results</button>
                 </div>
                 
                 <div class="card feature-card">
-                    <div class="feature-icon"></div>
+                    <div class="feature-icon">📚</div>
                     <h3>My Tests</h3>
                     <p>Access your saved tests and retake them</p>
                     <button class="btn btn-secondary" onclick="showScreen('my-tests')">Browse Tests</button>
                 </div>
 
                 <div class="card feature-card">
-                    <div class="feature-icon"></div>
+                    <div class="feature-icon">📅</div>
                     <h3>Timetable</h3>
                     <p>Manage your study schedule and plan</p>
                     <button class="btn btn-secondary" onclick="showScreen('timetable')">View Schedule</button>
@@ -989,11 +877,11 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="form-label">JSON Format Instructions</label>
+                        <label class="form-label">📝 JSON Format Instructions</label>
                         <p style="color: var(--text-secondary); margin-bottom: 1rem;">Use this JSON format to prepare your questions. You can also ask any AI tool to generate questions directly in this format.</p>
                         
-                        <div style="position: relative; margin: 1rem 0;">
-                            <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; font-family: monospace; font-size: 0.875rem; white-space: pre-wrap; position: relative;" id="json-example">[
+                        <div class="copy-container">
+                            <div class="json-example" id="json-example">[
   {
     "question": "What is the capital of France?",
     "options": ["London", "Berlin", "Paris", "Madrid"],
@@ -1009,10 +897,10 @@
     "marks": 2
   }
 ]</div>
-                            <button style="position: absolute; top: 0.5rem; right: 0.5rem; background: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.875rem; transition: all 0.2s;" onclick="copyJsonExample()">Copy Format</button>
+                            <button class="copy-btn" onclick="copyJsonExample()">📋 Copy Format</button>
                         </div>
                         
-                        <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="pasteFromClipboard()">Paste from Clipboard</button>
+                        <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="pasteFromClipboard()">📥 Paste from Clipboard</button>
                     </div>
 
                     <form id="upload-form">
@@ -1021,33 +909,33 @@
                             <input type="text" id="test-title" class="form-input" required>
                         </div>
                         
-                        <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1.5rem; margin: 1rem 0;">
+                        <div class="test-config">
                             <h4>Test Configuration</h4>
-                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
-                                <label for="test-duration" style="min-width: 150px;">Duration (minutes):</label>
-                                <input type="number" id="test-duration" value="60" min="1" required style="flex: 1; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem; background: var(--bg-primary);">
+                            <div class="config-row">
+                                <label for="test-duration">Duration (minutes):</label>
+                                <input type="number" id="test-duration" value="60" min="1" required>
                             </div>
-                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
-                                <label for="default-marks" style="min-width: 150px;">Default marks per question:</label>
-                                <input type="number" id="default-marks" value="1" min="0" step="0.25" style="flex: 1; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem; background: var(--bg-primary);">
+                            <div class="config-row">
+                                <label for="default-marks">Default marks per question:</label>
+                                <input type="number" id="default-marks" value="1" min="0" step="0.25">
                             </div>
-                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
-                                <label for="negative-marks" style="min-width: 150px;">Negative marks:</label>
-                                <input type="number" id="negative-marks" value="0" min="0" step="0.25" style="flex: 1; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem; background: var(--bg-primary);">
+                            <div class="config-row">
+                                <label for="negative-marks">Negative marks:</label>
+                                <input type="number" id="negative-marks" value="0" min="0" step="0.25">
                             </div>
-                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
-                                <label for="per-question-timer" style="min-width: 150px;">Enable per-question timer:</label>
+                            <div class="config-row">
+                                <label for="per-question-timer">Enable per-question timer:</label>
                                 <input type="checkbox" id="per-question-timer">
                             </div>
-                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center; display: none;" id="question-time-row">
-                                <label for="question-time" style="min-width: 150px;">Time per question (seconds):</label>
-                                <input type="number" id="question-time" value="60" min="10" style="flex: 1; padding: 0.5rem; border: 1px solid var(--border); border-radius: 0.25rem; background: var(--bg-primary);">
+                            <div class="config-row" id="question-time-row" style="display: none;">
+                                <label for="question-time">Time per question (seconds):</label>
+                                <input type="number" id="question-time" value="60" min="10">
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-label" for="questions-json">Questions JSON</label>
-                            <textarea id="questions-json" class="form-input" style="min-height: 200px; resize: vertical; font-family: monospace;" 
+                            <textarea id="questions-json" class="form-input form-textarea" 
                                 placeholder='Paste your questions JSON here...' 
                                 required></textarea>
                         </div>
@@ -1071,13 +959,13 @@
                     <p>Review your test settings before starting</p>
                 </div>
                 <div class="card-body">
-                    <div id="test-info" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1.5rem; margin: 1rem 0;">
+                    <div id="test-info" class="test-config">
                         <!-- Test info will be populated here -->
                     </div>
                     
                     <div style="text-align: center; margin-top: 2rem;">
-                        <button class="btn btn-primary" onclick="startTestFromPreview()" style="font-size: 1.2rem; padding: 1rem 2rem;">Start Test</button>
-                        <button class="btn btn-secondary" onclick="showScreen('upload')">Back to Edit</button>
+                        <button class="btn btn-primary" onclick="startTestFromPreview()" style="font-size: 1.2rem; padding: 1rem 2rem;">🚀 Start Test</button>
+                        <button class="btn btn-secondary" onclick="showScreen('upload')">← Back to Edit</button>
                     </div>
                 </div>
             </div>
@@ -1102,27 +990,27 @@
                     <h3>Questions</h3>
                     <div class="question-nav" id="question-nav"></div>
                     
-                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <div class="legend">
                         <h4>Legend</h4>
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
-                                <div style="width: 16px; height: 16px; border-radius: 0.25rem; background: var(--bg-secondary); border: 1px solid var(--border);"></div>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f8fafc; border: 1px solid #e2e8f0;"></div>
                                 <span>Unvisited</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
-                                <div style="width: 16px; height: 16px; border-radius: 0.25rem; background: #f87171;"></div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f87171;"></div>
                                 <span>Visited</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
-                                <div style="width: 16px; height: 16px; border-radius: 0.25rem; background: #34d399;"></div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #34d399;"></div>
                                 <span>Answered</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
-                                <div style="width: 16px; height: 16px; border-radius: 0.25rem; background: #a78bfa;"></div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #a78bfa;"></div>
                                 <span>Marked</span>
                             </div>
-                            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
-                                <div style="width: 16px; height: 16px; border-radius: 0.25rem; background: #6b7280;"></div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #6b7280;"></div>
                                 <span>Locked</span>
                             </div>
                         </div>
@@ -1145,8 +1033,8 @@
                     
                     <div class="question-controls">
                         <div class="control-group">
-                            <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>Previous</button>
-                            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next</button>
+                            <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>← Previous</button>
+                            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next →</button>
                         </div>
                         <button class="btn btn-error" onclick="showSubmitModal()">Submit Test</button>
                     </div>
@@ -1184,13 +1072,13 @@
                 <div class="question-content">
                     <div class="question-header">
                         <h2 id="review-question-title">Question 1</h2>
-                        <div id="review-status" style="padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">CORRECT</div>
+                        <div id="review-status" class="review-status">CORRECT</div>
                     </div>
                     
                     <div class="question-body">
                         <div class="question-text" id="review-question-text">Loading...</div>
                         <ul class="options-list" id="review-options-list"></ul>
-                        <div id="explanation" style="margin-top: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem; border-left: 4px solid var(--primary); display: none;">
+                        <div id="explanation" class="explanation" style="display: none;">
                             <h4>Explanation</h4>
                             <div id="explanation-text"></div>
                         </div>
@@ -1198,8 +1086,8 @@
                     
                     <div class="question-controls">
                         <div class="control-group">
-                            <button class="btn btn-secondary" id="review-prev-btn" onclick="prevReview()" disabled>Previous</button>
-                            <button class="btn btn-primary" id="review-next-btn" onclick="nextReview()">Next</button>
+                            <button class="btn btn-secondary" id="review-prev-btn" onclick="prevReview()" disabled>← Previous</button>
+                            <button class="btn btn-primary" id="review-next-btn" onclick="nextReview()">Next →</button>
                         </div>
                         <button class="btn btn-warning" onclick="retakeTest()">Retake Test</button>
                     </div>
@@ -1217,23 +1105,50 @@
             </div>
         </div>
     </div>
+    
+    <!-- Auth Screen -->
+    <div class="screen" id="auth-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🔐 Login / Signup</h2>
+                    <p>Access your account to continue</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="auth-email" class="form-input" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="auth-password" class="form-input" placeholder="Enter password">
+                    </div>
+                    <div style="display:flex; gap:1rem; margin-top:1rem;">
+                        <button class="btn btn-primary" onclick="login()">Login</button>
+                        <button class="btn btn-secondary" onclick="signup()">Signup</button>
+                    </div>
+                    <p id="auth-message" style="margin-top:1rem; color: var(--text-secondary);"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Profile Screen -->
     <div class="screen" id="profile-screen">
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    <h2>User Profile</h2>
+                    <h2>👤 User Profile</h2>
                     <p>Manage your profile information</p>
                 </div>
                 <div class="card-body">
                     <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem;">
                         <div style="position: relative; margin-bottom: 1rem;">
                             <div id="profile-avatar" style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #818cf8); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; position: relative; overflow: hidden; cursor: pointer; border: 4px solid var(--border);" onclick="document.getElementById('profile-picture-input').click()">
-                                <span id="profile-initial-big">G</span>
-                                <img id="profile-image-big" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; display: none;" alt="Profile Picture" />
+                                <span id="profile-initial">G</span>
+                                <img id="profile-image" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; display: none;" alt="Profile Picture" />
                                 <div style="position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-primary); cursor: pointer;">
-                                    
+                                    📷
                                 </div>
                             </div>
                             <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
@@ -1277,8 +1192,8 @@
                     </div>
                     
                     <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
-                        <button class="btn btn-secondary" onclick="showScreen('dashboard')">Back to Dashboard</button>
+                        <button class="btn btn-primary" onclick="saveProfile()">💾 Save Profile</button>
+                        <button class="btn btn-secondary" onclick="showScreen('dashboard')">← Back to Dashboard</button>
                     </div>
                 </div>
             </div>
@@ -1290,24 +1205,24 @@
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    <h2>My Timetable</h2>
+                    <h2>📅 My Timetable</h2>
                     <p>Manage your study schedule</p>
                 </div>
                 <div class="card-body">
-                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
-                        <button style="padding: 0.5rem 1rem; border: none; background: var(--primary); color: white; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s;" class="active" onclick="showTimetableTab('today')">Today's Schedule</button>
-                        <button style="padding: 0.5rem 1rem; border: none; background: var(--bg-secondary); color: var(--text-primary); border-radius: 0.5rem; cursor: pointer; transition: all 0.2s;" onclick="showTimetableTab('create')">Create Entry</button>
-                        <button style="padding: 0.5rem 1rem; border: none; background: var(--bg-secondary); color: var(--text-primary); border-radius: 0.5rem; cursor: pointer; transition: all 0.2s;" onclick="showTimetableTab('import')">Import HTML</button>
+                    <div class="timetable-nav">
+                        <button class="timetable-tab active" onclick="showTimetableTab('today')">Today's Schedule</button>
+                        <button class="timetable-tab" onclick="showTimetableTab('create')">Create Entry</button>
+                        <button class="timetable-tab" onclick="showTimetableTab('import')">Import HTML</button>
                     </div>
 
-                    <div id="today-tab" style="min-height: 400px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0;">
+                    <div id="today-tab" class="timetable-container">
                         <h3 id="today-date"></h3>
                         <div id="today-schedule">
                             <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No schedule for today. Create entries or import your timetable.</p>
                         </div>
                     </div>
 
-                    <div id="create-tab" style="min-height: 400px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0; display: none;">
+                    <div id="create-tab" class="timetable-container" style="display: none;">
                         <h3>Create Schedule Entry</h3>
                         <form id="schedule-form">
                             <div class="form-group">
@@ -1322,11 +1237,11 @@
                                     <option value="sunday">Sunday</option>
                                 </select>
                             </div>
-                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
-                                <label style="min-width: 100px;">Start Time:</label>
-                                <input type="time" id="schedule-start" class="form-input" required style="flex: 1;">
-                                <label style="min-width: 100px;">End Time:</label>
-                                <input type="time" id="schedule-end" class="form-input" required style="flex: 1;">
+                            <div class="config-row">
+                                <label>Start Time:</label>
+                                <input type="time" id="schedule-start" class="form-input" required>
+                                <label>End Time:</label>
+                                <input type="time" id="schedule-end" class="form-input" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Subject/Activity</label>
@@ -1340,7 +1255,7 @@
                         </form>
                     </div>
 
-                    <div id="import-tab" style="min-height: 400px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0; display: none;">
+                    <div id="import-tab" class="timetable-container" style="display: none;">
                         <h3>Import HTML Timetable</h3>
                         <p>Paste your complete HTML timetable code below. It will be displayed seamlessly within the app.</p>
                         <div class="form-group">
@@ -1350,7 +1265,7 @@
                         <button class="btn btn-primary" onclick="importHTMLTimetable()">Import Timetable</button>
                         <button class="btn btn-secondary" onclick="clearHTMLTimetable()">Clear</button>
                         
-                        <div id="html-preview" style="display: none; margin-top: 1rem; border: 2px dashed var(--border); min-height: 400px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1.5rem;">
+                        <div id="html-preview" class="timetable-container" style="display: none; margin-top: 1rem; border: 2px dashed var(--border);">
                             <h4>Preview:</h4>
                             <div id="html-content"></div>
                         </div>
@@ -1401,6 +1316,46 @@
             </div>
         </div>
     </div>
+    
+    <!-- Notes Screen -->
+    <div class="screen" id="notes-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📚 Notes</h2>
+                    <p>Download study notes uploaded by admins</p>
+                </div>
+                <div class="card-body">
+                    <div id="notes-list"></div>
+                    <div id="notes-upload" style="margin-top:1rem; display:none;">
+                        <input type="file" id="note-file" />
+                        <button class="btn btn-primary" onclick="uploadNote()">Upload Note</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Classes Screen -->
+    <div class="screen" id="live-classes-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🎥 Live Classes</h2>
+                    <p>Join upcoming live sessions</p>
+                </div>
+                <div class="card-body">
+                    <div id="live-list"></div>
+                    <div id="live-create" style="margin-top:1rem; display:none;">
+                        <input type="text" id="live-title" placeholder="Class Title" class="form-input" />
+                        <input type="datetime-local" id="live-date" class="form-input" />
+                        <input type="text" id="live-link" placeholder="Meeting Link" class="form-input" />
+                        <button class="btn btn-primary" onclick="createLiveClass()">Create Live Class</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Submit Modal -->
     <div class="modal" id="submit-modal">
@@ -1415,208 +1370,466 @@
         </div>
     </div>
 
-    <!-- Firebase Modals -->
-    <div class="modal" id="add-note-modal">
-        <div class="modal-content">
-            <h3>Add Study Note</h3>
-            <form id="add-note-form">
-                <div class="form-group">
-                    <label class="form-label">Title</label>
-                    <input type="text" class="form-input" id="note-title" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-input" id="note-description" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">PDF File or URL</label>
-                    <input type="file" class="form-input" id="note-file" accept=".pdf">
-                    <input type="url" class="form-input" id="note-url" placeholder="Or paste PDF URL" style="margin-top: 0.5rem;">
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Note</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal" id="add-class-modal">
-        <div class="modal-content">
-            <h3>Add Live Class</h3>
-            <form id="add-class-form">
-                <div class="form-group">
-                    <label class="form-label">Class Title</label>
-                    <input type="text" class="form-input" id="class-title" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-input" id="class-description" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Class URL</label>
-                    <input type="url" class="form-input" id="class-url" placeholder="YouTube, Zoom, or Meet link" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Scheduled Time</label>
-                    <input type="datetime-local" class="form-input" id="class-time">
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Class</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Notification -->
     <div class="notification" id="notification">
         <div id="notification-text"></div>
     </div>
 
-    <script>
-        // Global app mode management
-        let isFirebaseMode = false;
-        let currentUser = null;
+    <!-- Desktop Mode Toggle -->
+    <button class="desktop-toggle" id="desktop-toggle" onclick="toggleDesktopMode()" title="Toggle Fullscreen Mode">
+        <span id="desktop-icon">💻</span>
+    </button>
 
-        // Initialize app mode
-        function initializeApp() {
-            // Check if user is logged in to determine initial mode
-            checkAuthState();
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCs2Ab_fTU18xj8o0qXuzIrphMT7OERNYY",
+            authDomain: "practicpro-mock-0786.firebaseapp.com",
+            projectId: "practicpro-mock-0786",
+            storageBucket: "practicpro-mock-0786.appspot.com",
+            messagingSenderId: "457425256741",
+            appId: "1:457425256741:web:0807a6c133c8fb1bc51acc"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Global variables
+        let currentTest = null;
+        let currentQuestion = 0;
+        let userAnswers = {};
+        let questionStatus = {};
+        let lockedQuestions = new Set();
+        let testTimer = null;
+        let questionTimer = null;
+        let timeRemaining = 0;
+        let questionTimeRemaining = 0;
+        let savedTests = [];
+        let testResults = [];
+        let currentResult = null;
+        let soundEnabled = true;
+        let previewTest = null;
+        let scheduleEntries = [];
+        let completedTasks = {};
+
+        // User profile data
+        let userProfile = {
+            name: 'Guest User',
+            email: '',
+            bio: 'Quiz enthusiast ready to learn!',
+            profilePicture: null,
+            memberSince: new Date().toISOString()
+        };
+
+        // Firebase Auth State Listener
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // Check if email is verified
+                if (!user.emailVerified) {
+                    showScreen("auth");
+                    document.getElementById("auth-message").innerText = "Please verify your email before logging in.";
+                    return;
+                }
+                
+                // Check if user is admin
+                try {
+                    const doc = await db.collection("admins").doc(user.uid).get();
+                    const role = doc.exists ? doc.data().role : "student";
+
+                    if (role === "admin") {
+                        document.getElementById("notes-upload").style.display = "block";
+                        document.getElementById("live-create").style.display = "block";
+                    }
+                } catch (error) {
+                    console.error("Error checking admin status:", error);
+                }
+                
+                // Update UI for logged in user
+                document.getElementById('auth-nav').style.display = 'none';
+                document.getElementById('logout-nav').style.display = 'block';
+                
+                // Load user data
+                await loadUserData(user.uid);
+                loadNotes();
+                loadLiveClasses();
+                
+                showScreen("dashboard");
+            } else {
+                // Update UI for logged out user
+                document.getElementById('auth-nav').style.display = 'block';
+                document.getElementById('logout-nav').style.display = 'none';
+                showScreen("auth");
+            }
+        });
+
+        // Load user data from Firestore
+        async function loadUserData(userId) {
+            try {
+                const userDoc = await db.collection("users").doc(userId).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    userProfile = {
+                        ...userProfile,
+                        ...userData
+                    };
+                    updateProfileDisplay();
+                }
+            } catch (error) {
+                console.error("Error loading user data:", error);
+            }
         }
 
-        // Toggle between Firebase Study Mode and Mock Test Mode
-        function toggleAppMode() {
-            const modeToggle = document.getElementById('mode-toggle');
+        // Auth Functions
+        async function signup() {
+            const email = document.getElementById("auth-email").value;
+            const password = document.getElementById("auth-password").value;
             
-            if (!currentUser && !isFirebaseMode) {
-                // Not logged in, show auth screen
-                showAuthScreen();
+            if (!email || !password) {
+                document.getElementById("auth-message").innerText = "Please enter both email and password.";
+                return;
+            }
+            
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                // Send email verification
+                await user.sendEmailVerification();
+                
+                // Save user data to Firestore
+                await db.collection("users").doc(user.uid).set({
+                    name: userProfile.name,
+                    email: email,
+                    bio: userProfile.bio,
+                    memberSince: new Date().toISOString()
+                });
+                
+                document.getElementById("auth-message").innerText = "Signup successful! Please check your email to verify your account.";
+            } catch (error) {
+                document.getElementById("auth-message").innerText = "Error: " + error.message;
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById("auth-email").value;
+            const password = document.getElementById("auth-password").value;
+            
+            if (!email || !password) {
+                document.getElementById("auth-message").innerText = "Please enter both email and password.";
+                return;
+            }
+            
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                
+                if (!user.emailVerified) {
+                    document.getElementById("auth-message").innerText = "Please verify your email before logging in.";
+                    await auth.signOut();
+                    return;
+                }
+                
+                showScreen("dashboard");
+                showNotification("Welcome " + email, "success");
+            } catch (error) {
+                document.getElementById("auth-message").innerText = "Error: " + error.message;
+            }
+        }
+
+        async function logout() {
+            try {
+                await auth.signOut();
+                showScreen("auth");
+                showNotification("Logged out successfully", "success");
+            } catch (error) {
+                console.error("Error signing out:", error);
+            }
+        }
+
+        // Notes Functions
+        async function uploadNote() {
+            const file = document.getElementById("note-file").files[0];
+            if (!file) {
+                showNotification("Please select a file to upload", "error");
                 return;
             }
 
-            isFirebaseMode = !isFirebaseMode;
+            try {
+                const storageRef = storage.ref("notes/" + Date.now() + "-" + file.name);
+                await storageRef.put(file);
+                const url = await storageRef.getDownloadURL();
+
+                await db.collection("notes").add({
+                    title: file.name,
+                    url: url,
+                    createdAt: new Date()
+                });
+                
+                showNotification("Note uploaded successfully!", "success");
+                loadNotes();
+            } catch (error) {
+                console.error("Error uploading note:", error);
+                showNotification("Error uploading note: " + error.message, "error");
+            }
+        }
+
+        async function loadNotes() {
+            try {
+                const snapshot = await db.collection("notes").orderBy("createdAt", "desc").get();
+                const list = document.getElementById("notes-list");
+                list.innerHTML = "";
+                
+                if (snapshot.empty) {
+                    list.innerHTML = "<p>No notes available.</p>";
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    list.innerHTML += `
+                        <div class="card" style="margin-bottom: 1rem;">
+                            <div class="card-body">
+                                <h3>${data.title}</h3>
+                                <p>Uploaded: ${new Date(data.createdAt.seconds * 1000).toLocaleDateString()}</p>
+                                <a href="${data.url}" target="_blank" class="btn btn-primary">Download</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error loading notes:", error);
+                document.getElementById("notes-list").innerHTML = "<p>Error loading notes.</p>";
+            }
+        }
+
+        // Live Classes Functions
+        async function createLiveClass() {
+            const title = document.getElementById("live-title").value;
+            const date = document.getElementById("live-date").value;
+            const link = document.getElementById("live-link").value;
             
-            if (isFirebaseMode) {
-                document.body.classList.add('firebase-mode');
-                modeToggle.textContent = 'Switch to Mock Test';
-                switchFirebaseScreen('notes');
+            if (!title || !date || !link) {
+                showNotification("Please fill all fields", "error");
+                return;
+            }
+
+            try {
+                await db.collection("liveClasses").add({
+                    title: title,
+                    date: date,
+                    link: link,
+                    createdAt: new Date()
+                });
+                
+                showNotification("Live class created successfully!", "success");
+                document.getElementById("live-title").value = "";
+                document.getElementById("live-date").value = "";
+                document.getElementById("live-link").value = "";
+                
+                loadLiveClasses();
+            } catch (error) {
+                console.error("Error creating live class:", error);
+                showNotification("Error creating live class: " + error.message, "error");
+            }
+        }
+
+        async function loadLiveClasses() {
+            try {
+                const snapshot = await db.collection("liveClasses").orderBy("date").get();
+                const list = document.getElementById("live-list");
+                list.innerHTML = "";
+                
+                if (snapshot.empty) {
+                    list.innerHTML = "<p>No upcoming live classes.</p>";
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const classDate = new Date(data.date);
+                    const now = new Date();
+                    
+                    // Only show upcoming classes
+                    if (classDate > now) {
+                        list.innerHTML += `
+                            <div class="card" style="margin-bottom: 1rem;">
+                                <div class="card-body">
+                                    <h3>${data.title}</h3>
+                                    <p>Scheduled: ${classDate.toLocaleString()}</p>
+                                    <a href="${data.link}" target="_blank" class="btn btn-success">Join Class</a>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                
+                if (list.innerHTML === "") {
+                    list.innerHTML = "<p>No upcoming live classes.</p>";
+                }
+            } catch (error) {
+                console.error("Error loading live classes:", error);
+                document.getElementById("live-list").innerHTML = "<p>Error loading live classes.</p>";
+            }
+        }
+
+        // Sound functions
+        function playClickSound() {
+            if (!soundEnabled) return;
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'square';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {
+                console.error("Error playing sound:", e);
+            }
+        }
+
+        function playSuccessSound() {
+            if (!soundEnabled) return;
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 600;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.error("Error playing success sound:", e);
+            }
+        }
+
+        // Copy JSON example function
+        function copyJsonExample() {
+            const jsonText = document.getElementById('json-example').textContent;
+            navigator.clipboard.writeText(jsonText).then(() => {
+                showNotification('JSON format copied to clipboard!', 'success');
+            }).catch(() => {
+                showNotification('Failed to copy. Please copy manually.', 'error');
+            });
+        }
+
+        // Paste from clipboard function
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('questions-json').value = text;
+                showNotification('Content pasted from clipboard!', 'success');
+            } catch (err) {
+                showNotification('Failed to paste from clipboard. Please paste manually.', 'error');
+            }
+        }
+
+        // Auto rotation toggle
+        function toggleAutoRotate() {
+            const enabled = document.getElementById('auto-rotate').checked;
+            localStorage.setItem('autoRotate', enabled);
+            
+            if (enabled) {
+                try {
+                    screen.orientation.unlock();
+                    showNotification('Auto-rotation enabled', 'success');
+                } catch (e) {
+                    showNotification('Auto-rotation not supported on this device', 'warning');
+                }
             } else {
-                document.body.classList.remove('firebase-mode');
-                modeToggle.textContent = 'Switch to Study Mode';
-                showScreen('dashboard');
+                showNotification('Auto-rotation disabled', 'success');
             }
         }
 
-        // Check authentication state
-        function checkAuthState() {
-            // This will be handled by Firebase in main.js
-            // For now, show auth screen if no user
-            if (!currentUser) {
-                showAuthScreen();
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+            setupFormHandlers();
+            showNotification('Welcome to Mock Test Pro!', 'success');
+            updateTodayDate();
+            
+            // Handle per-question timer toggle
+            document.getElementById('per-question-timer').addEventListener('change', function() {
+                document.getElementById('question-time-row').style.display = 
+                    this.checked ? 'flex' : 'none';
+            });
+            
+            // Set auto-rotate based on saved preference
+            const autoRotate = localStorage.getItem('autoRotate') !== 'false';
+            document.getElementById('auto-rotate').checked = autoRotate;
+            if (autoRotate) {
+                try {
+                    screen.orientation.unlock();
+                } catch (e) {}
+            }
+        });
+
+        function loadSavedData() {
+            const defaultProfile = {
+                name: 'Guest User',
+                email: '',
+                bio: 'Quiz enthusiast ready to learn!',
+                profilePicture: null,
+                memberSince: new Date().toISOString()
+            };
+            
+            try {
+                savedTests = JSON.parse(localStorage.getItem('mockTests') || '[]');
+                testResults = JSON.parse(localStorage.getItem('testResults') || '[]');
+                userProfile = JSON.parse(localStorage.getItem('userProfile') || JSON.stringify(defaultProfile));
+                scheduleEntries = JSON.parse(localStorage.getItem('scheduleEntries') || '[]');
+                completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+                soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+                
+                document.getElementById('sound-enabled').checked = soundEnabled;
+                updateProfileDisplay();
+                updateTodaySchedule();
+            } catch (error) {
+                console.error("Error loading saved data:", error);
+                // Reset to defaults if there's an error
+                savedTests = [];
+                testResults = [];
+                userProfile = defaultProfile;
+                scheduleEntries = [];
+                completedTasks = {};
+                soundEnabled = true;
             }
         }
 
-        // Show auth screen
-        function showAuthScreen() {
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.body.classList.remove('firebase-mode');
-        }
-
-        // Hide auth screen
-        function hideAuthScreen() {
-            document.getElementById('auth-screen').style.display = 'none';
-        }
-
-        // Firebase screen switching
-        function switchFirebaseScreen(screen) {
-            document.querySelectorAll('.firebase-nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            event.target.closest('.firebase-nav-item').classList.add('active');
-            
-            document.querySelectorAll('.firebase-screen').forEach(s => {
-                s.classList.remove('active');
-            });
-            document.getElementById(`firebase-${screen}-screen`).classList.add('active');
-        }
-
-        // Auth tab switching
-        function switchAuthTab(tab) {
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-            
-            document.querySelector(`[onclick="switchAuthTab('${tab}')"]`).classList.add('active');
-            document.getElementById(`${tab}-form`).classList.add('active');
-        }
-
-        // Modal functions
-        function showAddNoteModal() {
-            document.getElementById('add-note-modal').classList.add('show');
-        }
-
-        function showAddClassModal() {
-            document.getElementById('add-class-modal').classList.add('show');
-        }
-
-        function closeModal() {
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.classList.remove('show');
-            });
-        }
-
-        // Theme toggle
-        function toggleTheme() {
-            const body = document.body;
-            const currentTheme = body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            body.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            
-            // Update both theme icons
-            const icons = [document.getElementById('theme-icon'), document.getElementById('theme-icon-original')];
-            icons.forEach(icon => {
-                if (icon) icon.textContent = newTheme === 'dark' ? '' : '';
-            });
-        }
-
-        // Notification system
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            const text = document.getElementById('notification-text');
-            
-            text.textContent = message;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 4000);
-        }
-
-        // Profile Management
         function updateProfileDisplay() {
-            const profileName = document.getElementById('profile-name');
-            const profileEmail = document.getElementById('profile-email');
-            const profileBio = document.getElementById('profile-bio');
-            const memberSince = document.getElementById('member-since');
-            const dashboardName = document.getElementById('dashboard-name');
-            const dashboardBio = document.getElementById('dashboard-bio');
+            document.getElementById('profile-name').value = userProfile.name;
+            document.getElementById('profile-email').value = userProfile.email || '';
+            document.getElementById('profile-bio').value = userProfile.bio;
+            document.getElementById('member-since').textContent = new Date(userProfile.memberSince).toLocaleDateString();
             
-            if (profileName) profileName.value = userProfile.name;
-            if (profileEmail) profileEmail.value = userProfile.email || '';
-            if (profileBio) profileBio.value = userProfile.bio;
-            if (memberSince) memberSince.textContent = new Date(userProfile.memberSince).toLocaleDateString();
-            if (dashboardName) dashboardName.textContent = userProfile.name;
-            if (dashboardBio) dashboardBio.textContent = userProfile.bio;
+            document.getElementById('dashboard-name').textContent = userProfile.name;
+            document.getElementById('dashboard-bio').textContent = userProfile.bio;
             
             const profileElements = [
+                { toggle: 'profile-toggle', initial: 'profile-initial', image: 'profile-image' },
                 { initial: 'profile-initial', image: 'profile-image' },
-                { initial: 'profile-initial-big', image: 'profile-image-big' },
                 { initial: 'dashboard-initial', image: 'dashboard-image' }
             ];
             
-            profileElements.forEach(({ initial, image }) => {
+            profileElements.forEach(({ toggle, initial, image }) => {
+                const toggleEl = toggle ? document.getElementById(toggle) : null;
                 const initialEl = document.getElementById(initial);
                 const imageEl = document.getElementById(image);
                 
@@ -1633,7 +1846,6 @@
                 }
             });
             
-            // Update stats
             const testsTaken = testResults.length;
             const avgScore = testsTaken > 0 ? Math.round(testResults.reduce((sum, r) => sum + r.percentage, 0) / testsTaken) : 0;
             const bestScore = testsTaken > 0 ? Math.max(...testResults.map(r => r.percentage)) : 0;
@@ -1650,9 +1862,9 @@
         function saveProfile() {
             playClickSound();
             
-            const name = document.getElementById('profile-name')?.value.trim();
-            const email = document.getElementById('profile-email')?.value.trim();
-            const bio = document.getElementById('profile-bio')?.value.trim();
+            const name = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const bio = document.getElementById('profile-bio').value.trim();
             
             if (!name) {
                 showNotification('Please enter your name', 'error');
@@ -1664,6 +1876,20 @@
             userProfile.bio = bio || 'Quiz enthusiast ready to learn!';
             
             localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            
+            // Save to Firestore if user is logged in
+            const user = auth.currentUser;
+            if (user) {
+                db.collection("users").doc(user.uid).set({
+                    name: userProfile.name,
+                    email: userProfile.email,
+                    bio: userProfile.bio,
+                    memberSince: userProfile.memberSince
+                }).catch(error => {
+                    console.error("Error saving profile to Firestore:", error);
+                });
+            }
+            
             updateProfileDisplay();
             
             playSuccessSound();
@@ -1703,92 +1929,617 @@
             showNotification('Profile picture removed', 'success');
         }
 
-        // My Tests Management
-        function loadMyTests() {
-            const container = document.getElementById('saved-tests');
-            if (!container) return;
+        function setupFormHandlers() {
+            document.getElementById('profile-picture-input').addEventListener('change', handleProfilePictureUpload);
             
-            if (savedTests.length === 0) {
-                container.innerHTML = '<p>No saved tests. <a href="#" onclick="showScreen(\'upload\')">Create your first test</a></p>';
-                return;
+            document.getElementById('schedule-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addScheduleEntry();
+            });
+        }
+
+        function showScreen(screenId) {
+            playClickSound();
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            for (let link of navLinks) {
+                if (link.textContent.toLowerCase().includes(screenId.split('-')[0]) || 
+                    (screenId === 'dashboard' && link.textContent.toLowerCase().includes('dashboard')) ||
+                    (screenId === 'my-tests' && link.textContent.toLowerCase().includes('tests')) ||
+                    (screenId === 'results' && link.textContent.toLowerCase().includes('results')) ||
+                    (screenId === 'profile' && link.textContent.toLowerCase().includes('profile')) ||
+                    (screenId === 'timetable' && link.textContent.toLowerCase().includes('timetable')) ||
+                    (screenId === 'settings' && link.textContent.toLowerCase().includes('settings'))) {
+                    link.classList.add('active');
+                    break;
+                }
             }
             
-            container.innerHTML = savedTests.map(test => `
-                <div class="card">
-                    <div class="card-body">
-                        <div style="display: flex; justify-content: space-between; align-items: start;">
-                            <div>
-                                <h3>${test.title}</h3>
-                                <p>${test.questions.length} questions � ${test.duration} minutes</p>
-                                <p style="color: var(--text-secondary); font-size: 0.875rem;">
-                                    Created: ${new Date(test.created).toLocaleDateString()}
-                                </p>
-                            </div>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn btn-primary" onclick="startSavedTest(${savedTests.indexOf(test)})">Start</button>
-                                <button class="btn btn-error" onclick="deleteTest(${test.id})">Delete</button>
-                            </div>
-                        </div>
-                    </div>
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            
+            const targetScreen = document.getElementById(screenId + '-screen');
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                
+                if (screenId === 'test' || screenId === 'review') {
+                    document.body.classList.add('test-active');
+                } else {
+                    document.body.classList.remove('test-active');
+                    if (document.body.classList.contains('fullscreen-mode')) {
+                        toggleDesktopMode();
+                    }
+                }
+                
+                if (screenId === 'my-tests') loadMyTests();
+                if (screenId === 'results') loadResults();
+                if (screenId === 'profile') updateProfileDisplay();
+                if (screenId === 'timetable') updateTodaySchedule();
+            }
+        }
+
+        function toggleTheme() {
+            playClickSound();
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                icon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.textContent = '☀️';
+            }
+        }
+
+        function loadQuestions() {
+            const title = document.getElementById('test-title').value.trim();
+            const duration = parseInt(document.getElementById('test-duration').value);
+            const jsonText = document.getElementById('questions-json').value.trim();
+            const defaultMarks = parseFloat(document.getElementById('default-marks').value);
+            const negativeMarks = parseFloat(document.getElementById('negative-marks').value);
+            const perQuestionTimer = document.getElementById('per-question-timer').checked;
+            const questionTime = parseInt(document.getElementById('question-time').value);
+
+            if (!title || !duration || !jsonText) {
+                showNotification('Please fill all required fields', 'error');
+                return;
+            }
+
+            try {
+                const questions = JSON.parse(jsonText);
+                
+                if (!Array.isArray(questions) || questions.length === 0) {
+                    throw new Error('Invalid questions format - must be an array');
+                }
+
+                for (let i = 0; i < questions.length; i++) {
+                    const q = questions[i];
+                    if (!q.question || !Array.isArray(q.options) || typeof q.correct !== 'number') {
+                        throw new Error(`Invalid question at index ${i + 1} - missing required fields`);
+                    }
+                    if (!q.marks) {
+                        q.marks = defaultMarks;
+                    }
+                }
+
+                previewTest = {
+                    id: Date.now(),
+                    title,
+                    duration,
+                    questions,
+                    defaultMarks,
+                    negativeMarks,
+                    perQuestionTimer,
+                    questionTime,
+                    created: new Date().toISOString()
+                };
+
+                playSuccessSound();
+                showNotification('Questions loaded successfully!', 'success');
+                showTestPreview();
+
+            } catch (error) {
+                showNotification('Error: ' + error.message, 'error');
+            }
+        }
+
+        function showTestPreview() {
+            showScreen('preview');
+            
+            document.getElementById('preview-title').textContent = previewTest.title;
+            
+            const totalMarks = previewTest.questions.reduce((sum, q) => sum + (q.marks || previewTest.defaultMarks), 0);
+            
+            document.getElementById('test-info').innerHTML = `
+                <h4>Test Configuration</h4>
+                <div class="config-row">
+                    <strong>Title:</strong> ${previewTest.title}
                 </div>
-            `).join('');
-        }
-
-        function startSavedTest(index) {
-            previewTest = savedTests[index];
-            showTestPreview();
-        }
-
-        function deleteTest(testId) {
-            if (confirm('Delete this test?')) {
-                savedTests = savedTests.filter(t => t.id !== testId);
-                localStorage.setItem('mockTests', JSON.stringify(savedTests));
-                loadMyTests();
-                showNotification('Test deleted', 'success');
-            }
-        }
-
-        // Results Management
-        function loadResults() {
-            const container = document.getElementById('results-content');
-            if (!container) return;
-            
-            if (testResults.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 3rem;"><p>No test results found.</p><button class="btn btn-primary" onclick="showScreen(\'upload\')">Take your first test</button></div>';
-                return;
-            }
-
-            const sorted = testResults.sort((a, b) => new Date(b.date) - new Date(a.date));
-            container.innerHTML = `
-                <h2>Results History</h2>
-                <div class="dashboard-grid">
-                    ${sorted.map(result => `
-                        <div class="card">
-                            <div class="card-body">
-                                <h3>${result.testTitle}</h3>
-                                <div style="font-size: 2rem; font-weight: bold; color: ${result.percentage >= 70 ? 'var(--success)' : result.percentage >= 50 ? 'var(--warning)' : 'var(--error)'}; margin: 1rem 0;">
-                                    ${result.percentage}%
-                                </div>
-                                <p>Score: ${result.scoredMarks || result.correct}/${result.totalMarks || result.total}</p>
-                                <p style="color: var(--text-secondary); font-size: 0.875rem;">
-                                    ${new Date(result.date).toLocaleDateString()}
-                                </p>
-                                <button class="btn btn-primary" onclick="viewResult(${result.id})">View Details</button>
-                            </div>
-                        </div>
-                    `).join('')}
+                <div class="config-row">
+                    <strong>Questions:</strong> ${previewTest.questions.length}
+                </div>
+                <div class="config-row">
+                    <strong>Duration:</strong> ${previewTest.duration} minutes
+                </div>
+                <div class="config-row">
+                    <strong>Total Marks:</strong> ${totalMarks}
+                </div>
+                <div class="config-row">
+                    <strong>Default Marks:</strong> ${previewTest.defaultMarks} per question
+                </div>
+                <div class="config-row">
+                    <strong>Negative Marks:</strong> ${previewTest.negativeMarks} per wrong answer
+                </div>
+                <div class="config-row">
+                    <strong>Per-Question Timer:</strong> ${previewTest.perQuestionTimer ? `Yes (${previewTest.questionTime}s each)` : 'No'}
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: 0.5rem; border-left: 4px solid var(--primary);">
+                    <h5>Instructions:</h5>
+                    <ul style="margin-left: 1rem; line-height: 1.6;">
+                        <li>Read each question carefully before selecting an answer</li>
+                        <li>You can navigate between questions using Previous/Next buttons</li>
+                        <li>Mark questions for review if you're unsure</li>
+                        <li>Clear your response if you want to change your answer</li>
+                        ${previewTest.perQuestionTimer ? '<li><strong>Time limit per question:</strong> Each question has a time limit. If time expires, the question will be locked and cannot be answered later.</li>' : ''}
+                        <li>Submit your test when completed or when time expires</li>
+                    </ul>
                 </div>
             `;
         }
 
-        function viewResult(resultId) {
-            currentResult = testResults.find(r => r.id === resultId);
-            if (currentResult) {
-                showResults(currentResult);
+        function startTestFromPreview() {
+            if (!previewTest) return;
+            
+            currentTest = previewTest;
+            currentQuestion = 0;
+            userAnswers = {};
+            questionStatus = {};
+            lockedQuestions = new Set();
+            timeRemaining = currentTest.duration * 60;
+            questionTimeRemaining = currentTest.perQuestionTimer ? currentTest.questionTime : 0;
+
+            currentTest.questions.forEach((_, index) => {
+                questionStatus[index] = 'unvisited';
+            });
+
+            // Save test if not already saved
+            if (!savedTests.find(t => t.title === currentTest.title)) {
+                savedTests.push(currentTest);
+                localStorage.setItem('mockTests', JSON.stringify(savedTests));
+            }
+
+            showScreen('test');
+            renderQuestionNav();
+            loadQuestion();
+            startTimer();
+            
+            if (currentTest.perQuestionTimer) {
+                startQuestionTimer();
+            }
+            
+            showNotification(`Started: ${currentTest.title}`, 'success');
+        }
+
+        function startTimer() {
+            if (testTimer) clearInterval(testTimer);
+            
+            testTimer = setInterval(() => {
+                timeRemaining--;
+                updateTimer();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(testTimer);
+                    if (document.getElementById('auto-submit').checked) {
+                        submitTest();
+                    } else {
+                        showNotification('Time expired!', 'error');
+                    }
+                }
+            }, 1000);
+        }
+
+        function startQuestionTimer() {
+            if (!currentTest.perQuestionTimer) return;
+            
+            if (questionTimer) clearInterval(questionTimer);
+            
+            questionTimeRemaining = currentTest.questionTime;
+            document.getElementById('question-timer').style.display = 'block';
+            
+            questionTimer = setInterval(() => {
+                questionTimeRemaining--;
+                updateQuestionTimer();
+                
+                if (questionTimeRemaining <= 0) {
+                    clearInterval(questionTimer);
+                    lockCurrentQuestion();
+                    autoNextQuestion();
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const display = document.getElementById('timer-display');
+            const text = document.getElementById('timer-text');
+            
+            text.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            display.className = 'timer-display';
+            if (timeRemaining <= 300) {
+                display.classList.add('warning');
+            }
+            if (timeRemaining <= 60) {
+                display.classList.add('critical');
             }
         }
 
-        // Review Functions
+        function updateQuestionTimer() {
+            const display = document.getElementById('question-timer');
+            const text = document.getElementById('question-timer-text');
+            
+            text.textContent = questionTimeRemaining;
+            
+            display.className = 'question-timer';
+            if (questionTimeRemaining <= 10) {
+                display.classList.add('warning');
+            }
+            if (questionTimeRemaining <= 5) {
+                display.classList.add('critical');
+            }
+        }
+
+        function lockCurrentQuestion() {
+            lockedQuestions.add(currentQuestion);
+            if (questionStatus[currentQuestion] === 'unvisited') {
+                questionStatus[currentQuestion] = 'visited';
+            }
+            updateQuestionButtons();
+            showNotification('Question time expired! Question locked.', 'warning');
+        }
+
+        function autoNextQuestion() {
+            if (currentQuestion < currentTest.questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                if (currentTest.perQuestionTimer) {
+                    startQuestionTimer();
+                }
+            } else {
+                document.getElementById('question-timer').style.display = 'none';
+            }
+        }
+
+        function renderQuestionNav() {
+            const nav = document.getElementById('question-nav');
+            nav.innerHTML = '';
+            
+            currentTest.questions.forEach((_, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'question-btn unvisited';
+                btn.textContent = index + 1;
+                btn.onclick = () => goToQuestion(index);
+                nav.appendChild(btn);
+            });
+            
+            updateQuestionButtons();
+        }
+
+        function updateQuestionButtons() {
+            const buttons = document.querySelectorAll('.question-btn');
+            buttons.forEach((btn, index) => {
+                btn.className = 'question-btn ';
+                
+                if (lockedQuestions.has(index)) {
+                    btn.classList.add('locked');
+                } else {
+                    btn.classList.add(questionStatus[index] || 'unvisited');
+                }
+                
+                if (index === currentQuestion) {
+                    btn.classList.add('current');
+                }
+            });
+        }
+
+        function loadQuestion() {
+            if (!currentTest) return;
+            
+            const question = currentTest.questions[currentQuestion];
+            
+            if (questionStatus[currentQuestion] === 'unvisited') {
+                questionStatus[currentQuestion] = 'visited';
+            }
+            
+            document.getElementById('question-title').textContent = 
+                `Question ${currentQuestion + 1} of ${currentTest.questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsList = document.getElementById('options-list');
+            optionsList.innerHTML = '';
+            
+            const isLocked = lockedQuestions.has(currentQuestion);
+            
+            question.options.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                
+                if (isLocked) {
+                    li.classList.add('disabled');
+                } else {
+                    li.onclick = () => selectOption(index);
+                }
+                
+                if (userAnswers[currentQuestion] === index) {
+                    li.classList.add('selected');
+                }
+                
+                li.innerHTML = `
+                    <div class="option-radio"></div>
+                    <div>${option}</div>
+                `;
+                
+                optionsList.appendChild(li);
+            });
+            
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent = 
+                currentQuestion === currentTest.questions.length - 1 ? 'Finish' : 'Next →';
+            
+            updateQuestionButtons();
+        }
+
+        function selectOption(optionIndex) {
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('This question is locked!', 'warning');
+                return;
+            }
+            
+            playClickSound();
+            userAnswers[currentQuestion] = optionIndex;
+            questionStatus[currentQuestion] = 'answered';
+            
+            document.querySelectorAll('.option-item').forEach((item, index) => {
+                item.classList.toggle('selected', index === optionIndex);
+            });
+            
+            updateQuestionButtons();
+        }
+
+        function goToQuestion(index) {
+            currentQuestion = index;
+            loadQuestion();
+            
+            if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                startQuestionTimer();
+            }
+        }
+
+        function nextQuestion() {
+            playClickSound();
+            if (currentQuestion < currentTest.questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                
+                if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                    startQuestionTimer();
+                }
+            } else {
+                showSubmitModal();
+            }
+        }
+
+        function previousQuestion() {
+            playClickSound();
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+                
+                if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                    startQuestionTimer();
+                }
+            }
+        }
+
+        function markForReview() {
+            playClickSound();
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('Cannot mark locked question for review!', 'warning');
+                return;
+            }
+            questionStatus[currentQuestion] = 'marked';
+            updateQuestionButtons();
+            showNotification('Marked for review', 'success');
+        }
+
+        function clearResponse() {
+            playClickSound();
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('Cannot clear locked question!', 'warning');
+                return;
+            }
+            
+            delete userAnswers[currentQuestion];
+            if (questionStatus[currentQuestion] === 'answered') {
+                questionStatus[currentQuestion] = 'visited';
+            }
+            
+            document.querySelectorAll('.option-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            updateQuestionButtons();
+            showNotification('Response cleared', 'success');
+        }
+
+        function showSubmitModal() {
+            const modal = document.getElementById('submit-modal');
+            const summary = document.getElementById('submit-summary');
+            
+            const answered = Object.keys(userAnswers).length;
+            const total = currentTest.questions.length;
+            const locked = lockedQuestions.size;
+            const unanswered = total - answered;
+            
+            summary.innerHTML = `
+                <div style="margin: 1rem 0; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; text-align: center;">
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${answered}</div>
+                            <div>Answered</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--error);">${unanswered}</div>
+                            <div>Unanswered</div>
+                        </div>
+                        ${locked > 0 ? `<div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--text-secondary);">${locked}</div>
+                            <div>Locked</div>
+                        </div>` : ''}
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${total}</div>
+                            <div>Total</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            playClickSound();
+            document.getElementById('submit-modal').classList.remove('show');
+        }
+
+        function submitTest() {
+            playClickSound();
+            if (testTimer) clearInterval(testTimer);
+            if (questionTimer) clearInterval(questionTimer);
+            
+            const result = calculateResult();
+            currentResult = result;
+            
+            testResults.push(result);
+            localStorage.setItem('testResults', JSON.stringify(testResults));
+            
+            closeModal();
+            
+            if (result.percentage >= 70) {
+                playSuccessSound();
+            }
+            
+            showResults(result);
+        }
+
+        function calculateResult() {
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+            let totalMarks = 0;
+            let scoredMarks = 0;
+            const details = [];
+            
+            currentTest.questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const correctAnswer = question.correct;
+                const questionMarks = question.marks || currentTest.defaultMarks;
+                
+                totalMarks += questionMarks;
+                
+                let status;
+                let marksScored = 0;
+                
+                if (userAnswer === undefined) {
+                    unattempted++;
+                    status = 'unattempted';
+                } else if (userAnswer === correctAnswer) {
+                    correct++;
+                    status = 'correct';
+                    marksScored = questionMarks;
+                    scoredMarks += questionMarks;
+                } else {
+                    incorrect++;
+                    status = 'incorrect';
+                    marksScored = -currentTest.negativeMarks;
+                    scoredMarks -= currentTest.negativeMarks;
+                }
+                
+                details.push({
+                    question: question.question,
+                    options: question.options,
+                    correctAnswer,
+                    userAnswer,
+                    status,
+                    explanation: question.explanation || null,
+                    marks: questionMarks,
+                    marksScored
+                });
+            });
+            
+            const total = currentTest.questions.length;
+            const percentage = totalMarks > 0 ? Math.round((scoredMarks / totalMarks) * 100) : 0;
+            
+            return {
+                id: Date.now(),
+                testTitle: currentTest.title,
+                date: new Date().toISOString(),
+                total,
+                correct,
+                incorrect,
+                unattempted,
+                percentage,
+                totalMarks,
+                scoredMarks,
+                details
+            };
+        }
+
+        function showResults(result) {
+            showScreen('results');
+            
+            const content = document.getElementById('results-content');
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h1>Test Results</h1>
+                    <h2>${result.testTitle}</h2>
+                    <div class="score-display">${result.percentage}%</div>
+                    <p>Score: ${result.scoredMarks}/${result.totalMarks} marks</p>
+                    <p>Completed on ${new Date(result.date).toLocaleDateString()}</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-number" style="color: var(--success);">${result.correct}</div>
+                        <div>Correct</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number" style="color: var(--error);">${result.incorrect}</div>
+                        <div>Incorrect</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number">${result.unattempted}</div>
+                        <div>Unattempted</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number" style="color: var(--primary);">${result.total}</div>
+                        <div>Total</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="btn btn-primary" onclick="startReview()">Review Solutions</button>
+                    <button class="btn btn-success" onclick="downloadPDF()">Download PDF</button>
+                    <button class="btn btn-secondary" onclick="retakeTest()">Retake Test</button>
+                    <button class="btn btn-secondary" onclick="showScreen('dashboard')">Dashboard</button>
+                </div>
+            `;
+        }
+
         function startReview() {
             playClickSound();
             currentQuestion = 0;
@@ -1799,8 +2550,6 @@
 
         function renderReviewNav() {
             const nav = document.getElementById('review-question-nav');
-            if (!nav || !currentResult) return;
-            
             nav.innerHTML = '';
             
             currentResult.details.forEach((detail, index) => {
@@ -1822,82 +2571,54 @@
             
             const detail = currentResult.details[currentQuestion];
             
-            const reviewQuestionTitle = document.getElementById('review-question-title');
-            const reviewQuestionText = document.getElementById('review-question-text');
-            const reviewStatus = document.getElementById('review-status');
+            document.getElementById('review-question-title').textContent = 
+                `Question ${currentQuestion + 1} of ${currentResult.details.length}`;
+            document.getElementById('review-question-text').textContent = detail.question;
             
-            if (reviewQuestionTitle) {
-                reviewQuestionTitle.textContent = `Question ${currentQuestion + 1} of ${currentResult.details.length}`;
-            }
-            if (reviewQuestionText) {
-                reviewQuestionText.textContent = detail.question;
-            }
-            
-            if (reviewStatus) {
-                reviewStatus.textContent = detail.status.toUpperCase();
-                reviewStatus.className = `review-status ${detail.status}`;
-                
-                // Add styles for review status
-                if (detail.status === 'correct') {
-                    reviewStatus.style.background = 'rgba(16, 185, 129, 0.1)';
-                    reviewStatus.style.color = 'var(--success)';
-                } else if (detail.status === 'incorrect') {
-                    reviewStatus.style.background = 'rgba(239, 68, 68, 0.1)';
-                    reviewStatus.style.color = 'var(--error)';
-                } else {
-                    reviewStatus.style.background = 'rgba(156, 163, 175, 0.1)';
-                    reviewStatus.style.color = 'var(--text-secondary)';
-                }
-            }
+            const status = document.getElementById('review-status');
+            status.textContent = detail.status.toUpperCase();
+            status.className = `review-status ${detail.status}`;
             
             const optionsList = document.getElementById('review-options-list');
-            if (optionsList) {
-                optionsList.innerHTML = '';
+            optionsList.innerHTML = '';
+            
+            detail.options.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
                 
-                detail.options.forEach((option, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'option-item';
-                    
-                    if (index === detail.correctAnswer) {
-                        li.classList.add('correct');
-                    }
-                    if (index === detail.userAnswer && index !== detail.correctAnswer) {
-                        li.classList.add('incorrect');
-                    }
-                    if (index === detail.userAnswer) {
-                        li.classList.add('selected');
-                    }
-                    
-                    li.innerHTML = `
-                        <div class="option-radio"></div>
-                        <div>${option}</div>
-                        ${index === detail.correctAnswer ? '<span style="margin-left: auto; color: var(--success);"></span>' : ''}
-                        ${index === detail.userAnswer && index !== detail.correctAnswer ? '<span style="margin-left: auto; color: var(--error);"></span>' : ''}
-                    `;
-                    
-                    optionsList.appendChild(li);
-                });
-            }
+                if (index === detail.correctAnswer) {
+                    li.classList.add('correct');
+                }
+                if (index === detail.userAnswer && index !== detail.correctAnswer) {
+                    li.classList.add('incorrect');
+                }
+                if (index === detail.userAnswer) {
+                    li.classList.add('selected');
+                }
+                
+                li.innerHTML = `
+                    <div class="option-radio"></div>
+                    <div>${option}</div>
+                    ${index === detail.correctAnswer ? '<span style="margin-left: auto; color: var(--success);">✓</span>' : ''}
+                    ${index === detail.userAnswer && index !== detail.correctAnswer ? '<span style="margin-left: auto; color: var(--error);">✗</span>' : ''}
+                `;
+                
+                optionsList.appendChild(li);
+            });
             
             const explanationDiv = document.getElementById('explanation');
             const explanationText = document.getElementById('explanation-text');
             
-            if (explanationDiv && explanationText) {
-                if (detail.explanation) {
-                    explanationText.textContent = detail.explanation;
-                    explanationDiv.style.display = 'block';
-                } else {
-                    explanationDiv.style.display = 'none';
-                }
+            if (detail.explanation) {
+                explanationText.textContent = detail.explanation;
+                explanationDiv.style.display = 'block';
+            } else {
+                explanationDiv.style.display = 'none';
             }
             
-            const reviewPrevBtn = document.getElementById('review-prev-btn');
-            const reviewNextBtn = document.getElementById('review-next-btn');
-            
-            if (reviewPrevBtn) reviewPrevBtn.disabled = currentQuestion === 0;
-            if (reviewNextBtn) {
-                reviewNextBtn.textContent = currentQuestion === currentResult.details.length - 1 ? 'Finish' : 'Next';
-            }
+            document.getElementById('review-prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('review-next-btn').textContent = 
+                currentQuestion === currentResult.details.length - 1 ? 'Finish' : 'Next →';
             
             renderReviewNav();
         }
@@ -1984,7 +2705,7 @@ ${currentResult.details.map((detail, index) => `
 ${detail.options.map((option, i) => `
 <div class="option ${i === detail.correctAnswer ? 'correct' : ''} ${i === detail.userAnswer && i !== detail.correctAnswer ? 'incorrect' : ''}">
 ${String.fromCharCode(65 + i)}. ${option} 
-${i === detail.correctAnswer ? ' ' : ''}
+${i === detail.correctAnswer ? ' ✓' : ''}
 ${i === detail.userAnswer && i !== detail.correctAnswer ? ' (Your answer)' : ''}
 </div>`).join('')}
 ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> ${detail.explanation}</div>` : ''}
@@ -1992,7 +2713,88 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
 </body></html>`;
         }
 
-        // Timetable Functions
+        function loadMyTests() {
+            const container = document.getElementById('saved-tests');
+            
+            if (savedTests.length === 0) {
+                container.innerHTML = '<p>No saved tests. <a href="#" onclick="showScreen(\'upload\')">Create your first test</a></p>';
+                return;
+            }
+            
+            container.innerHTML = savedTests.map(test => `
+                <div class="card">
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h3>${test.title}</h3>
+                                <p>${test.questions.length} questions • ${test.duration} minutes</p>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                    Created: ${new Date(test.created).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary" onclick="startSavedTest(${savedTests.indexOf(test)})">Start</button>
+                                <button class="btn btn-error" onclick="deleteTest(${test.id})">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function startSavedTest(index) {
+            previewTest = savedTests[index];
+            showTestPreview();
+        }
+
+        function deleteTest(testId) {
+            if (confirm('Delete this test?')) {
+                savedTests = savedTests.filter(t => t.id !== testId);
+                localStorage.setItem('mockTests', JSON.stringify(savedTests));
+                loadMyTests();
+                showNotification('Test deleted', 'success');
+            }
+        }
+
+        function loadResults() {
+            const container = document.getElementById('results-content');
+            
+            if (testResults.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 3rem;"><p>No test results found.</p><button class="btn btn-primary" onclick="showScreen(\'upload\')">Take your first test</button></div>';
+                return;
+            }
+
+            const sorted = testResults.sort((a, b) => new Date(b.date) - new Date(a.date));
+            container.innerHTML = `
+                <h2>Results History</h2>
+                <div class="dashboard-grid">
+                    ${sorted.map(result => `
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>${result.testTitle}</h3>
+                                <div style="font-size: 2rem; font-weight: bold; color: ${result.percentage >= 70 ? 'var(--success)' : result.percentage >= 50 ? 'var(--warning)' : 'var(--error)'}; margin: 1rem 0;">
+                                    ${result.percentage}%
+                                </div>
+                                <p>Score: ${result.scoredMarks || result.correct}/${result.totalMarks || result.total}</p>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                    ${new Date(result.date).toLocaleDateString()}
+                                </p>
+                                <button class="btn btn-primary" onclick="viewResult(${result.id})">View Details</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function viewResult(resultId) {
+            currentResult = testResults.find(r => r.id === resultId);
+            if (currentResult) {
+                showResults(currentResult);
+            }
+        }
+
+        // Timetable functions
         function updateTodayDate() {
             const today = new Date();
             const options = { 
@@ -2002,35 +2804,15 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
                 day: 'numeric',
                 timeZone: 'Asia/Kolkata'
             };
-            const todayDateEl = document.getElementById('today-date');
-            if (todayDateEl) {
-                todayDateEl.textContent = today.toLocaleDateString('en-US', options);
-            }
+            document.getElementById('today-date').textContent = today.toLocaleDateString('en-US', options);
         }
 
         function showTimetableTab(tabName) {
-            const tabs = document.querySelectorAll('[onclick^="showTimetableTab"]');
-            const containers = ['today-tab', 'create-tab', 'import-tab'];
+            document.querySelectorAll('.timetable-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.timetable-container').forEach(container => container.style.display = 'none');
             
-            tabs.forEach(tab => {
-                tab.style.background = 'var(--bg-secondary)';
-                tab.style.color = 'var(--text-primary)';
-            });
-            
-            containers.forEach(containerId => {
-                const container = document.getElementById(containerId);
-                if (container) container.style.display = 'none';
-            });
-            
-            if (event && event.target) {
-                event.target.style.background = 'var(--primary)';
-                event.target.style.color = 'white';
-            }
-            
-            const targetContainer = document.getElementById(`${tabName}-tab`);
-            if (targetContainer) {
-                targetContainer.style.display = 'block';
-            }
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
             
             if (tabName === 'today') {
                 updateTodaySchedule();
@@ -2038,22 +2820,36 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
         }
 
         function updateTodaySchedule() {
-            const container = document.getElementById('today-schedule');
-            if (!container) return;
-            
             const today = new Date();
-            const todayName = today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-            const todayEntries = scheduleEntries.filter(entry => entry.day === todayName);
+            // Get today's date in IST
+            const todayIST = new Date(today.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+            const todayDateStr = formatDateForSchedule(todayIST);
+            
+            const container = document.getElementById('today-schedule');
+            
+            // Check if we have imported HTML timetable
+            const savedHTML = localStorage.getItem('htmlTimetable');
+            if (savedHTML) {
+                // Parse the imported timetable to get today's schedule
+                const todayScheduleFromHTML = extractTodayScheduleFromHTML(savedHTML, todayDateStr);
+                if (todayScheduleFromHTML) {
+                    container.innerHTML = todayScheduleFromHTML;
+                    return;
+                }
+            }
+            
+            // Fallback to manual entries
+            const todayEntries = scheduleEntries.filter(entry => entry.day === todayIST.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase());
             
             if (todayEntries.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; padding: 2rem;">
-                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">No schedule for today</p>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">No schedule for today (${todayDateStr})</p>
                         <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                             <button class="btn btn-primary" onclick="showTimetableTab('create')" style="padding: 0.5rem 1rem;">Create Entry</button>
                             <button class="btn btn-secondary" onclick="showTimetableTab('import')" style="padding: 0.5rem 1rem;">Import HTML</button>
                         </div>
-                    </div>
+                        </div>
                 `;
                 return;
             }
@@ -2061,25 +2857,318 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
             todayEntries.sort((a, b) => a.startTime.localeCompare(b.startTime));
             
             container.innerHTML = todayEntries.map((entry, index) => `
-                <div style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; position: relative;">
+                <div class="schedule-entry" style="position: relative;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div style="flex: 1;">
-                            <div style="font-weight: 600; color: var(--primary);">${entry.startTime} - ${entry.endTime}</div>
+                            <div class="schedule-time">${entry.startTime} - ${entry.endTime}</div>
                             <div style="font-weight: 600; margin: 0.5rem 0; color: var(--primary);">${entry.subject}</div>
                             ${entry.notes ? `<div style="color: var(--text-secondary); font-size: 0.875rem;">${entry.notes}</div>` : ''}
                         </div>
-                        <button class="btn btn-error" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="deleteScheduleEntry(${scheduleEntries.indexOf(entry)})">Delete</button>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; margin-left: 1rem;">
+                            <button class="btn btn-success" onclick="markTaskComplete('${todayDateStr}', ${index})" 
+                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem; white-space: nowrap;">
+                                ${isTaskCompleted(todayDateStr, index) ? 'Completed ✓' : 'Mark Done'}
+                            </button>
+                            <button class="btn btn-error" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="deleteScheduleEntry(${scheduleEntries.indexOf(entry)})">×</button>
+                        </div>
                     </div>
                 </div>
-            `).join('');
+            `).join('') + generateDayStats(todayDateStr);
+        }
+
+        function formatDateForSchedule(date) {
+            return date.getFullYear() + '-' + 
+                   String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                   String(date.getDate()).padStart(2, '0');
+        }
+
+        function extractTodayScheduleFromHTML(htmlContent, todayDateStr) {
+            // Create a temporary container to parse the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlContent;
+            
+            // Look for schedule data in the HTML
+            const scriptContent = tempDiv.querySelector('script');
+            if (scriptContent) {
+                try {
+                    // Extract scheduleData object from the script
+                    const scriptText = scriptContent.textContent;
+                    const scheduleDataMatch = scriptText.match(/const scheduleData = ({[\s\S]*?});/);
+                    
+                    if (scheduleDataMatch) {
+                        // Safely evaluate the schedule data
+                        const scheduleDataStr = scheduleDataMatch[1];
+                        const scheduleData = new Function('return ' + scheduleDataStr)();
+                        
+                        const todaySchedule = scheduleData[todayDateStr];
+                        if (todaySchedule && todaySchedule.subjects) {
+                            return generateScheduleHTML(todaySchedule, todayDateStr);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing schedule data:', error);
+                }
+            }
+            
+            return null;
+        }
+
+        function generateScheduleHTML(todaySchedule, dateStr) {
+            const subjects = todaySchedule.subjects || [];
+            
+            let html = `
+                <div style="margin-bottom: 1rem; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem; border-left: 4px solid var(--primary);">
+                    <h3 style="margin: 0 0 0.5rem 0; color: var(--primary);">${todaySchedule.week}</h3>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                        ${subjects.length} subjects planned for today
+                    </p>
+                </div>
+            `;
+            
+            subjects.forEach((subject, index) => {
+                const isCompleted = isTaskCompleted(dateStr, index);
+                html += `
+                    <div class="schedule-entry" style="position: relative; opacity: ${isCompleted ? '0.7' : '1'};">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                    <div class="schedule-time">${subject.title}</div>
+                                    <span class="subject-duration" style="background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.75rem;">${subject.duration}</span>
+                                </div>
+                                <div style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.4; white-space: pre-line; ${isCompleted ? 'text-decoration: line-through;' : ''}">${subject.details}</div>
+                            </div>
+                            <div style="display: flex; align-items: center; flex-shrink: 0; margin-left: 1rem;">
+                                <button class="btn ${isCompleted ? 'btn-secondary' : 'btn-success'}" 
+                                        onclick="markTaskComplete('${dateStr}', ${index})" 
+                                        style="padding: 0.375rem 1rem; font-size: 0.75rem; white-space: nowrap;">
+                                    ${isCompleted ? 'Completed ✓' : 'Mark Done'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += generateDayStats(dateStr);
+            return html;
+        }
+
+        function generateDayStats(dateStr) {
+            const completedTasks = getCompletedTasksForDate(dateStr);
+            const totalTasks = getTotalTasksForDate(dateStr);
+            const completionPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            
+            return `
+                <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="margin: 0; color: var(--text-primary);">Today's Progress</h4>
+                        <span style="color: var(--primary); font-weight: 600;">${completionPercentage}%</span>
+                    </div>
+                    <div style="background: var(--border); height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 1rem;">
+                        <div style="background: var(--success); height: 100%; width: ${completionPercentage}%; transition: width 0.3s ease;"></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${completedTasks}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Completed</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--warning);">${totalTasks - completedTasks}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Remaining</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${totalTasks}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Total</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="showAllTimeProgress()" style="padding: 0.5rem 1.5rem; font-size: 0.875rem;">
+                            View All-Time Progress
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Task completion functions
+        function markTaskComplete(dateStr, taskIndex) {
+            if (!completedTasks[dateStr]) {
+                completedTasks[dateStr] = {};
+            }
+            
+            if (completedTasks[dateStr][taskIndex]) {
+                delete completedTasks[dateStr][taskIndex];
+                showNotification('Task marked as incomplete', 'warning');
+            } else {
+                completedTasks[dateStr][taskIndex] = {
+                    completedAt: new Date().toISOString(),
+                    completed: true
+                };
+                playSuccessSound();
+                showNotification('Task completed! Great job!', 'success');
+            }
+            
+            localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+            updateTodaySchedule(); // Refresh the display
+        }
+
+        function isTaskCompleted(dateStr, taskIndex) {
+            return completedTasks[dateStr] && completedTasks[dateStr][taskIndex];
+        }
+
+        function getCompletedTasksForDate(dateStr) {
+            if (!completedTasks[dateStr]) return 0;
+            return Object.keys(completedTasks[dateStr]).length;
+        }
+
+        function getTotalTasksForDate(dateStr) {
+            // Check HTML timetable first
+            const savedHTML = localStorage.getItem('htmlTimetable');
+            if (savedHTML) {
+                try {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = savedHTML;
+                    const scriptContent = tempDiv.querySelector('script');
+                    
+                    if (scriptContent) {
+                        const scriptText = scriptContent.textContent;
+                        const scheduleDataMatch = scriptText.match(/const scheduleData = ({[\s\S]*?});/);
+                        
+                        if (scheduleDataMatch) {
+                            const scheduleDataStr = scheduleDataMatch[1];
+                            const scheduleData = new Function('return ' + scheduleDataStr)();
+                            const todaySchedule = scheduleData[dateStr];
+                            
+                            if (todaySchedule && todaySchedule.subjects) {
+                                return todaySchedule.subjects.length;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing schedule data:', error);
+                }
+            }
+            
+            // Fallback to manual entries
+            const today = new Date(dateStr + 'T00:00:00');
+            const dayName = today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            return scheduleEntries.filter(entry => entry.day === dayName).length;
+        }
+
+        function showAllTimeProgress() {
+            // Calculate overall progress
+            let totalDays = 0;
+            let completedDaysCount = 0;
+            let totalTasks = 0;
+            let completedTasksCount = 0;
+            
+            // Check for HTML timetable data
+            const savedHTML = localStorage.getItem('htmlTimetable');
+            if (savedHTML) {
+                try {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = savedHTML;
+                    const scriptContent = tempDiv.querySelector('script');
+                    
+                    if (scriptContent) {
+                        const scriptText = scriptContent.textContent;
+                        const scheduleDataMatch = scriptText.match(/const scheduleData = ({[\s\S]*?});/);
+                        
+                        if (scheduleDataMatch) {
+                            const scheduleDataStr = scheduleDataMatch[1];
+                            const scheduleData = new Function('return ' + scheduleDataStr)();
+                            
+                            Object.keys(scheduleData).forEach(dateStr => {
+                                const schedule = scheduleData[dateStr];
+                                if (schedule && schedule.subjects) {
+                                    totalDays++;
+                                    const dayTasks = schedule.subjects.length;
+                                    totalTasks += dayTasks;
+                                    
+                                    const completedForDay = getCompletedTasksForDate(dateStr);
+                                    completedTasksCount += completedForDay;
+                                    
+                                    if (completedForDay === dayTasks && dayTasks > 0) {
+                                        completedDaysCount++;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error calculating progress:', error);
+                }
+            }
+            
+            const dayCompletionPercentage = totalDays > 0 ? Math.round((completedDaysCount / totalDays) * 100) : 0;
+            const taskCompletionPercentage = totalTasks > 0 ? Math.round((completedTasksCount / totalTasks) * 100) : 0;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                        <div class="modal-title">Study Progress Overview</div>
+                        <div class="modal-subtitle">Your learning journey statistics</div>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center; margin-bottom: 2rem;">
+                            <div style="font-size: 3rem; font-weight: bold; color: var(--primary); margin-bottom: 0.5rem;">${taskCompletionPercentage}%</div>
+                            <div style="color: var(--text-secondary);">Overall Task Completion</div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                            <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--success); margin-bottom: 0.5rem;">${completedDaysCount}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Days Completed</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">${dayCompletionPercentage}% of ${totalDays} days</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                                <div style="font-size: 2rem; font-weight: bold; color: var(--primary); margin-bottom: 0.5rem;">${completedTasksCount}</div>
+                                <div style="font-size: 0.875rem; color: var(--text-secondary);">Tasks Completed</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">Out of ${totalTasks} total tasks</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Task Progress</span>
+                                <span style="color: var(--primary); font-weight: 600;">${taskCompletionPercentage}%</span>
+                            </div>
+                            <div style="background: var(--border); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: var(--primary); height: 100%; width: ${taskCompletionPercentage}%; transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Day Progress</span>
+                                <span style="color: var(--success); font-weight: 600;">${dayCompletionPercentage}%</span>
+                            </div>
+                            <div style="background: var(--border); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="background: var(--success); height: 100%; width: ${dayCompletionPercentage}%; transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 2rem; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: 0.5rem; border-left: 4px solid var(--primary);">
+                            <div style="font-weight: 600; margin-bottom: 0.5rem;">Keep it up!</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                ${completedTasksCount > 0 ? 'You\'re making great progress on your study journey!' : 'Start your study journey today!'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
         }
 
         function addScheduleEntry() {
-            const day = document.getElementById('schedule-day')?.value;
-            const startTime = document.getElementById('schedule-start')?.value;
-            const endTime = document.getElementById('schedule-end')?.value;
-            const subject = document.getElementById('schedule-subject')?.value.trim();
-            const notes = document.getElementById('schedule-notes')?.value.trim();
+            const day = document.getElementById('schedule-day').value;
+            const startTime = document.getElementById('schedule-start').value;
+            const endTime = document.getElementById('schedule-end').value;
+            const subject = document.getElementById('schedule-subject').value.trim();
+            const notes = document.getElementById('schedule-notes').value.trim();
 
             if (!day || !startTime || !endTime || !subject) {
                 showNotification('Please fill all required fields', 'error');
@@ -2104,9 +3193,7 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
             scheduleEntries.push(entry);
             localStorage.setItem('scheduleEntries', JSON.stringify(scheduleEntries));
 
-            const scheduleForm = document.getElementById('schedule-form');
-            if (scheduleForm) scheduleForm.reset();
-            
+            document.getElementById('schedule-form').reset();
             playSuccessSound();
             showNotification('Schedule entry added!', 'success');
             updateTodaySchedule();
@@ -2122,7 +3209,7 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
         }
 
         function importHTMLTimetable() {
-            const htmlCode = document.getElementById('html-timetable')?.value.trim();
+            const htmlCode = document.getElementById('html-timetable').value.trim();
             
             if (!htmlCode) {
                 showNotification('Please paste HTML code', 'error');
@@ -2130,16 +3217,21 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
             }
 
             try {
+                // Basic HTML validation
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = htmlCode;
                 
                 const preview = document.getElementById('html-preview');
                 const content = document.getElementById('html-content');
                 
-                if (content) content.innerHTML = htmlCode;
-                if (preview) preview.style.display = 'block';
+                // Apply app-compatible styling to the imported HTML
+                const styledHTML = applyAppStyling(htmlCode);
                 
-                localStorage.setItem('htmlTimetable', htmlCode);
+                // Sanitize and display
+                content.innerHTML = styledHTML;
+                preview.style.display = 'block';
+                
+                localStorage.setItem('htmlTimetable', styledHTML);
                 playSuccessSound();
                 showNotification('HTML timetable imported successfully!', 'success');
                 
@@ -2148,18 +3240,368 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
             }
         }
 
+        function applyAppStyling(htmlCode) {
+            // Create a wrapper with app-compatible styling
+            return `
+                <style>
+                    .app-timetable-wrapper {
+                        font-family: system-ui, -apple-system, sans-serif !important;
+                        background: var(--bg-primary) !important;
+                        color: var(--text-primary) !important;
+                        border-radius: 0.75rem !important;
+                        overflow: hidden !important;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+                    }
+                    
+                    .app-timetable-wrapper .container {
+                        background: var(--bg-primary) !important;
+                        color: var(--text-primary) !important;
+                        padding: 1rem !important;
+                        margin: 0 !important;
+                        max-width: 100% !important;
+                    }
+                    
+                    .app-timetable-wrapper .header h1 {
+                        color: var(--primary) !important;
+                        font-size: 1.5rem !important;
+                        margin-bottom: 0.5rem !important;
+                        text-align: center !important;
+                    }
+                    
+                    .app-timetable-wrapper .header p {
+                        color: var(--text-secondary) !important;
+                        font-size: 0.9rem !important;
+                        text-align: center !important;
+                        margin-bottom: 1rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .progress-bar {
+                        background: var(--border) !important;
+                        height: 6px !important;
+                        border-radius: 3px !important;
+                        margin: 0.5rem 0 !important;
+                        overflow: hidden !important;
+                    }
+                    
+                    .app-timetable-wrapper .progress-fill {
+                        background: var(--success) !important;
+                        height: 100% !important;
+                        transition: width 0.3s ease !important;
+                    }
+                    
+                    .app-timetable-wrapper .progress-text {
+                        text-align: center !important;
+                        font-size: 0.8rem !important;
+                        color: var(--text-secondary) !important;
+                        margin-bottom: 1rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar {
+                        display: grid !important;
+                        grid-template-columns: repeat(7, 1fr) !important;
+                        gap: 0.25rem !important;
+                        margin: 0.5rem 0 !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-header {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        padding: 0.5rem !important;
+                        text-align: center !important;
+                        font-weight: 600 !important;
+                        font-size: 0.75rem !important;
+                        border-radius: 0.25rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day {
+                        background: var(--bg-secondary) !important;
+                        border: 1px solid var(--border) !important;
+                        border-radius: 0.375rem !important;
+                        padding: 0.5rem !important;
+                        min-height: 60px !important;
+                        cursor: pointer !important;
+                        transition: all 0.2s ease !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        font-size: 0.7rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day:hover {
+                        background: var(--bg-primary) !important;
+                        border-color: var(--primary) !important;
+                        transform: translateY(-1px) !important;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day.completed {
+                        background: var(--success) !important;
+                        border-color: var(--success) !important;
+                        color: white !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day.empty-day {
+                        opacity: 0.3 !important;
+                        cursor: default !important;
+                    }
+                    
+                    .app-timetable-wrapper .calendar-day.empty-day:hover {
+                        transform: none !important;
+                        background: var(--bg-secondary) !important;
+                        border-color: var(--border) !important;
+                        box-shadow: none !important;
+                    }
+                    
+                    .app-timetable-wrapper .day-number {
+                        font-weight: 700 !important;
+                        font-size: 0.9rem !important;
+                        margin-bottom: 0.2rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .day-week {
+                        font-size: 0.6rem !important;
+                        opacity: 0.7 !important;
+                        margin-bottom: 0.2rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .day-subjects {
+                        font-size: 0.6rem !important;
+                        line-height: 1.2 !important;
+                        overflow: hidden !important;
+                    }
+                    
+                    /* Modal styling */
+                    .app-timetable-wrapper .modal {
+                        position: fixed !important;
+                        top: 0 !important;
+                        left: 0 !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                        background: rgba(0,0,0,0.5) !important;
+                        display: none !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                        z-index: 2000 !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-content {
+                        background: var(--bg-primary) !important;
+                        border-radius: 0.75rem !important;
+                        max-width: 90% !important;
+                        max-height: 90% !important;
+                        overflow: hidden !important;
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.3) !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-header {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        padding: 1rem !important;
+                        position: relative !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-title {
+                        font-size: 1.2rem !important;
+                        font-weight: 600 !important;
+                        margin-bottom: 0.25rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-subtitle {
+                        opacity: 0.9 !important;
+                        font-size: 0.9rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .close {
+                        position: absolute !important;
+                        right: 1rem !important;
+                        top: 1rem !important;
+                        color: white !important;
+                        font-size: 1.5rem !important;
+                        cursor: pointer !important;
+                        width: 30px !important;
+                        height: 30px !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        border-radius: 50% !important;
+                        transition: background-color 0.3s !important;
+                    }
+                    
+                    .app-timetable-wrapper .close:hover {
+                        background-color: rgba(255,255,255,0.2) !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-body {
+                        padding: 1rem !important;
+                        max-height: 50vh !important;
+                        overflow-y: auto !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-card {
+                        background: var(--bg-secondary) !important;
+                        border-left: 4px solid var(--primary) !important;
+                        border-radius: 0.5rem !important;
+                        padding: 1rem !important;
+                        margin-bottom: 1rem !important;
+                        transition: all 0.2s ease !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-card:hover {
+                        background: rgba(99, 102, 241, 0.05) !important;
+                        transform: translateX(2px) !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-title {
+                        color: var(--text-primary) !important;
+                        font-size: 1rem !important;
+                        font-weight: 600 !important;
+                        margin-bottom: 0.5rem !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: space-between !important;
+                        flex-wrap: wrap !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-duration {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        padding: 0.25rem 0.75rem !important;
+                        border-radius: 1rem !important;
+                        font-size: 0.75rem !important;
+                        font-weight: 500 !important;
+                    }
+                    
+                    .app-timetable-wrapper .subject-details {
+                        color: var(--text-secondary) !important;
+                        line-height: 1.5 !important;
+                        font-size: 0.85rem !important;
+                        white-space: pre-line !important;
+                    }
+                    
+                    .app-timetable-wrapper .modal-footer {
+                        padding: 1rem !important;
+                        border-top: 1px solid var(--border) !important;
+                        display: flex !important;
+                        justify-content: space-between !important;
+                        align-items: center !important;
+                        flex-wrap: wrap !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-buttons {
+                        display: flex !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-btn, 
+                    .app-timetable-wrapper .complete-btn {
+                        padding: 0.5rem 1rem !important;
+                        border: none !important;
+                        border-radius: 0.375rem !important;
+                        font-weight: 500 !important;
+                        cursor: pointer !important;
+                        transition: all 0.2s ease !important;
+                        font-size: 0.85rem !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-btn {
+                        background: var(--bg-secondary) !important;
+                        color: var(--text-primary) !important;
+                        border: 1px solid var(--border) !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-btn:hover:not(:disabled) {
+                        background: var(--primary) !important;
+                        color: white !important;
+                    }
+                    
+                    .app-timetable-wrapper .nav-btn:disabled {
+                        opacity: 0.5 !important;
+                        cursor: not-allowed !important;
+                    }
+                    
+                    .app-timetable-wrapper .complete-btn {
+                        background: var(--success) !important;
+                        color: white !important;
+                    }
+                    
+                    .app-timetable-wrapper .complete-btn:hover {
+                        background: #059669 !important;
+                        transform: translateY(-1px) !important;
+                    }
+                    
+                    .app-timetable-wrapper .complete-btn.completed {
+                        background: var(--text-secondary) !important;
+                    }
+                    
+                    .app-timetable-wrapper .motivational-message {
+                        display: none !important;
+                        background: var(--warning) !important;
+                        color: white !important;
+                        padding: 0.75rem !important;
+                        border-radius: 0.5rem !important;
+                        margin-top: 0.75rem !important;
+                        text-align: center !important;
+                        font-weight: 600 !important;
+                        font-size: 0.9rem !important;
+                    }
+                    
+                    /* Responsive design */
+                    @media (max-width: 768px) {
+                        .app-timetable-wrapper .calendar {
+                            gap: 0.125rem !important;
+                        }
+                        
+                        .app-timetable-wrapper .calendar-day {
+                            min-height: 50px !important;
+                            padding: 0.375rem !important;
+                        }
+                        
+                        .app-timetable-wrapper .day-number {
+                            font-size: 0.8rem !important;
+                        }
+                        
+                        .app-timetable-wrapper .day-subjects,
+                        .app-timetable-wrapper .day-week {
+                            font-size: 0.55rem !important;
+                        }
+                        
+                        .app-timetable-wrapper .modal-content {
+                            max-width: 95% !important;
+                        }
+                        
+                        .app-timetable-wrapper .modal-footer {
+                            flex-direction: column !important;
+                            align-items: stretch !important;
+                        }
+                        
+                        .app-timetable-wrapper .nav-buttons {
+                            justify-content: center !important;
+                        }
+                        
+                        .app-timetable-wrapper .complete-btn {
+                            width: 100% !important;
+                        }
+                    }
+                    
+                    /* Hide original styling */
+                    .app-timetable-wrapper * {
+                        box-sizing: border-box !important;
+                    }
+                </style>
+                <div class="app-timetable-wrapper">
+                    ${htmlCode}
+                </div>
+            `;
+        }
+
         function clearHTMLTimetable() {
-            const htmlTimetable = document.getElementById('html-timetable');
-            const htmlPreview = document.getElementById('html-preview');
-            
-            if (htmlTimetable) htmlTimetable.value = '';
-            if (htmlPreview) htmlPreview.style.display = 'none';
-            
+            document.getElementById('html-timetable').value = '';
+            document.getElementById('html-preview').style.display = 'none';
             localStorage.removeItem('htmlTimetable');
             showNotification('HTML timetable cleared', 'success');
         }
 
-        // Settings Functions
         function toggleSound() {
             soundEnabled = !soundEnabled;
             localStorage.setItem('soundEnabled', soundEnabled);
@@ -2172,28 +3614,13 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
             }
         }
 
-        function toggleAutoRotate() {
-            const enabled = document.getElementById('auto-rotate')?.checked;
-            localStorage.setItem('autoRotate', enabled);
-            
-            if (enabled) {
-                try {
-                    if (screen && screen.orientation && screen.orientation.unlock) {
-                        screen.orientation.unlock();
-                    }
-                } catch (e) {}
-                showNotification('Auto-rotation enabled', 'success');
-            } else {
-                showNotification('Auto-rotation disabled', 'success');
-            }
-        }
-
         function clearAllData() {
             if (confirm('Clear all data? This cannot be undone.')) {
                 localStorage.clear();
                 savedTests = [];
                 testResults = [];
                 scheduleEntries = [];
+                completedTasks = {};
                 userProfile = {
                     name: 'Guest User',
                     email: '',
@@ -2207,159 +3634,188 @@ ${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> $
             }
         }
 
-        // Initialize on load
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+            
+            text.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Desktop/Fullscreen mode functions
+        function toggleDesktopMode() {
+            playClickSound();
+            
+            const body = document.body;
+            const icon = document.getElementById('desktop-icon');
+            
+            if (body.classList.contains('fullscreen-mode')) {
+                body.classList.remove('fullscreen-mode');
+                icon.textContent = '💻';
+                
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                
+                showNotification('Exited fullscreen mode', 'success');
+            } else {
+                body.classList.add('fullscreen-mode');
+                icon.textContent = '🔲';
+                
+                const element = document.documentElement;
+                if (element.requestFullscreen) {
+                    element.requestFullscreen().catch(() => {});
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+                
+                showNotification('Entered fullscreen mode. Press ESC or click button to exit', 'success');
+            }
+        }
+
+        function handleFullscreenChange() {
+            const isFullscreen = !!(document.fullscreenElement || 
+                                   document.webkitFullscreenElement || 
+                                   document.mozFullScreenElement || 
+                                   document.msFullscreenElement);
+            
+            const body = document.body;
+            const icon = document.getElementById('desktop-icon');
+            
+            if (!isFullscreen && body.classList.contains('fullscreen-mode')) {
+                body.classList.remove('fullscreen-mode');
+                icon.textContent = '💻';
+            }
+        }
+
+        // Touch/Swipe Navigation
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        function handleSwipe() {
+            const testActive = document.getElementById('test-screen').classList.contains('active');
+            const reviewActive = document.getElementById('review-screen').classList.contains('active');
+            
+            if (!testActive && !reviewActive) return;
+
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const minSwipeDistance = 50;
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                if (deltaX > 0) {
+                    reviewActive ? prevReview() : previousQuestion();
+                } else {
+                    reviewActive ? nextReview() : nextQuestion();
+                }
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            const testActive = document.getElementById('test-screen').classList.contains('active');
+            const reviewActive = document.getElementById('review-screen').classList.contains('active');
+            
+            if (!testActive && !reviewActive) return;
+            
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    reviewActive ? nextReview() : nextQuestion();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    reviewActive ? prevReview() : previousQuestion();
+                    break;
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                    if (testActive) {
+                        e.preventDefault();
+                        const index = parseInt(e.key) - 1;
+                        if (currentTest && index < currentTest.questions[currentQuestion].options.length) {
+                            selectOption(index);
+                        }
+                    }
+                    break;
+                case 'r':
+                case 'R':
+                    if (testActive) {
+                        e.preventDefault();
+                        markForReview();
+                    }
+                    break;
+                case 'c':
+                case 'C':
+                    if (testActive) {
+                        e.preventDefault();
+                        clearResponse();
+                    }
+                    break;
+                case 'Escape':
+                    if (document.body.classList.contains('fullscreen-mode')) {
+                        toggleDesktopMode();
+                    }
+                    break;
+            }
+        });
+
+        // Event listeners setup
         document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            
-            // Load saved theme
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.setAttribute('data-theme', savedTheme);
-            
-            // Update theme icons
-            const icons = [document.getElementById('theme-icon'), document.getElementById('theme-icon-original')];
-            icons.forEach(icon => {
-                if (icon) icon.textContent = savedTheme === 'dark' ? '' : '';
-            });
-            
+            // Add fullscreen change listeners
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+            // Add touch event listeners
+            const questionContent = document.querySelector('.question-content');
+            if (questionContent) {
+                questionContent.addEventListener('touchstart', function(e) {
+                    touchStartX = e.changedTouches[0].screenX;
+                    touchStartY = e.changedTouches[0].screenY;
+                });
+
+                questionContent.addEventListener('touchend', function(e) {
+                    touchEndX = e.changedTouches[0].screenX;
+                    touchEndY = e.changedTouches[0].screenY;
+                    handleSwipe();
+                });
+            }
+
             // Load saved HTML timetable if exists
             const savedHTML = localStorage.getItem('htmlTimetable');
             if (savedHTML) {
-                const htmlTimetable = document.getElementById('html-timetable');
-                const htmlContent = document.getElementById('html-content');
-                const htmlPreview = document.getElementById('html-preview');
-                
-                if (htmlTimetable) htmlTimetable.value = savedHTML;
-                if (htmlContent) htmlContent.innerHTML = savedHTML;
-                if (htmlPreview) htmlPreview.style.display = 'block';
+                document.getElementById('html-timetable').value = savedHTML;
+                document.getElementById('html-content').innerHTML = savedHTML;
+                document.getElementById('html-preview').style.display = 'block';
             }
         });
 
-        // Close modals when clicking outside
+        // Click sound for interactive elements
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                closeModal();
+            if (e.target.matches('.btn, .option-item, .question-btn, .timetable-tab')) {
+                playClickSound();
             }
         });
-
-        // Make functions globally available
-        window.toggleAppMode = toggleAppMode;
-        window.switchFirebaseScreen = switchFirebaseScreen;
-        window.switchAuthTab = switchAuthTab;
-        window.showAddNoteModal = showAddNoteModal;
-        window.showAddClassModal = showAddClassModal;
-        window.closeModal = closeModal;
-        window.toggleTheme = toggleTheme;
-        window.showScreen = showScreen;
-        window.showNotification = showNotification;
-        window.copyJsonExample = copyJsonExample;
-        window.pasteFromClipboard = pasteFromClipboard;
-        window.loadQuestions = loadQuestions;
-        window.startTestFromPreview = startTestFromPreview;
-        window.nextQuestion = nextQuestion;
-        window.previousQuestion = previousQuestion;
-        window.markForReview = markForReview;
-        window.clearResponse = clearResponse;
-        window.showSubmitModal = showSubmitModal;
-        window.submitTest = submitTest;
-        window.startReview = startReview;
-        window.nextReview = nextReview;
-        window.prevReview = prevReview;
-        window.retakeTest = retakeTest;
-        window.downloadPDF = downloadPDF;
-        window.saveProfile = saveProfile;
-        window.removeProfilePicture = removeProfilePicture;
-        window.startSavedTest = startSavedTest;
-        window.deleteTest = deleteTest;
-        window.viewResult = viewResult;
-        window.showTimetableTab = showTimetableTab;
-        window.addScheduleEntry = addScheduleEntry;
-        window.deleteScheduleEntry = deleteScheduleEntry;
-        window.importHTMLTimetable = importHTMLTimetable;
-        window.clearHTMLTimetable = clearHTMLTimetable;
-        window.toggleSound = toggleSound;
-        window.toggleAutoRotate = toggleAutoRotate;
-        window.clearAllData = clearAllData;
-
-        // These will be overridden by Firebase functions from main.js
-        window.signOut = function() { 
-            showNotification('Firebase not loaded', 'error'); 
-        };
     </script>
-
-    <!-- Firebase Integration -->
-    <script type="module" src="main.js"></script>
-
 </body>
 </html>
-                notification.classList.remove('show');
-            }, 4000);
-        }
-
-        // Your existing Mock Test functions remain the same
-        function showScreen(screenId) {
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            
-            const navLinks = document.querySelectorAll('.nav-link');
-            for (let link of navLinks) {
-                if (link.textContent.toLowerCase().includes(screenId.split('-')[0]) || 
-                    (screenId === 'dashboard' && link.textContent.toLowerCase().includes('dashboard'))) {
-                    link.classList.add('active');
-                    break;
-                }
-            }
-            
-            document.querySelectorAll('.screen:not(.firebase-screen)').forEach(screen => screen.classList.remove('active'));
-            
-            const targetScreen = document.getElementById(screenId + '-screen');
-            if (targetScreen && !targetScreen.classList.contains('firebase-screen')) {
-                targetScreen.classList.add('active');
-            }
-        }
-
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            
-            // Load saved theme
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.setAttribute('data-theme', savedTheme);
-            
-            // Update theme icons
-            const icons = [document.getElementById('theme-icon'), document.getElementById('theme-icon-original')];
-            icons.forEach(icon => {
-                if (icon) icon.textContent = savedTheme === 'dark' ? '' : '';
-            });
-        });
-
-        // Make functions globally available
-        window.toggleAppMode = toggleAppMode;
-        window.switchFirebaseScreen = switchFirebaseScreen;
-        window.switchAuthTab = switchAuthTab;
-        window.showAddNoteModal = showAddNoteModal;
-        window.showAddClassModal = showAddClassModal;
-        window.closeModal = closeModal;
-        window.toggleTheme = toggleTheme;
-        window.showScreen = showScreen;
-        window.showNotification = showNotification;
-
-        // These will be overridden by Firebase functions from main.js
-        window.signOut = function() { 
-            showNotification('Firebase not loaded', 'error'); 
-        };
-    </script>
-
-    <!-- Firebase Integration -->
-    <script type="module" src="main.js"></script>
-    
-    <!-- Your existing Mock Test JavaScript should be included here -->
-    <!-- Keep all your original JavaScript functions -->
-
-</body>
-</html>card">
-                    <div class="feature-icon"></div>
-                    <h3>Create New Test</h3>
-                    <p>Upload questions via JSON and start your mock test</p>
-                    <button class="btn btn-primary" onclick="showScreen('upload')">Get Started</button>
-                </div>
-                
-                <div class="card feature-
