@@ -6,22 +6,22 @@
     <title>Mock Test Pro</title>
     <meta name="screen-orientation" content="auto">
     
+    </script>
     <!-- Firebase SDKs v9 -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js';
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js';
         import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, orderBy, query } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js';
         import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js';
 
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCs2Ab_fTU18xj8o0qXuzIrphMT7OERNYY",
-            authDomain: "practicpro-mock-0786.firebaseapp.com",
-            projectId: "practicpro-mock-0786",
-            storageBucket: "practicpro-mock-0786.appspot.com",
-            messagingSenderId: "457425256741",
-            appId: "1:457425256741:web:0807a6c133c8fb1bc51acc"
-        };
+  const firebaseConfig = {
+  apiKey: "AIzaSyCs2Ab_tFU18xj8o0qXuzIrphMT7OERNYY",
+  authDomain: "practicpro-mock-0786.firebaseapp.com",
+  projectId: "practicpro-mock-0786",
+  storageBucket: "practicpro-mock-0786.firebasestorage.app",
+  messagingSenderId: "457425256741",
+  appId: "1:457425256741:web:0807a6c1333c8fb1c51acc"
+};      
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
