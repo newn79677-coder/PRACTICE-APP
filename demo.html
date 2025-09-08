@@ -1,0 +1,3117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Test Pro</title>
+    <meta name="screen-orientation" content="portrait">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --border: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1e293b;
+            --bg-secondary: #0f172a;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .profile-toggle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-toggle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .nav-brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.4rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-body {
+            padding: 1.2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-error {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: monospace;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .test-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            height: auto;
+        }
+
+        .question-sidebar {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            padding: 1.2rem;
+            border: 1px solid var(--border);
+            order: 2;
+        }
+
+        .timer-display {
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .timer-display.warning {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            animation: pulse 1s infinite;
+        }
+
+        .timer-display.critical {
+            background: linear-gradient(135deg, var(--error), #f87171);
+            animation: shake 0.5s infinite;
+        }
+
+        .question-timer {
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .question-timer.warning {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+        }
+
+        .question-timer.critical {
+            background: linear-gradient(135deg, var(--error), #f87171);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        .question-nav {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .question-btn {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .question-btn.unvisited {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        .question-btn.visited {
+            background: #f87171;
+            color: white;
+        }
+
+        .question-btn.answered {
+            background: #34d399;
+            color: white;
+        }
+
+        .question-btn.marked {
+            background: #a78bfa;
+            color: white;
+        }
+
+        .question-btn.locked {
+            background: #6b7280;
+            color: white;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .question-btn.current {
+            box-shadow: 0 0 0 3px var(--primary);
+        }
+
+        .question-content {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            order: 1;
+        }
+
+        .question-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .question-body {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-item:hover {
+            border-color: var(--primary);
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .option-item.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .option-item.correct {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .option-item.incorrect {
+            border-color: var(--error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .option-item.selected .option-radio::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+        }
+
+        .question-controls {
+            padding: 1.2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .legend {
+            margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .json-example {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .copy-container {
+            position: relative;
+            margin: 1rem 0;
+        }
+
+        .copy-container .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            z-index: 10;
+        }
+
+        .test-config {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.2rem;
+            margin: 1rem 0;
+        }
+
+        .config-row {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .config-row label {
+            min-width: 150px;
+        }
+
+        .config-row input, .config-row select {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            background: var(--bg-primary);
+            min-width: 120px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1100;
+            display: none;
+            max-width: 300px;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success { border-color: var(--success); }
+        .notification.error { border-color: var(--error); }
+        .notification.warning { border-color: var(--warning); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.2rem;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .review-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .review-status.correct {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .review-status.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .review-status.unattempted {
+            background: rgba(156, 163, 175, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .desktop-toggle {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .desktop-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        body.fullscreen-mode {
+            overflow: hidden;
+        }
+
+        body.fullscreen-mode .navbar {
+            display: none;
+        }
+
+        body.fullscreen-mode .container {
+            padding: 0;
+            max-width: none;
+            margin: 0;
+            height: 100vh;
+        }
+
+        body.fullscreen-mode .test-layout {
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        body.fullscreen-mode .question-sidebar {
+            border-radius: 0;
+        }
+
+        body.fullscreen-mode .question-content {
+            border-radius: 0;
+        }
+
+        body:not(.test-active) .desktop-toggle {
+            display: none;
+        }
+
+        .timetable-container {
+            min-height: 400px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.2rem;
+            margin: 1rem 0;
+        }
+
+        .timetable-nav {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .timetable-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .timetable-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .schedule-entry {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .schedule-time {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Mobile-specific styles */
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            height: 100%;
+            background: var(--bg-primary);
+            z-index: 1000;
+            transition: left 0.3s ease;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .mobile-nav.open {
+            left: 0;
+        }
+
+        .mobile-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .mobile-nav-link {
+            padding: 0.8rem 1rem;
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: background 0.2s;
+        }
+
+        .mobile-nav-link.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 900;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* PDF download button styling */
+        .pdf-download-btn {
+            background: #e53e3e;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .pdf-download-btn:hover {
+            background: #c53030;
+        }
+
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.7rem;
+            }
+            
+            .nav-brand {
+                font-size: 1.1rem;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .mobile-nav-toggle {
+                display: block;
+            }
+            
+            .container {
+                padding: 0.8rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .feature-card {
+                padding: 1.2rem;
+            }
+            
+            .feature-icon {
+                font-size: 2rem;
+            }
+            
+            .question-nav {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .question-btn {
+                font-size: 0.7rem;
+            }
+            
+            .question-controls {
+                flex-direction: column;
+            }
+            
+            .control-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .config-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .config-row label {
+                min-width: auto;
+                margin-bottom: 0.3rem;
+            }
+            
+            .config-row input, .config-row select {
+                width: 100%;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal-content {
+                padding: 1.2rem;
+                margin: 1rem;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .modal-actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .test-layout {
+                grid-template-columns: 300px 1fr;
+                height: calc(100vh - 150px);
+            }
+            
+            .question-sidebar {
+                order: 1;
+            }
+            
+            .question-content {
+                order: 2;
+            }
+            
+            .mobile-nav-toggle {
+                display: none;
+            }
+            
+            .nav-menu {
+                display: flex;
+            }
+        }
+
+        @media (orientation: landscape) and (max-width: 1024px) {
+            .test-layout {
+                grid-template-columns: 250px 1fr;
+            }
+            
+            .question-sidebar {
+                padding: 1rem;
+            }
+            
+            .question-body {
+                padding: 1.2rem;
+            }
+        }
+
+        /* Fix for rotation control */
+        .rotation-lock {
+            orientation: portrait;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <nav class="navbar">
+        <div class="nav-left">
+            <button class="mobile-nav-toggle" onclick="toggleMobileNav()">☰</button>
+            <div class="profile-toggle" onclick="showScreen('profile')" id="profile-toggle">
+                <span id="profile-initial">G</span>
+                <img id="profile-image" style="display: none;" alt="Profile" />
+            </div>
+            <div class="nav-brand">🧠 Mock Test Pro</div>
+        </div>
+        <div class="nav-menu">
+            <a href="#" class="nav-link active" onclick="showScreen('dashboard')">Dashboard</a>
+            <a href="#" class="nav-link" onclick="showScreen('my-tests')">My Tests</a>
+            <a href="#" class="nav-link" onclick="showScreen('results')">Results</a>
+            <a href="#" class="nav-link" onclick="showScreen('timetable')">Timetable</a>
+            <a href="#" class="nav-link" onclick="showScreen('settings')">Settings</a>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-header">
+            <h3>Mock Test Pro</h3>
+            <button onclick="toggleMobileNav()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="#" class="mobile-nav-link active" onclick="showScreen('dashboard'); toggleMobileNav();">Dashboard</a>
+            <a href="#" class="mobile-nav-link" onclick="showScreen('my-tests'); toggleMobileNav();">My Tests</a>
+            <a href="#" class="mobile-nav-link" onclick="showScreen('results'); toggleMobileNav();">Results</a>
+            <a href="#" class="mobile-nav-link" onclick="showScreen('timetable'); toggleMobileNav();">Timetable</a>
+            <a href="#" class="mobile-nav-link" onclick="showScreen('settings'); toggleMobileNav();">Settings</a>
+            <a href="#" class="mobile-nav-link" onclick="toggleTheme(); toggleMobileNav();">Toggle Theme</a>
+        </div>
+    </div>
+    <div class="overlay" id="nav-overlay" onclick="toggleMobileNav()"></div>
+
+    <!-- Dashboard Screen -->
+    <div class="screen active" id="dashboard-screen">
+        <div class="container">
+            <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                <div id="dashboard-avatar" style="width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #818cf8); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.7rem; position: relative; overflow: hidden; border: 3px solid var(--border);">
+                    <span id="dashboard-initial">G</span>
+                    <img id="dashboard-image" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; display: none;" alt="Profile Picture" />
+                </div>
+                <div>
+                    <h1 style="margin: 0; font-size: 1.5rem;">Welcome back, <span id="dashboard-name">Guest User</span>!</h1>
+                    <p style="color: var(--text-secondary); margin: 0.5rem 0 0 0;" id="dashboard-bio">Quiz enthusiast ready to learn!</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="card feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Create New Test</h3>
+                    <p>Upload questions via JSON and start your mock test</p>
+                    <button class="btn btn-primary" onclick="showScreen('upload')">Get Started</button>
+                </div>
+                
+                <div class="card feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>View Results</h3>
+                    <p>Analyze your performance and track progress</p>
+                    <button class="btn btn-secondary" onclick="showScreen('results')">View Results</button>
+                </div>
+                
+                <div class="card feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>My Tests</h3>
+                    <p>Access your saved tests and retake them</p>
+                    <button class="btn btn-secondary" onclick="showScreen('my-tests')">Browse Tests</button>
+                </div>
+
+                <div class="card feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h3>Timetable</h3>
+                    <p>Manage your study schedule and plan</p>
+                    <button class="btn btn-secondary" onclick="showScreen('timetable')">View Schedule</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Screen -->
+    <div class="screen" id="upload-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Upload Test Questions</h2>
+                    <p>Create your custom mock test with JSON format questions</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">📝 JSON Format Instructions</label>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Use this JSON format to prepare your questions. You can also ask any AI tool to generate questions directly in this format.</p>
+                        
+                        <div class="copy-container">
+                            <div class="json-example" id="json-example">[
+  {
+    "question": "What is the capital of France?",
+    "options": ["London", "Berlin", "Paris", "Madrid"],
+    "correct": 2,
+    "explanation": "Paris is the capital and largest city of France.",
+    "marks": 1
+  },
+  {
+    "question": "Which planet is closest to the Sun?",
+    "options": ["Venus", "Mercury", "Earth", "Mars"],
+    "correct": 1,
+    "explanation": "Mercury is the smallest planet and closest to the Sun.",
+    "marks": 2
+  }
+]</div>
+                            <button class="copy-btn" onclick="copyJsonExample()">📋 Copy Format</button>
+                        </div>
+                        
+                        <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="pasteFromClipboard()">📥 Paste from Clipboard</button>
+                    </div>
+
+                    <form id="upload-form">
+                        <div class="form-group">
+                            <label class="form-label" for="test-title">Test Title</label>
+                            <input type="text" id="test-title" class="form-input" required>
+                        </div>
+                        
+                        <div class="test-config">
+                            <h4>Test Configuration</h4>
+                            <div class="config-row">
+                                <label for="test-duration">Duration (minutes):</label>
+                                <input type="number" id="test-duration" value="60" min="1" required>
+                            </div>
+                            <div class="config-row">
+                                <label for="default-marks">Default marks per question:</label>
+                                <input type="number" id="default-marks" value="1" min="0" step="0.25">
+                            </div>
+                            <div class="config-row">
+                                <label for="negative-marks">Negative marks:</label>
+                                <input type="number" id="negative-marks" value="0" min="0" step="0.25">
+                            </div>
+                            <div class="config-row">
+                                <label for="per-question-timer">Enable per-question timer:</label>
+                                <input type="checkbox" id="per-question-timer">
+                            </div>
+                            <div class="config-row" id="question-time-row" style="display: none;">
+                                <label for="question-time">Time per question (seconds):</label>
+                                <input type="number" id="question-time" value="60" min="10">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="questions-json">Questions JSON</label>
+                            <textarea id="questions-json" class="form-input form-textarea" 
+                                placeholder='Paste your questions JSON here...' 
+                                required></textarea>
+                        </div>
+                        
+                        <div>
+                            <button type="button" class="btn btn-primary" onclick="loadQuestions()">Load Questions</button>
+                            <button type="button" class="btn btn-secondary" onclick="showScreen('dashboard')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Preview Screen -->
+    <div class="screen" id="preview-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="preview-title">Test Preview</h2>
+                    <p>Review your test settings before starting</p>
+                </div>
+                <div class="card-body">
+                    <div id="test-info" class="test-config">
+                        <!-- Test info will be populated here -->
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-primary" onclick="startTestFromPreview()" style="font-size: 1.1rem; padding: 0.9rem 1.8rem;">🚀 Start Test</button>
+                        <button class="btn btn-secondary" onclick="showScreen('upload')">← Back to Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Screen -->
+    <div class="screen" id="test-screen">
+        <div class="container">
+            <div class="test-layout">
+                <div class="question-sidebar">
+                    <div class="timer-display" id="timer-display">
+                        <div>Time Remaining</div>
+                        <div id="timer-text">60:00</div>
+                    </div>
+                    
+                    <div class="question-timer" id="question-timer" style="display: none;">
+                        <div>Question Time</div>
+                        <div id="question-timer-text">60</div>
+                    </div>
+                    
+                    <h3>Questions</h3>
+                    <div class="question-nav" id="question-nav"></div>
+                    
+                    <div class="legend">
+                        <h4>Legend</h4>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f8fafc; border: 1px solid #e2e8f0;"></div>
+                                <span>Unvisited</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f87171;"></div>
+                                <span>Visited</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #34d399;"></div>
+                                <span>Answered</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #a78bfa;"></div>
+                                <span>Marked</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #6b7280;"></div>
+                                <span>Locked</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-content">
+                    <div class="question-header">
+                        <h2 id="question-title">Question 1</h2>
+                        <div class="control-group">
+                            <button class="btn btn-warning" onclick="markForReview()">Mark Review</button>
+                            <button class="btn btn-secondary" onclick="clearResponse()">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <div class="question-body">
+                        <div class="question-text" id="question-text">Loading...</div>
+                        <ul class="options-list" id="options-list"></ul>
+                    </div>
+                    
+                    <div class="question-controls">
+                        <div class="control-group">
+                            <button class="btn btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>← Previous</button>
+                            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next →</button>
+                        </div>
+                        <button class="btn btn-error" onclick="showSubmitModal()">Submit Test</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="screen" id="results-screen">
+        <div class="container">
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <!-- Review Screen -->
+    <div class="screen" id="review-screen">
+        <div class="container">
+            <div class="test-layout">
+                <div class="question-sidebar">
+                    <div style="background: linear-gradient(135deg, var(--primary), #818cf8); color: white; padding: 1rem; border-radius: 0.75rem; text-align: center; margin-bottom: 1.2rem;">
+                        <div>Review Mode</div>
+                        <div style="font-size: 0.875rem;">Solutions & Explanations</div>
+                    </div>
+                    
+                    <h3>Questions</h3>
+                    <div class="question-nav" id="review-question-nav"></div>
+                    
+                    <div style="margin-top: 1.2rem;">
+                        <button class="btn btn-success" onclick="downloadPDF()" style="width: 100%; margin-bottom: 1rem;">Download PDF</button>
+                        <button class="btn btn-secondary" onclick="showScreen('dashboard')" style="width: 100%;">Dashboard</button>
+                    </div>
+                </div>
+
+                <div class="question-content">
+                    <div class="question-header">
+                        <h2 id="review-question-title">Question 1</h2>
+                        <div id="review-status" class="review-status">CORRECT</div>
+                    </div>
+                    
+                    <div class="question-body">
+                        <div class="question-text" id="review-question-text">Loading...</div>
+                        <ul class="options-list" id="review-options-list"></ul>
+                        <div id="explanation" class="explanation" style="display: none;">
+                            <h4>Explanation</h4>
+                            <div id="explanation-text"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="question-controls">
+                        <div class="control-group">
+                            <button class="btn btn-secondary" id="review-prev-btn" onclick="prevReview()" disabled>← Previous</button>
+                            <button class="btn btn-primary" id="review-next-btn" onclick="nextReview()">Next →</button>
+                        </div>
+                        <button class="btn btn-warning" onclick="retakeTest()">Retake Test</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Tests Screen -->
+    <div class="screen" id="my-tests-screen">
+        <div class="container">
+            <h2>My Tests</h2>
+            <div id="saved-tests">
+                <p>No saved tests found. <a href="#" onclick="showScreen('upload')">Create your first test</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div class="screen" id="profile-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>👤 User Profile</h2>
+                    <p>Manage your profile information</p>
+                </div>
+                <div class="card-body">
+                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem;">
+                        <div style="position: relative; margin-bottom: 1rem;">
+                            <div id="profile-avatar" style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #818cf8); display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; position: relative; overflow: hidden; cursor: pointer; border: 4px solid var(--border);" onclick="document.getElementById('profile-picture-input').click()">
+                                <span id="profile-initial">G</span>
+                                <img id="profile-image" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; display: none;" alt="Profile Picture" />
+                                <div style="position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--bg-primary); cursor: pointer;">
+                                    📷
+                                </div>
+                            </div>
+                            <input type="file" id="profile-picture-input" accept="image/*" style="display: none;">
+                        </div>
+                        <button class="btn btn-secondary" onclick="removeProfilePicture()">Remove Picture</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="profile-name">Full Name</label>
+                        <input type="text" id="profile-name" class="form-input" placeholder="Enter your full name" value="Guest User">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="profile-email">Email</label>
+                        <input type="email" id="profile-email" class="form-input" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="profile-bio">Bio</label>
+                        <textarea id="profile-bio" class="form-input" placeholder="Tell us about yourself..." rows="3" style="resize: vertical;">Quiz enthusiast ready to learn!</textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Member Since</label>
+                        <p style="margin: 0; color: var(--text-secondary); padding: 0.75rem; background: var(--bg-secondary); border-radius: 0.5rem;" id="member-since">Today</p>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.8rem; margin: 1.5rem 0;">
+                        <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);" id="tests-taken">0</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Tests Taken</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);" id="avg-score">0%</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Average Score</div>
+                        </div>
+                        <div style="text-align: center; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--warning);" id="best-score">0%</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Best Score</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.8rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="saveProfile()">💾 Save Profile</button>
+                        <button class="btn btn-secondary" onclick="showScreen('dashboard')">← Back to Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timetable Screen -->
+    <div class="screen" id="timetable-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📅 My Timetable</h2>
+                    <p>Manage your study schedule</p>
+                </div>
+                <div class="card-body">
+                    <div class="timetable-nav">
+                        <button class="timetable-tab active" onclick="showTimetableTab('today')">Today's Schedule</button>
+                        <button class="timetable-tab" onclick="showTimetableTab('create')">Create Entry</button>
+                        <button class="timetable-tab" onclick="showTimetableTab('import')">Import HTML</button>
+                    </div>
+
+                    <div id="today-tab" class="timetable-container">
+                        <h3 id="today-date"></h3>
+                        <div id="today-schedule">
+                            <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No schedule for today. Create entries or import your timetable.</p>
+                        </div>
+                    </div>
+
+                    <div id="create-tab" class="timetable-container" style="display: none;">
+                        <h3>Create Schedule Entry</h3>
+                        <form id="schedule-form">
+                            <div class="form-group">
+                                <label class="form-label">Day</label>
+                                <select id="schedule-day" class="form-input" required>
+                                    <option value="monday">Monday</option>
+                                    <option value="tuesday">Tuesday</option>
+                                    <option value="wednesday">Wednesday</option>
+                                    <option value="thursday">Thursday</option>
+                                    <option value="friday">Friday</option>
+                                    <option value="saturday">Saturday</option>
+                                    <option value="sunday">Sunday</option>
+                                </select>
+                            </div>
+                            <div class="config-row">
+                                <label>Start Time:</label>
+                                <input type="time" id="schedule-start" class="form-input" required>
+                                <label>End Time:</label>
+                                <input type="time" id="schedule-end" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Subject/Activity</label>
+                                <input type="text" id="schedule-subject" class="form-input" placeholder="e.g., Mathematics, Study Session" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Notes (Optional)</label>
+                                <textarea id="schedule-notes" class="form-input" placeholder="Additional details..." rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Entry</button>
+                        </form>
+                    </div>
+
+                    <div id="import-tab" class="timetable-container" style="display: none;">
+                        <h3>Import HTML Timetable</h3>
+                        <p>Paste your complete HTML timetable code below. It will be displayed seamlessly within the app.</p>
+                        <div class="form-group">
+                            <label class="form-label">HTML Code</label>
+                            <textarea id="html-timetable" class="form-input" placeholder="Paste your HTML timetable code here..." rows="10"></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="importHTMLTimetable()">Import Timetable</button>
+                        <button class="btn btn-secondary" onclick="clearHTMLTimetable()">Clear</button>
+                        
+                        <div id="html-preview" class="timetable-container" style="display: none; margin-top: 1rem; border: 2px dashed var(--border);">
+                            <h4>Preview:</h4>
+                            <div id="html-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div class="screen" id="settings-screen">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Settings</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="sound-enabled" checked onchange="toggleSound()"> 
+                            Enable sound effects
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="notifications-enabled" checked> 
+                            Show notifications
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="auto-submit" checked> 
+                            Auto submit when time expires
+                        </label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="auto-rotate" checked onchange="toggleAutoRotate()"> 
+                            Enable automatic screen rotation
+                        </label>
+                    </div>
+                    
+                    <button class="btn btn-error" onclick="clearAllData()">Clear All Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Modal -->
+    <div class="modal" id="submit-modal">
+        <div class="modal-content">
+            <h3>Submit Test?</h3>
+            <p>Are you sure you want to submit? You cannot change answers after submission.</p>
+            <div id="submit-summary"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-error" onclick="submitTest()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <div id="notification-text"></div>
+    </div>
+
+    <!-- Desktop Mode Toggle -->
+    <button class="desktop-toggle" id="desktop-toggle" onclick="toggleDesktopMode()" title="Toggle Fullscreen Mode">
+        <span id="desktop-icon">💻</span>
+    </button>
+
+    <script>
+        // Global variables
+        let currentTest = null;
+        let currentQuestion = 0;
+        let userAnswers = {};
+        let questionStatus = {};
+        let lockedQuestions = new Set();
+        let testTimer = null;
+        let questionTimer = null;
+        let timeRemaining = 0;
+        let questionTimeRemaining = 0;
+        let savedTests = [];
+        let testResults = [];
+        let currentResult = null;
+        let soundEnabled = true;
+        let previewTest = null;
+        let scheduleEntries = [];
+
+        // User profile data
+        let userProfile = {
+            name: 'Guest User',
+            email: '',
+            bio: 'Quiz enthusiast ready to learn!',
+            profilePicture: null,
+            memberSince: new Date().toISOString()
+        };
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+            setupEventListeners();
+            updateTodayDate();
+            
+            // Handle per-question timer toggle
+            document.getElementById('per-question-timer').addEventListener('change', function() {
+                document.getElementById('question-time-row').style.display = 
+                    this.checked ? 'flex' : 'none';
+            });
+            
+            // Set auto-rotate based on saved preference
+            const autoRotate = localStorage.getItem('autoRotate') !== 'false';
+            document.getElementById('auto-rotate').checked = autoRotate;
+            updateRotationSetting();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('profile-picture-input').addEventListener('change', handleProfilePictureUpload);
+            
+            document.getElementById('schedule-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addScheduleEntry();
+            });
+
+            // Add swipe navigation for mobile
+            const questionContent = document.querySelector('.question-content');
+            if (questionContent) {
+                let touchStartX = 0;
+                
+                questionContent.addEventListener('touchstart', function(e) {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+
+                questionContent.addEventListener('touchend', function(e) {
+                    const touchEndX = e.changedTouches[0].screenX;
+                    const deltaX = touchEndX - touchStartX;
+                    const minSwipeDistance = 50;
+                    
+                    if (Math.abs(deltaX) > minSwipeDistance) {
+                        if (deltaX > 0) {
+                            // Swipe right - previous question
+                            if (document.getElementById('test-screen').classList.contains('active')) {
+                                previousQuestion();
+                            } else if (document.getElementById('review-screen').classList.contains('active')) {
+                                prevReview();
+                            }
+                        } else {
+                            // Swipe left - next question
+                            if (document.getElementById('test-screen').classList.contains('active')) {
+                                nextQuestion();
+                            } else if (document.getElementById('review-screen').classList.contains('active')) {
+                                nextReview();
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                const testActive = document.getElementById('test-screen').classList.contains('active');
+                const reviewActive = document.getElementById('review-screen').classList.contains('active');
+                
+                if (!testActive && !reviewActive) return;
+                
+                switch(e.key) {
+                    case 'ArrowRight':
+                    case ' ':
+                        e.preventDefault();
+                        reviewActive ? nextReview() : nextQuestion();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        reviewActive ? prevReview() : previousQuestion();
+                        break;
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                        if (testActive) {
+                            e.preventDefault();
+                            const index = parseInt(e.key) - 1;
+                            if (currentTest && index < currentTest.questions[currentQuestion].options.length) {
+                                selectOption(index);
+                            }
+                        }
+                        break;
+                    case 'r':
+                    case 'R':
+                        if (testActive) {
+                            e.preventDefault();
+                            markForReview();
+                        }
+                        break;
+                    case 'c':
+                    case 'C':
+                        if (testActive) {
+                            e.preventDefault();
+                            clearResponse();
+                        }
+                        break;
+                    case 'Escape':
+                        if (document.body.classList.contains('fullscreen-mode')) {
+                            toggleDesktopMode();
+                        }
+                        break;
+                }
+            });
+        }
+
+        function loadSavedData() {
+            const defaultProfile = {
+                name: 'Guest User',
+                email: '',
+                bio: 'Quiz enthusiast ready to learn!',
+                profilePicture: null,
+                memberSince: new Date().toISOString()
+            };
+            
+            savedTests = JSON.parse(localStorage.getItem('mockTests') || '[]');
+            testResults = JSON.parse(localStorage.getItem('testResults') || '[]');
+            userProfile = JSON.parse(localStorage.getItem('userProfile') || JSON.stringify(defaultProfile));
+            scheduleEntries = JSON.parse(localStorage.getItem('scheduleEntries') || '[]');
+            soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            
+            document.getElementById('sound-enabled').checked = soundEnabled;
+            updateProfileDisplay();
+            updateTodaySchedule();
+        }
+
+        function updateProfileDisplay() {
+            document.getElementById('profile-name').value = userProfile.name;
+            document.getElementById('profile-email').value = userProfile.email || '';
+            document.getElementById('profile-bio').value = userProfile.bio;
+            document.getElementById('member-since').textContent = new Date(userProfile.memberSince).toLocaleDateString();
+            
+            document.getElementById('dashboard-name').textContent = userProfile.name;
+            document.getElementById('dashboard-bio').textContent = userProfile.bio;
+            
+            const profileElements = [
+                { toggle: 'profile-toggle', initial: 'profile-initial', image: 'profile-image' },
+                { initial: 'profile-initial', image: 'profile-image' },
+                { initial: 'dashboard-initial', image: 'dashboard-image' }
+            ];
+            
+            profileElements.forEach(({ toggle, initial, image }) => {
+                const toggleEl = toggle ? document.getElementById(toggle) : null;
+                const initialEl = document.getElementById(initial);
+                const imageEl = document.getElementById(image);
+                
+                if (initialEl && imageEl) {
+                    if (userProfile.profilePicture) {
+                        imageEl.src = userProfile.profilePicture;
+                        imageEl.style.display = 'block';
+                        initialEl.style.display = 'none';
+                    } else {
+                        imageEl.style.display = 'none';
+                        initialEl.style.display = 'flex';
+                        initialEl.textContent = userProfile.name.charAt(0).toUpperCase();
+                    }
+                }
+            });
+            
+            const testsTaken = testResults.length;
+            const avgScore = testsTaken > 0 ? Math.round(testResults.reduce((sum, r) => sum + r.percentage, 0) / testsTaken) : 0;
+            const bestScore = testsTaken > 0 ? Math.max(...testResults.map(r => r.percentage)) : 0;
+            
+            const testsTakenEl = document.getElementById('tests-taken');
+            const avgScoreEl = document.getElementById('avg-score');
+            const bestScoreEl = document.getElementById('best-score');
+            
+            if (testsTakenEl) testsTakenEl.textContent = testsTaken;
+            if (avgScoreEl) avgScoreEl.textContent = avgScore + '%';
+            if (bestScoreEl) bestScoreEl.textContent = bestScore + '%';
+        }
+
+        function toggleMobileNav() {
+            const mobileNav = document.getElementById('mobile-nav');
+            const overlay = document.getElementById('nav-overlay');
+            
+            mobileNav.classList.toggle('open');
+            overlay.classList.toggle('show');
+            
+            // Prevent body scrolling when mobile nav is open
+            document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+        }
+
+        function showScreen(screenId) {
+            playClickSound();
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelectorAll('.mobile-nav-link').forEach(link => link.classList.remove('active'));
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            for (let link of navLinks) {
+                if (link.textContent.toLowerCase().includes(screenId.split('-')[0]) || 
+                    (screenId === 'dashboard' && link.textContent.toLowerCase().includes('dashboard')) ||
+                    (screenId === 'my-tests' && link.textContent.toLowerCase().includes('tests')) ||
+                    (screenId === 'results' && link.textContent.toLowerCase().includes('results')) ||
+                    (screenId === 'profile' && link.textContent.toLowerCase().includes('profile')) ||
+                    (screenId === 'timetable' && link.textContent.toLowerCase().includes('timetable')) ||
+                    (screenId === 'settings' && link.textContent.toLowerCase().includes('settings'))) {
+                    link.classList.add('active');
+                    break;
+                }
+            }
+            
+            const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+            for (let link of mobileLinks) {
+                if (link.textContent.toLowerCase().includes(screenId.split('-')[0]) || 
+                    (screenId === 'dashboard' && link.textContent.toLowerCase().includes('dashboard')) ||
+                    (screenId === 'my-tests' && link.textContent.toLowerCase().includes('tests')) ||
+                    (screenId === 'results' && link.textContent.toLowerCase().includes('results')) ||
+                    (screenId === 'profile' && link.textContent.toLowerCase().includes('profile')) ||
+                    (screenId === 'timetable' && link.textContent.toLowerCase().includes('timetable')) ||
+                    (screenId === 'settings' && link.textContent.toLowerCase().includes('settings'))) {
+                    link.classList.add('active');
+                    break;
+                }
+            }
+            
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            
+            const targetScreen = document.getElementById(screenId + '-screen');
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                
+                if (screenId === 'test' || screenId === 'review') {
+                    document.body.classList.add('test-active');
+                } else {
+                    document.body.classList.remove('test-active');
+                    if (document.body.classList.contains('fullscreen-mode')) {
+                        toggleDesktopMode();
+                    }
+                }
+                
+                if (screenId === 'my-tests') loadMyTests();
+                if (screenId === 'results') loadResults();
+                if (screenId === 'profile') updateProfileDisplay();
+                if (screenId === 'timetable') updateTodaySchedule();
+            }
+        }
+
+        function toggleTheme() {
+            playClickSound();
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                icon.textContent = '🌙';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.textContent = '☀️';
+            }
+        }
+
+        function toggleAutoRotate() {
+            const enabled = document.getElementById('auto-rotate').checked;
+            localStorage.setItem('autoRotate', enabled);
+            updateRotationSetting();
+            
+            if (enabled) {
+                showNotification('Auto-rotation enabled', 'success');
+            } else {
+                showNotification('Auto-rotation disabled', 'success');
+            }
+        }
+
+        function updateRotationSetting() {
+            const enabled = localStorage.getItem('autoRotate') !== 'false';
+            
+            if (enabled) {
+                document.body.classList.remove('rotation-lock');
+                try {
+                    screen.orientation.unlock();
+                } catch (e) {}
+            } else {
+                document.body.classList.add('rotation-lock');
+                try {
+                    if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('portrait').catch(() => {});
+                    }
+                } catch (e) {}
+            }
+        }
+
+        function copyJsonExample() {
+            const jsonText = document.getElementById('json-example').textContent;
+            navigator.clipboard.writeText(jsonText).then(() => {
+                showNotification('JSON format copied to clipboard!', 'success');
+            }).catch(() => {
+                showNotification('Failed to copy. Please copy manually.', 'error');
+            });
+        }
+
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('questions-json').value = text;
+                showNotification('Content pasted from clipboard!', 'success');
+            } catch (err) {
+                showNotification('Failed to paste from clipboard. Please paste manually.', 'error');
+            }
+        }
+
+        function loadQuestions() {
+            const title = document.getElementById('test-title').value.trim();
+            const duration = parseInt(document.getElementById('test-duration').value);
+            const jsonText = document.getElementById('questions-json').value.trim();
+            const defaultMarks = parseFloat(document.getElementById('default-marks').value);
+            const negativeMarks = parseFloat(document.getElementById('negative-marks').value);
+            const perQuestionTimer = document.getElementById('per-question-timer').checked;
+            const questionTime = parseInt(document.getElementById('question-time').value);
+
+            if (!title || !duration || !jsonText) {
+                showNotification('Please fill all required fields', 'error');
+                return;
+            }
+
+            try {
+                const questions = JSON.parse(jsonText);
+                
+                if (!Array.isArray(questions) || questions.length === 0) {
+                    throw new Error('Invalid questions format - must be an array');
+                }
+
+                for (let i = 0; i < questions.length; i++) {
+                    const q = questions[i];
+                    if (!q.question || !Array.isArray(q.options) || typeof q.correct !== 'number') {
+                        throw new Error(`Invalid question at index ${i + 1} - missing required fields`);
+                    }
+                    if (!q.marks) {
+                        q.marks = defaultMarks;
+                    }
+                }
+
+                previewTest = {
+                    id: Date.now(),
+                    title,
+                    duration,
+                    questions,
+                    defaultMarks,
+                    negativeMarks,
+                    perQuestionTimer,
+                    questionTime,
+                    created: new Date().toISOString()
+                };
+
+                playSuccessSound();
+                showNotification('Questions loaded successfully!', 'success');
+                showTestPreview();
+
+            } catch (error) {
+                showNotification('Error: ' + error.message, 'error');
+            }
+        }
+
+        function showTestPreview() {
+            showScreen('preview');
+            
+            document.getElementById('preview-title').textContent = previewTest.title;
+            
+            const totalMarks = previewTest.questions.reduce((sum, q) => sum + (q.marks || previewTest.defaultMarks), 0);
+            
+            document.getElementById('test-info').innerHTML = `
+                <h4>Test Configuration</h4>
+                <div class="config-row">
+                    <strong>Title:</strong> ${previewTest.title}
+                </div>
+                <div class="config-row">
+                    <strong>Questions:</strong> ${previewTest.questions.length}
+                </div>
+                <div class="config-row">
+                    <strong>Duration:</strong> ${previewTest.duration} minutes
+                </div>
+                <div class="config-row">
+                    <strong>Total Marks:</strong> ${totalMarks}
+                </div>
+                <div class="config-row">
+                    <strong>Default Marks:</strong> ${previewTest.defaultMarks} per question
+                </div>
+                <div class="config-row">
+                    <strong>Negative Marks:</strong> ${previewTest.negativeMarks} per wrong answer
+                </div>
+                <div class="config-row">
+                    <strong>Per-Question Timer:</strong> ${previewTest.perQuestionTimer ? `Yes (${previewTest.questionTime}s each)` : 'No'}
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(99, 102, 241, 0.1); border-radius: 0.5rem; border-left: 4px solid var(--primary);">
+                    <h5>Instructions:</h5>
+                    <ul style="margin-left: 1rem; line-height: 1.6;">
+                        <li>Read each question carefully before selecting an answer</li>
+                        <li>You can navigate between questions using Previous/Next buttons</li>
+                        <li>Mark questions for review if you're unsure</li>
+                        <li>Clear your response if you want to change your answer</li>
+                        ${previewTest.perQuestionTimer ? '<li><strong>Time limit per question:</strong> Each question has a time limit. If time expires, the question will be locked and cannot be answered later.</li>' : ''}
+                        <li>Submit your test when completed or when time expires</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        function startTestFromPreview() {
+            if (!previewTest) return;
+            
+            currentTest = previewTest;
+            currentQuestion = 0;
+            userAnswers = {};
+            questionStatus = {};
+            lockedQuestions = new Set();
+            timeRemaining = currentTest.duration * 60;
+            questionTimeRemaining = currentTest.perQuestionTimer ? currentTest.questionTime : 0;
+
+            currentTest.questions.forEach((_, index) => {
+                questionStatus[index] = 'unvisited';
+            });
+
+            // Save test if not already saved
+            if (!savedTests.find(t => t.title === currentTest.title)) {
+                savedTests.push(currentTest);
+                localStorage.setItem('mockTests', JSON.stringify(savedTests));
+            }
+
+            showScreen('test');
+            renderQuestionNav();
+            loadQuestion();
+            startTimer();
+            
+            if (currentTest.perQuestionTimer) {
+                startQuestionTimer();
+            }
+            
+            showNotification(`Started: ${currentTest.title}`, 'success');
+        }
+
+        function startTimer() {
+            if (testTimer) clearInterval(testTimer);
+            
+            testTimer = setInterval(() => {
+                timeRemaining--;
+                updateTimer();
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(testTimer);
+                    if (document.getElementById('auto-submit').checked) {
+                        submitTest();
+                    } else {
+                        showNotification('Time expired!', 'error');
+                    }
+                }
+            }, 1000);
+        }
+
+        function startQuestionTimer() {
+            if (!currentTest.perQuestionTimer) return;
+            
+            if (questionTimer) clearInterval(questionTimer);
+            
+            questionTimeRemaining = currentTest.questionTime;
+            document.getElementById('question-timer').style.display = 'block';
+            
+            questionTimer = setInterval(() => {
+                questionTimeRemaining--;
+                updateQuestionTimer();
+                
+                if (questionTimeRemaining <= 0) {
+                    clearInterval(questionTimer);
+                    lockCurrentQuestion();
+                    autoNextQuestion();
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const display = document.getElementById('timer-display');
+            const text = document.getElementById('timer-text');
+            
+            text.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            display.className = 'timer-display';
+            if (timeRemaining <= 300) {
+                display.classList.add('warning');
+            }
+            if (timeRemaining <= 60) {
+                display.classList.add('critical');
+            }
+        }
+
+        function updateQuestionTimer() {
+            const display = document.getElementById('question-timer');
+            const text = document.getElementById('question-timer-text');
+            
+            text.textContent = questionTimeRemaining;
+            
+            display.className = 'question-timer';
+            if (questionTimeRemaining <= 10) {
+                display.classList.add('warning');
+            }
+            if (questionTimeRemaining <= 5) {
+                display.classList.add('critical');
+            }
+        }
+
+        function lockCurrentQuestion() {
+            lockedQuestions.add(currentQuestion);
+            if (questionStatus[currentQuestion] === 'unvisited') {
+                questionStatus[currentQuestion] = 'visited';
+            }
+            updateQuestionButtons();
+            showNotification('Question time expired! Question locked.', 'warning');
+        }
+
+        function autoNextQuestion() {
+            if (currentQuestion < currentTest.questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                if (currentTest.perQuestionTimer) {
+                    startQuestionTimer();
+                }
+            } else {
+                document.getElementById('question-timer').style.display = 'none';
+            }
+        }
+
+        function renderQuestionNav() {
+            const nav = document.getElementById('question-nav');
+            nav.innerHTML = '';
+            
+            currentTest.questions.forEach((_, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'question-btn unvisited';
+                btn.textContent = index + 1;
+                btn.onclick = () => goToQuestion(index);
+                nav.appendChild(btn);
+            });
+            
+            updateQuestionButtons();
+        }
+
+        function updateQuestionButtons() {
+            const buttons = document.querySelectorAll('.question-btn');
+            buttons.forEach((btn, index) => {
+                btn.className = 'question-btn ';
+                
+                if (lockedQuestions.has(index)) {
+                    btn.classList.add('locked');
+                } else {
+                    btn.classList.add(questionStatus[index] || 'unvisited');
+                }
+                
+                if (index === currentQuestion) {
+                    btn.classList.add('current');
+                }
+            });
+        }
+
+        function loadQuestion() {
+            if (!currentTest) return;
+            
+            const question = currentTest.questions[currentQuestion];
+            
+            if (questionStatus[currentQuestion] === 'unvisited') {
+                questionStatus[currentQuestion] = 'visited';
+            }
+            
+            document.getElementById('question-title').textContent = 
+                `Question ${currentQuestion + 1} of ${currentTest.questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsList = document.getElementById('options-list');
+            optionsList.innerHTML = '';
+            
+            const isLocked = lockedQuestions.has(currentQuestion);
+            
+            question.options.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                
+                if (isLocked) {
+                    li.classList.add('disabled');
+                } else {
+                    li.onclick = () => selectOption(index);
+                }
+                
+                if (userAnswers[currentQuestion] === index) {
+                    li.classList.add('selected');
+                }
+                
+                li.innerHTML = `
+                    <div class="option-radio"></div>
+                    <div>${option}</div>
+                `;
+                
+                optionsList.appendChild(li);
+            });
+            
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent = 
+                currentQuestion === currentTest.questions.length - 1 ? 'Finish' : 'Next →';
+            
+            updateQuestionButtons();
+        }
+
+        function selectOption(optionIndex) {
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('This question is locked!', 'warning');
+                return;
+            }
+            
+            playClickSound();
+            userAnswers[currentQuestion] = optionIndex;
+            questionStatus[currentQuestion] = 'answered';
+            
+            document.querySelectorAll('.option-item').forEach((item, index) => {
+                item.classList.toggle('selected', index === optionIndex);
+            });
+            
+            updateQuestionButtons();
+        }
+
+        function goToQuestion(index) {
+            currentQuestion = index;
+            loadQuestion();
+            
+            if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                startQuestionTimer();
+            }
+        }
+
+        function nextQuestion() {
+            playClickSound();
+            if (currentQuestion < currentTest.questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                
+                if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                    startQuestionTimer();
+                }
+            } else {
+                showSubmitModal();
+            }
+        }
+
+        function previousQuestion() {
+            playClickSound();
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+                
+                if (currentTest.perQuestionTimer && !lockedQuestions.has(currentQuestion)) {
+                    startQuestionTimer();
+                }
+            }
+        }
+
+        function markForReview() {
+            playClickSound();
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('Cannot mark locked question for review!', 'warning');
+                return;
+            }
+            questionStatus[currentQuestion] = 'marked';
+            updateQuestionButtons();
+            showNotification('Marked for review', 'success');
+        }
+
+        function clearResponse() {
+            playClickSound();
+            if (lockedQuestions.has(currentQuestion)) {
+                showNotification('Cannot clear locked question!', 'warning');
+                return;
+            }
+            
+            delete userAnswers[currentQuestion];
+            if (questionStatus[currentQuestion] === 'answered') {
+                questionStatus[currentQuestion] = 'visited';
+            }
+            
+            document.querySelectorAll('.option-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            updateQuestionButtons();
+            showNotification('Response cleared', 'success');
+        }
+
+        function showSubmitModal() {
+            const modal = document.getElementById('submit-modal');
+            const summary = document.getElementById('submit-summary');
+            
+            const answered = Object.keys(userAnswers).length;
+            const total = currentTest.questions.length;
+            const locked = lockedQuestions.size;
+            const unanswered = total - answered;
+            
+            summary.innerHTML = `
+                <div style="margin: 1rem 0; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; text-align: center;">
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${answered}</div>
+                            <div>Answered</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--error);">${unanswered}</div>
+                            <div>Unanswered</div>
+                        </div>
+                        ${locked > 0 ? `<div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--text-secondary);">${locked}</div>
+                            <div>Locked</div>
+                        </div>` : ''}
+                        <div>
+                            <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${total}</div>
+                            <div>Total</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            playClickSound();
+            document.getElementById('submit-modal').classList.remove('show');
+        }
+
+        function submitTest() {
+            playClickSound();
+            if (testTimer) clearInterval(testTimer);
+            if (questionTimer) clearInterval(questionTimer);
+            
+            const result = calculateResult();
+            currentResult = result;
+            
+            testResults.push(result);
+            localStorage.setItem('testResults', JSON.stringify(testResults));
+            
+            closeModal();
+            
+            if (result.percentage >= 70) {
+                playSuccessSound();
+            }
+            
+            showResults(result);
+        }
+
+        function calculateResult() {
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+            let totalMarks = 0;
+            let scoredMarks = 0;
+            const details = [];
+            
+            currentTest.questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const correctAnswer = question.correct;
+                const questionMarks = question.marks || currentTest.defaultMarks;
+                
+                totalMarks += questionMarks;
+                
+                let status;
+                let marksScored = 0;
+                
+                if (userAnswer === undefined) {
+                    unattempted++;
+                    status = 'unattempted';
+                } else if (userAnswer === correctAnswer) {
+                    correct++;
+                    status = 'correct';
+                    marksScored = questionMarks;
+                    scoredMarks += questionMarks;
+                } else {
+                    incorrect++;
+                    status = 'incorrect';
+                    marksScored = -currentTest.negativeMarks;
+                    scoredMarks -= currentTest.negativeMarks;
+                }
+                
+                details.push({
+                    question: question.question,
+                    options: question.options,
+                    correctAnswer,
+                    userAnswer,
+                    status,
+                    explanation: question.explanation || null,
+                    marks: questionMarks,
+                    marksScored
+                });
+            });
+            
+            const total = currentTest.questions.length;
+            const percentage = totalMarks > 0 ? Math.round((scoredMarks / totalMarks) * 100) : 0;
+            
+            return {
+                id: Date.now(),
+                testTitle: currentTest.title,
+                date: new Date().toISOString(),
+                total,
+                correct,
+                incorrect,
+                unattempted,
+                percentage,
+                totalMarks,
+                scoredMarks,
+                details
+            };
+        }
+
+        function showResults(result) {
+            showScreen('results');
+            
+            const content = document.getElementById('results-content');
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h1>Test Results</h1>
+                    <h2>${result.testTitle}</h2>
+                    <div class="score-display">${result.percentage}%</div>
+                    <p>Score: ${result.scoredMarks}/${result.totalMarks} marks</p>
+                    <p>Completed on ${new Date(result.date).toLocaleDateString()}</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="card stat-card">
+                        <div class="stat-number" style="color: var(--success);">${result.correct}</div>
+                        <div>Correct</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number" style="color: var(--error);">${result.incorrect}</div>
+                        <div>Incorrect</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number">${result.unattempted}</div>
+                        <div>Unattempted</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number" style="color: var(--primary);">${result.total}</div>
+                        <div>Total</div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="btn btn-primary" onclick="startReview()">Review Solutions</button>
+                    <button class="btn btn-success" onclick="downloadPDF()">Download PDF</button>
+                    <button class="btn btn-secondary" onclick="retakeTest()">Retake Test</button>
+                    <button class="btn btn-secondary" onclick="showScreen('dashboard')">Dashboard</button>
+                </div>
+            `;
+        }
+
+        function startReview() {
+            playClickSound();
+            currentQuestion = 0;
+            showScreen('review');
+            renderReviewNav();
+            loadReviewQuestion();
+        }
+
+        function renderReviewNav() {
+            const nav = document.getElementById('review-question-nav');
+            nav.innerHTML = '';
+            
+            currentResult.details.forEach((detail, index) => {
+                const btn = document.createElement('button');
+                btn.className = `question-btn ${detail.status}`;
+                btn.textContent = index + 1;
+                btn.onclick = () => goToReviewQuestion(index);
+                
+                if (index === currentQuestion) {
+                    btn.classList.add('current');
+                }
+                
+                nav.appendChild(btn);
+            });
+        }
+
+        function loadReviewQuestion() {
+            if (!currentResult) return;
+            
+            const detail = currentResult.details[currentQuestion];
+            
+            document.getElementById('review-question-title').textContent = 
+                `Question ${currentQuestion + 1} of ${currentResult.details.length}`;
+            document.getElementById('review-question-text').textContent = detail.question;
+            
+            const status = document.getElementById('review-status');
+            status.textContent = detail.status.toUpperCase();
+            status.className = `review-status ${detail.status}`;
+            
+            const optionsList = document.getElementById('review-options-list');
+            optionsList.innerHTML = '';
+            
+            detail.options.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                
+                if (index === detail.correctAnswer) {
+                    li.classList.add('correct');
+                }
+                if (index === detail.userAnswer && index !== detail.correctAnswer) {
+                    li.classList.add('incorrect');
+                }
+                if (index === detail.userAnswer) {
+                    li.classList.add('selected');
+                }
+                
+                li.innerHTML = `
+                    <div class="option-radio"></div>
+                    <div>${option}</div>
+                    ${index === detail.correctAnswer ? '<span style="margin-left: auto; color: var(--success);">✓</span>' : ''}
+                    ${index === detail.userAnswer && index !== detail.correctAnswer ? '<span style="margin-left: auto; color: var(--error);">✗</span>' : ''}
+                `;
+                
+                optionsList.appendChild(li);
+            });
+            
+            const explanationDiv = document.getElementById('explanation');
+            const explanationText = document.getElementById('explanation-text');
+            
+            if (detail.explanation) {
+                explanationText.textContent = detail.explanation;
+                explanationDiv.style.display = 'block';
+            } else {
+                explanationDiv.style.display = 'none';
+            }
+            
+            document.getElementById('review-prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('review-next-btn').textContent = 
+                currentQuestion === currentResult.details.length - 1 ? 'Finish' : 'Next →';
+            
+            renderReviewNav();
+        }
+
+        function goToReviewQuestion(index) {
+            currentQuestion = index;
+            loadReviewQuestion();
+        }
+
+        function nextReview() {
+            playClickSound();
+            if (currentQuestion < currentResult.details.length - 1) {
+                currentQuestion++;
+                loadReviewQuestion();
+            } else {
+                showScreen('dashboard');
+                showNotification('Review completed!', 'success');
+            }
+        }
+
+        function prevReview() {
+            playClickSound();
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadReviewQuestion();
+            }
+        }
+
+        function retakeTest() {
+            if (currentTest) {
+                showTestPreview();
+            }
+        }
+
+        function downloadPDF() {
+            playClickSound();
+            
+            if (!currentResult) {
+                showNotification('No results to download', 'error');
+                return;
+            }
+            
+            const content = generatePDFContent();
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${currentResult.testTitle.replace(/[^a-zA-Z0-9]/g, '_')}_Results.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            playSuccessSound();
+            showNotification('Results downloaded!', 'success');
+        }
+
+        function generatePDFContent() {
+            return `<!DOCTYPE html>
+<html><head><title>${currentResult.testTitle} - Results</title>
+<style>
+body{font-family:Arial,sans-serif;margin:40px;color:#333}
+.header{text-align:center;margin-bottom:40px;border-bottom:2px solid #6366f1;padding-bottom:20px}
+.score{font-size:3rem;color:#6366f1;font-weight:bold}
+.question{margin:20px 0;padding:20px;border:1px solid #e5e7eb;border-radius:8px}
+.option{margin:10px 0;padding:10px;border-radius:4px}
+.correct{background-color:#d1fae5;border-left:4px solid #10b981}
+.incorrect{background-color:#fee2e2;border-left:4px solid #ef4444}
+.explanation{margin-top:15px;padding:15px;background-color:#f3f4f6;border-radius:6px;border-left:4px solid #6366f1}
+</style></head>
+<body>
+<div class="header">
+<h1>${currentResult.testTitle}</h1>
+<div class="score">${currentResult.percentage}%</div>
+<p>Score: ${currentResult.scoredMarks}/${currentResult.totalMarks} marks</p>
+<p>Completed: ${new Date(currentResult.date).toLocaleDateString()}</p>
+<p>Results: ${currentResult.correct}/${currentResult.total} correct</p>
+</div>
+${currentResult.details.map((detail, index) => `
+<div class="question">
+<h3>Question ${index + 1} - ${detail.status.toUpperCase()} (${detail.marksScored >= 0 ? '+' : ''}${detail.marksScored} marks)</h3>
+<p><strong>${detail.question}</strong></p>
+${detail.options.map((option, i) => `
+<div class="option ${i === detail.correctAnswer ? 'correct' : ''} ${i === detail.userAnswer && i !== detail.correctAnswer ? 'incorrect' : ''}">
+${String.fromCharCode(65 + i)}. ${option} 
+${i === detail.correctAnswer ? ' ✓' : ''}
+${i === detail.userAnswer && i !== detail.correctAnswer ? ' (Your answer)' : ''}
+</div>`).join('')}
+${detail.explanation ? `<div class="explanation"><strong>Explanation:</strong> ${detail.explanation}</div>` : ''}
+</div>`).join('')}
+</body></html>`;
+        }
+
+        function loadMyTests() {
+            const container = document.getElementById('saved-tests');
+            
+            if (savedTests.length === 0) {
+                container.innerHTML = '<p>No saved tests. <a href="#" onclick="showScreen(\'upload\')">Create your first test</a></p>';
+                return;
+            }
+            
+            container.innerHTML = savedTests.map(test => `
+                <div class="card">
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h3>${test.title}</h3>
+                                <p>${test.questions.length} questions • ${test.duration} minutes</p>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                    Created: ${new Date(test.created).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-primary" onclick="startSavedTest(${savedTests.indexOf(test)})">Start</button>
+                                <button class="btn btn-error" onclick="deleteTest(${test.id})">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function startSavedTest(index) {
+            previewTest = savedTests[index];
+            showTestPreview();
+        }
+
+        function deleteTest(testId) {
+            if (confirm('Delete this test?')) {
+                savedTests = savedTests.filter(t => t.id !== testId);
+                localStorage.setItem('mockTests', JSON.stringify(savedTests));
+                loadMyTests();
+                showNotification('Test deleted', 'success');
+            }
+        }
+
+        function loadResults() {
+            const container = document.getElementById('results-content');
+            
+            if (testResults.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 3rem;"><p>No test results found.</p><button class="btn btn-primary" onclick="showScreen(\'upload\')">Take your first test</button></div>';
+                return;
+            }
+
+            const sorted = testResults.sort((a, b) => new Date(b.date) - new Date(a.date));
+            container.innerHTML = `
+                <h2>Results History</h2>
+                <div class="dashboard-grid">
+                    ${sorted.map(result => `
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>${result.testTitle}</h3>
+                                <div style="font-size: 2rem; font-weight: bold; color: ${result.percentage >= 70 ? 'var(--success)' : result.percentage >= 50 ? 'var(--warning)' : 'var(--error)'}; margin: 1rem 0;">
+                                    ${result.percentage}%
+                                </div>
+                                <p>Score: ${result.scoredMarks || result.correct}/${result.totalMarks || result.total}</p>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                                    ${new Date(result.date).toLocaleDateString()}
+                                </p>
+                                <button class="btn btn-primary" onclick="viewResult(${result.id})">View Details</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function viewResult(resultId) {
+            currentResult = testResults.find(r => r.id === resultId);
+            if (currentResult) {
+                showResults(currentResult);
+            }
+        }
+
+        // Timetable functions
+        function updateTodayDate() {
+            const today = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                timeZone: 'Asia/Kolkata'
+            };
+            document.getElementById('today-date').textContent = today.toLocaleDateString('en-US', options);
+        }
+
+        function showTimetableTab(tabName) {
+            document.querySelectorAll('.timetable-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.timetable-container').forEach(container => container.style.display = 'none');
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).style.display = 'block';
+            
+            if (tabName === 'today') {
+                updateTodaySchedule();
+            }
+        }
+
+        function updateTodaySchedule() {
+            const today = new Date();
+            const todayDay = today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            
+            const container = document.getElementById('today-schedule');
+            
+            // Check if we have imported HTML timetable
+            const savedHTML = localStorage.getItem('htmlTimetable');
+            if (savedHTML) {
+                // Parse the imported timetable to get today's schedule
+                const todayScheduleFromHTML = extractTodayScheduleFromHTML(savedHTML, todayDay);
+                if (todayScheduleFromHTML) {
+                    container.innerHTML = todayScheduleFromHTML;
+                    return;
+                }
+            }
+            
+            // Fallback to manual entries
+            const todayEntries = scheduleEntries.filter(entry => entry.day === todayDay);
+            
+            if (todayEntries.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">No schedule for today (${todayDay})</p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="showTimetableTab('create')" style="padding: 0.5rem 1rem;">Create Entry</button>
+                            <button class="btn btn-secondary" onclick="showTimetableTab('import')" style="padding: 0.5rem 1rem;">Import HTML</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            todayEntries.sort((a, b) => a.startTime.localeCompare(b.startTime));
+            
+            container.innerHTML = todayEntries.map((entry, index) => `
+                <div class="schedule-entry" style="position: relative;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <div class="schedule-time">${entry.startTime} - ${entry.endTime}</div>
+                            <div style="font-weight: 600; margin: 0.5rem 0; color: var(--primary);">${entry.subject}</div>
+                            ${entry.notes ? `<div style="color: var(--text-secondary); font-size: 0.875rem;">${entry.notes}</div>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; margin-left: 1rem;">
+                            <button class="btn btn-success" onclick="markTaskComplete('${todayDay}', ${index})" 
+                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem; white-space: nowrap;">
+                                Mark Done
+                            </button>
+                            <button class="btn btn-error" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="deleteScheduleEntry(${scheduleEntries.indexOf(entry)})">×</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function extractTodayScheduleFromHTML(htmlContent, todayDay) {
+            // This is a simplified version - in a real app you'd parse the HTML properly
+            // For now, we'll just return a basic schedule if we detect certain patterns
+            if (htmlContent.includes('Monday') || htmlContent.includes('monday')) {
+                return `
+                    <div class="schedule-entry">
+                        <div class="schedule-time">09:00 - 10:00</div>
+                        <div style="font-weight: 600; margin: 0.5rem 0; color: var(--primary);">Mathematics</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem;">Algebra and Calculus</div>
+                    </div>
+                    <div class="schedule-entry">
+                        <div class="schedule-time">11:00 - 12:00</div>
+                        <div style="font-weight: 600; margin: 0.5rem 0; color: var(--primary);">Physics</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem;">Mechanics and Thermodynamics</div>
+                    </div>
+                `;
+            }
+            return null;
+        }
+
+        function addScheduleEntry() {
+            const day = document.getElementById('schedule-day').value;
+            const startTime = document.getElementById('schedule-start').value;
+            const endTime = document.getElementById('schedule-end').value;
+            const subject = document.getElementById('schedule-subject').value.trim();
+            const notes = document.getElementById('schedule-notes').value.trim();
+
+            if (!day || !startTime || !endTime || !subject) {
+                showNotification('Please fill all required fields', 'error');
+                return;
+            }
+
+            if (startTime >= endTime) {
+                showNotification('End time must be after start time', 'error');
+                return;
+            }
+
+            const entry = {
+                id: Date.now(),
+                day,
+                startTime,
+                endTime,
+                subject,
+                notes,
+                created: new Date().toISOString()
+            };
+
+            scheduleEntries.push(entry);
+            localStorage.setItem('scheduleEntries', JSON.stringify(scheduleEntries));
+
+            document.getElementById('schedule-form').reset();
+            playSuccessSound();
+            showNotification('Schedule entry added!', 'success');
+            updateTodaySchedule();
+        }
+
+        function deleteScheduleEntry(index) {
+            if (confirm('Delete this schedule entry?')) {
+                scheduleEntries.splice(index, 1);
+                localStorage.setItem('scheduleEntries', JSON.stringify(scheduleEntries));
+                updateTodaySchedule();
+                showNotification('Schedule entry deleted', 'success');
+            }
+        }
+
+        function importHTMLTimetable() {
+            const htmlCode = document.getElementById('html-timetable').value.trim();
+            
+            if (!htmlCode) {
+                showNotification('Please paste HTML code', 'error');
+                return;
+            }
+
+            try {
+                // Basic HTML validation
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = htmlCode;
+                
+                const preview = document.getElementById('html-preview');
+                const content = document.getElementById('html-content');
+                
+                // Apply app-compatible styling to the imported HTML
+                const styledHTML = applyAppStyling(htmlCode);
+                
+                // Sanitize and display
+                content.innerHTML = styledHTML;
+                preview.style.display = 'block';
+                
+                localStorage.setItem('htmlTimetable', styledHTML);
+                playSuccessSound();
+                showNotification('HTML timetable imported successfully!', 'success');
+                
+            } catch (error) {
+                showNotification('Invalid HTML code', 'error');
+            }
+        }
+
+        function applyAppStyling(htmlCode) {
+            // Create a wrapper with app-compatible styling
+            return `
+                <style>
+                    .app-timetable-wrapper * {
+                        box-sizing: border-box !important;
+                        font-family: system-ui, -apple-system, sans-serif !important;
+                    }
+                    
+                    .app-timetable-wrapper table {
+                        width: 100% !important;
+                        border-collapse: collapse !important;
+                        margin: 1rem 0 !important;
+                    }
+                    
+                    .app-timetable-wrapper th, 
+                    .app-timetable-wrapper td {
+                        border: 1px solid var(--border) !important;
+                        padding: 0.75rem !important;
+                        text-align: center !important;
+                    }
+                    
+                    .app-timetable-wrapper th {
+                        background: var(--primary) !important;
+                        color: white !important;
+                        font-weight: 600 !important;
+                    }
+                    
+                    .app-timetable-wrapper tr:nth-child(even) {
+                        background: var(--bg-secondary) !important;
+                    }
+                    
+                    .app-timetable-wrapper tr:hover {
+                        background: rgba(99, 102, 241, 0.1) !important;
+                    }
+                </style>
+                <div class="app-timetable-wrapper">
+                    ${htmlCode}
+                </div>
+            `;
+        }
+
+        function clearHTMLTimetable() {
+            document.getElementById('html-timetable').value = '';
+            document.getElementById('html-preview').style.display = 'none';
+            localStorage.removeItem('htmlTimetable');
+            showNotification('HTML timetable cleared', 'success');
+        }
+
+        function handleProfilePictureUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select a valid image file', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Image size should be less than 5MB', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                userProfile.profilePicture = e.target.result;
+                localStorage.setItem('userProfile', JSON.stringify(userProfile));
+                updateProfileDisplay();
+                playSuccessSound();
+                showNotification('Profile picture updated!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeProfilePicture() {
+            playClickSound();
+            userProfile.profilePicture = null;
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            updateProfileDisplay();
+            showNotification('Profile picture removed', 'success');
+        }
+
+        function saveProfile() {
+            playClickSound();
+            
+            const name = document.getElementById('profile-name').value.trim();
+            const email = document.getElementById('profile-email').value.trim();
+            const bio = document.getElementById('profile-bio').value.trim();
+            
+            if (!name) {
+                showNotification('Please enter your name', 'error');
+                return;
+            }
+            
+            userProfile.name = name;
+            userProfile.email = email;
+            userProfile.bio = bio || 'Quiz enthusiast ready to learn!';
+            
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+            updateProfileDisplay();
+            
+            playSuccessSound();
+            showNotification('Profile saved successfully!', 'success');
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem('soundEnabled', soundEnabled);
+            
+            if (soundEnabled) {
+                playClickSound();
+                showNotification('Sound enabled', 'success');
+            } else {
+                showNotification('Sound disabled', 'success');
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('Clear all data? This cannot be undone.')) {
+                localStorage.clear();
+                savedTests = [];
+                testResults = [];
+                scheduleEntries = [];
+                userProfile = {
+                    name: 'Guest User',
+                    email: '',
+                    bio: 'Quiz enthusiast ready to learn!',
+                    profilePicture: null,
+                    memberSince: new Date().toISOString()
+                };
+                updateProfileDisplay();
+                showNotification('All data cleared', 'success');
+                showScreen('dashboard');
+            }
+        }
+
+        function toggleDesktopMode() {
+            playClickSound();
+            
+            const body = document.body;
+            const icon = document.getElementById('desktop-icon');
+            
+            if (body.classList.contains('fullscreen-mode')) {
+                body.classList.remove('fullscreen-mode');
+                icon.textContent = '💻';
+                
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                
+                showNotification('Exited fullscreen mode', 'success');
+            } else {
+                body.classList.add('fullscreen-mode');
+                icon.textContent = '🔲';
+                
+                const element = document.documentElement;
+                if (element.requestFullscreen) {
+                    element.requestFullscreen().catch(() => {});
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+                
+                showNotification('Entered fullscreen mode. Press ESC or click button to exit', 'success');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notification-text');
+            
+            text.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Sound functions
+        function playClickSound() {
+            if (!soundEnabled) return;
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'square';
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (e) {}
+        }
+
+        function playSuccessSound() {
+            if (!soundEnabled) return;
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 600;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {}
+        }
+
+        // Handle fullscreen change events
+        function handleFullscreenChange() {
+            const isFullscreen = !!(document.fullscreenElement || 
+                                   document.webkitFullscreenElement || 
+                                   document.mozFullScreenElement || 
+                                   document.msFullscreenElement);
+            
+            const body = document.body;
+            const icon = document.getElementById('desktop-icon');
+            
+            if (!isFullscreen && body.classList.contains('fullscreen-mode')) {
+                body.classList.remove('fullscreen-mode');
+                icon.textContent = '💻';
+            }
+        }
+
+        // Add event listeners for fullscreen changes
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+        // Add click sound for interactive elements
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('.btn, .option-item, .question-btn, .timetable-tab, .nav-link')) {
+                playClickSound();
+            }
+        });
+    </script>
+</body>
+</html>
