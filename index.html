@@ -56,15 +56,23 @@
             deleteObject
         };
         
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.firebaseFunctions) {
-                initApp();
-            }
-            
-        });
-       
+        // Initialize everything
+document.addEventListener('DOMContentLoaded', () => {
+    setupAutoSubmit();
+    
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(registration => {
+                console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    }
+});
     </script>
-
+    
     <style>
         * {
             margin: 0;
@@ -1525,7 +1533,7 @@ async function loadUserData() {
     <div class="card" style="margin-top: 20px; background: linear-gradient(135deg, var(--primary), #8B5CF6); color: white;">
         <div class="card-body" style="text-align: center;">
             <h2 style="margin-bottom: 8px;">Study Points</h2>
-            <div style="font-size: 32px; font-weight: bold; margin-bottom: 8px;" id="study-points-count">0</div>
+
             <p style="margin-bottom: 12px; opacity: 0.9;">Earn points by studying daily</p>
             <div style="display: flex; justify-content: center; gap: 16px; font-size: 12px;">
                 <div>🎯 3+ hours: 10 pts</div>
@@ -1628,10 +1636,9 @@ async function loadUserData() {
                     <span id="timer-display">60:00</span>
                 </div>
                 
-                <div class="test-actions">
-                    <button class="test-action-btn" onclick="pauseTest()" id="pause-btn">⏸️</button>
-                    <button class="test-action-btn" onclick="openQuestionPalette()">📋</button>
-                </div>
+              <div class="test-actions">
+    <button class="test-action-btn" onclick="openQuestionPalette()">📋</button>
+</div>  
             </div>
             
             <div class="question-container" id="question-container">
@@ -1651,14 +1658,7 @@ async function loadUserData() {
             </div>
             
             <div class="test-controls">
-            	<div class="control-row" id="pause-controls" style="display: none;">
-    <button class="control-btn secondary" onclick="exitTest()">
-        🔙 Exit Test
-    </button>
-    <button class="control-btn primary" onclick="pauseTest()">
-        ▶️ Resume Test
-    </button>
-</div>
+            	
 
                 <div class="control-row">
                     <button class="control-btn secondary" onclick="clearResponse()">
@@ -1672,15 +1672,15 @@ async function loadUserData() {
                     </button>
                 </div>
                 <div class="control-row" id="navigation-controls">
-                    <button class="nav-btn" onclick="previousQuestion()" id="prev-btn">
-                        ← Previous
-                    </button>
-                    <button class="control-btn danger" onclick="showSubmitModal()" id="submit-btn">
-                        Submit Test
-                    </button>
-                    <button class="nav-btn" onclick="nextQuestion()" id="next-btn">
-                        Next →
-                    </button>
+    <button class="nav-btn" onclick="previousQuestion()" id="prev-btn">
+        ← Previous
+    </button>
+    <button class="control-btn danger" onclick="submitTest()" id="submit-btn">
+        Submit Test
+    </button>
+    <button class="nav-btn" onclick="nextQuestion()" id="next-btn">
+        Next →
+    </button>
                 </div>
             </div>
         </div>
@@ -1741,7 +1741,27 @@ async function loadUserData() {
             </div>
         </div>
     </div>
-
+    
+<!-- Schedule Import Modal -->
+    <div class="modal" id="schedule-import-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Import Schedule</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div style="padding: 20px;">
+                <p>Paste your HTML schedule content below:</p>
+                <div class="form-group">
+                    <textarea id="schedule-html" class="form-input form-textarea" placeholder="Paste your schedule HTML here..." style="min-height: 200px;"></textarea>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="btn btn-primary" onclick="importScheduleHTML()">Import Schedule</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- My Notes Screen -->
     <div class="screen" id="notes-screen">
         <div class="card">
@@ -1778,7 +1798,8 @@ async function loadUserData() {
                 
                 <div class="form-group">
                     <label class="form-label" for="profile-name">Full Name</label>
-                    <input type="text" id="profile-name" class="form-input" placeholder="Enter your full name">
+                 <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+   <input type="text" id="profile-name" class="form-input" placeholder="Enter your full name">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="profile-bio">Bio</label>
@@ -1918,7 +1939,6 @@ async function loadUserData() {
         </div>
     </div>
 <!-- Submit Modal -->
-<!-- Submit Modal -->
 <div class="modal" id="submit-modal" aria-hidden="true">
   <div class="modal-content">
     <div class="modal-header">
@@ -1940,65 +1960,60 @@ async function loadUserData() {
     </div>
   </div>
 </div>
-<!-- Reading Mode Modal -->
-<div class="modal" id="note-reading-modal" aria-hidden="true" style="display:none;">
+
+<!-- PATCH 3A: Reading mode modal -->
+<div class="modal" id="note-reading-modal" aria-hidden="true">
   <div class="modal-content" style="max-width: 1000px; width: 100%; height: 90vh;">
     <div class="modal-header">
       <h3 id="reading-title">Reading</h3>
       <button class="close-btn" onclick="closeModal()">&times;</button>
     </div>
-    <div class="modal-body" id="reading-body" 
-         style="height: calc(90vh - 120px); overflow: auto; padding: 12px;">
+    <div class="modal-body" id="reading-body" style="height: calc(90vh - 120px); overflow: auto; padding: 12px;">
       <!-- iframe will be injected here -->
     </div>
-    <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:8px; padding:12px;">
+    <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:8px;">
       <button class="btn btn-secondary" onclick="closeModal()">Back</button>
     </div>
   </div>
 </div>
 
-<!-- Notes Creation Modal -->
-<div class="modal" id="note-creation-modal" style="display:none;">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Create New Note</h3>
-      <button class="close-btn" onclick="closeModal()">&times;</button>
-    </div>
-    <div class="modal-body" style="padding: 20px;">
-      <div class="form-group">
-        <label class="form-label" for="note-title">Note Title</label>
-        <input type="text" id="note-title" class="form-input" placeholder="Enter note title">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="note-html">Note Content (HTML)</label>
-        <textarea id="note-html" class="form-input form-textarea" 
-                  placeholder="Paste your HTML content here..." style="min-height: 200px;"></textarea>
-      </div>
-
-      <!-- AI Prompt Helper -->
-      <div style="margin-top:12px; background:var(--bg-secondary); padding:12px; border-radius:8px;">
-        <div style="font-weight:600; margin-bottom:6px;">
-          AI prompt — copy & paste to any AI
-        </div>
-        <div style="display:flex; gap:8px;">
-          <input id="ai-notes-prompt" class="form-input" 
-                 value="Generate notes on [TOPIC] in HTML + CSS format. Use headings, bullets, small code blocks and a short summary at the end." 
-                 style="flex:1;">
-          <button class="copy-btn" type="button" onclick="copyToClipboard('#ai-notes-prompt')">Copy</button>
-        </div>
-        <div style="color:var(--muted); font-size:12px; margin-top:6px;">
-          Tip: replace <code>[TOPIC]</code> with your subject e.g. "Coordinate Geometry — Triangles".
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 12px; justify-content: center; margin-top:16px;">
-        <button class="btn btn-primary" onclick="saveNote()">Save Note</button>
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      </div>
-    </div>
+    <!-- Notes Creation Modal -->
+    <div class="modal" id="note-creation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Note</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div style="padding: 20px;">
+                <div class="form-group">
+                    <label class="form-label" for="note-title">Note Title</label>
+                    <input type="text" id="note-title" class="form-input" placeholder="Enter note title">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="note-html">Note Content (HTML)</label>
+                    <textarea id="note-html" class="form-input form-textarea" placeholder="Paste your HTML content here..." style="min-height: 200px;"></textarea>
+                </div>
+                <!-- PATCH 4A: AI prompt helper -->
+<div style="margin-top:12px; background:var(--bg-secondary); padding:12px; border-radius:8px;">
+  <div style="font-weight:600; margin-bottom:6px;">AI prompt — copy & paste to any AI</div>
+  <div style="display:flex; gap:8px;">
+    <input id="ai-notes-prompt" class="form-input" 
+           value="Generate notes on [TOPIC] in HTML + CSS format. Use headings, bullets, small code blocks and a short summary at the end." 
+           style="flex:1;">
+    <button class="copy-btn" type="button" onclick="copyToClipboard('#ai-notes-prompt')">Copy</button>
+  </div>
+  <div style="color:var(--muted); font-size:12px; margin-top:6px;">
+    Tip: replace <code>[TOPIC]</code> with your subject e.g. "Coordinate Geometry — Triangles".
   </div>
 </div>
-    
+                
+           <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="btn btn-primary" onclick="saveNote()">Save Note</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Schedule Import Modal -->
     <div class="modal" id="schedule-import-modal">
@@ -2085,7 +2100,6 @@ function escapeHtml(s){
 }
 </script>
 
-
     <script>
         // Global variables
         let currentTest = null;
@@ -2148,7 +2162,22 @@ function initApp() {
     }
 
     setupEventListeners();
-    loadTodaysSchedule(); // <-- ADD THIS LINE
+    loadTodaysSchedule(); 
+    
+    function updateStudyPoints() {
+    const today = new Date().toISOString().split('T')[0];
+    const completedToday = getCompletedTasksForDate(today);
+    
+    let points = 0;
+    if (completedToday >= 5) points = 30;
+    else if (completedToday >= 3) points = 15;
+    else if (completedToday >= 2) points = 10;
+    
+    const pointsEl = document.getElementById('study-points-count');
+    if (pointsEl) {
+        pointsEl.textContent = points;
+    }
+}
 }
 
 
@@ -2810,26 +2839,20 @@ questionTimeRemaining = (currentTest.forceTimeMode && forcedTime !== null) ? for
             updateProgress();
         }
 
-        
-// REPLACE existing selectOption(...)
-function selectOption(index) {
-    // Prevent any interaction while paused or question locked
-    if (isPaused) {
-        showNotification('Test is paused — cannot change answers.', 'warning');
-        return;
-    }
-    if (questionLocked) return;
+        function selectOption(index) {
+            if (questionLocked) return;
+            
+            userAnswers[currentQuestion] = index;
+            questionStatus[currentQuestion] = 'answered';
+            
+            // Update UI
+            document.querySelectorAll('.option-item').forEach((item, i) => {
+                item.classList.toggle('selected', i === index);
+            });
+            
+            updateProgress();
+        }
 
-    userAnswers[currentQuestion] = index;
-    questionStatus[currentQuestion] = 'answered';
-
-    // Update UI
-    document.querySelectorAll('.option-item').forEach((item, i) => {
-        item.classList.toggle('selected', i === index);
-    });
-
-    updateProgress();
-}
         function previousQuestion() {
             if (currentTest.forceTimeMode || currentQuestion <= 0) return;
             currentQuestion--;
@@ -2878,101 +2901,33 @@ function selectOption(index) {
             updateProgress();
         }
 
-function submitTest() {
-    // Stop timers
-    if (testTimer) clearInterval(testTimer);
-    if (questionTimer) clearInterval(questionTimer);
-
-    // Save result
-    const result = {
-        title: currentTest?.title || "Untitled Test",
-        date: new Date().toISOString(),
-        answers: userAnswers,
-        score: calculateScore(),   // this function should already exist
-        totalQuestions: currentTest?.questions?.length || 0
-    };
-
-    testResults.push(result);
-    localStorage.setItem("testResults", JSON.stringify(testResults));
-
-    // Show results screen
-    showScreen("results");
-    closeModal(); 
-    showNotification("Test submitted successfully!", "success");
-}
-        // Add this function (create if it doesn't exist)
+        function pauseTest() {
+            if (currentTest.forceTimeMode) {
+                showNotification('Cannot pause in Force Time Mode', 'error');
+                return;
+            }
+            
+            isPaused = !isPaused;
+            const pauseBtn = document.getElementById('pause-btn');
+            
+            if (isPaused) {
+                pauseBtn.textContent = '▶️';
+                showNotification('Test paused', 'warning');
+            } else {
+                pauseBtn.textContent = '⏸️';
+                showNotification('Test resumed', 'success');
+            }
+        }
 function exitTest() {
-    // Stop timers
-    if (testTimer) clearInterval(testTimer);
-    if (questionTimer) clearInterval(questionTimer);
-
-    // mark not paused so that if user resumes later it behaves correctly
-    isPaused = false;
-    questionLocked = false;
-
-    // Save progress so user can return/resume (non-submitted)
-    try {
-        if (currentTest && currentTest.id) {
-            const progressKey = `progress_${currentTest.id}`;
-            const progress = {
-                currentQuestion,
-                userAnswers,
-                questionStatus,
-                timeRemaining,
-                questionTimeRemaining,
-                date: new Date().toISOString()
-            };
-            localStorage.setItem(progressKey, JSON.stringify(progress));
-        }
-    } catch (e) {
-        console.warn('Could not save progress:', e);
+    if (confirm('Are you sure you want to exit the test? Your progress will be lost.')) {
+        clearInterval(testTimer);
+        clearInterval(questionTimer);
+        exitTestFullscreen();
+        currentTest = null;
+        showScreen('dashboard');
+        showNotification('Test exited', 'warning');
     }
-
-    // Clean UI
-    closeModal();               // close any open modal
-    exitTestFullscreen();       // restore header/nav
-    showScreen('dashboard');    // go back to dashboard (choose 'my-tests' if you prefer)
-    showNotification('Test paused — exited to dashboard. Progress saved locally.', 'warning');
 }
-
-// Replace existing pauseTest(...) with this
-function pauseTest() {
-    // If force-time mode is active, disallow pause (keeps old behavior)
-    if (currentTest && currentTest.forceTimeMode) {
-        showNotification('Cannot pause in Force Time Mode', 'error');
-        return;
-    }
-
-    // Immediately stop timers and exit test per user's requirement
-    if (testTimer) clearInterval(testTimer);
-    if (questionTimer) clearInterval(questionTimer);
-
-    isPaused = true;
-
-    // visually disable options (extra safety)
-    const optionsEl = document.getElementById('options-container');
-    if (optionsEl) {
-        optionsEl.style.pointerEvents = 'none';
-        optionsEl.style.opacity = '0.6';
-    }
-
-    showNotification('Test paused — exiting and saving progress...', 'warning');
-
-    // Give a tiny delay for the user to see the notification, then exit
-    setTimeout(() => {
-        // If exitTest function exists, use it. (We added it above.)
-        try {
-            exitTest();
-        } catch (err) {
-            // Fallback: do a minimal cleanup if exitTest somehow missing
-            if (testTimer) clearInterval(testTimer);
-            if (questionTimer) clearInterval(questionTimer);
-            exitTestFullscreen();
-            showScreen('dashboard');
-        }
-    }, 350);
-}
-
         function updateProgress() {
             if (!currentTest) return;
             
@@ -3050,7 +3005,44 @@ function pauseTest() {
             loadCurrentQuestion();
         }
 
-        
+        // REPLACE your old showSubmitModal function with this new one
+function showSubmitModal() {
+    if (confirm('Are you sure you want to submit the test? You cannot make changes after submission.')) {
+        submitTest();
+    }
+
+    // Calculate summary
+    const answered = Object.keys(userAnswers).length;
+    const total = currentTest.questions.length;
+    const marked = Object.values(questionStatus).filter(s => s === 'marked').length;
+    const unvisited = Object.values(questionStatus).filter(s => s === 'unvisited').length;
+    const notAnswered = total - answered - unvisited;
+    
+    // Update summary
+    const summaryEl = document.getElementById('submit-summary');
+    if (summaryEl) {
+        summaryEl.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; text-align: center;">
+                <div>
+                    <div style="font-size: 18px; font-weight: bold; color: var(--success);">${answered}</div>
+                    <div style="font-size: 12px; color: var(--muted);">Answered</div>
+                </div>
+                <div>
+                    <div style="font-size: 18px; font-weight: bold; color: var(--warning);">${marked}</div>
+                    <div style="font-size: 12px; color: var(--muted);">Marked</div>
+                </div>
+                <div>
+                    <div style="font-size: 18px; font-weight: bold; color: var(--error);">${notAnswered}</div>
+                    <div style="font-size: 12px; color: var(--muted);">Not Answered</div>
+                </div>
+                <div>
+                    <div style="font-size: 18px; font-weight: bold; color: var(--muted);">${unvisited}</div>
+                    <div style="font-size: 12px; color: var(--muted);">Not Visited</div>
+                </div>
+            </div>
+        `;
+    }
+}
 function finalSubmitTest() {
     // Close modal first
     closeModal();
@@ -4134,7 +4126,6 @@ function extractTextFromHTML(html) {
     return div.textContent || div.innerText || '';
 }   
 
-
         // Notes functions
         function loadNotes() {
             const list = document.getElementById('notes-list');
@@ -4244,6 +4235,8 @@ function extractTextFromHTML(html) {
             loadNotes();
         }
 
+
+
         // Profile functions
         function changeProfilePicture() {
             document.getElementById('avatar-input').click();
@@ -4270,7 +4263,8 @@ function extractTextFromHTML(html) {
         function startQuestionTimer() {
             if (!currentTest.forceTimeMode) return;
             
-            questionTimeRemaining = 120; // 2 minutes per question
+            const forcedTime = getForcedTimeMinutes();
+questionTimeRemaining = (forcedTime !== null) ? forcedTime * 60 : 120;
             clearInterval(questionTimer);
             
             const timerElement = document.getElementById('question-timer');
