@@ -1,111 +1,22 @@
 {
-  "name": "Mock Test Pro - Enhanced",
-  "short_name": "MockTestPro",
-  "description": "Your ultimate test practice platform with advanced features",
-  "start_url": "/",
+  "name": "PRACTICE APP",
+  "short_name": "PracticeApp",
+  "description": "An app for daily practice questions",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#0b1020",
-  "theme_color": "#06b6d4",
-  "orientation": "portrait-primary",
-  "scope": "/",
-  "lang": "en",
-  "dir": "ltr",
-  "categories": ["education", "productivity", "utilities"],
-  "screenshots": [
-    {
-      "src": "screenshot1.png",
-      "sizes": "540x720",
-      "type": "image/png",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "screenshot2.png", 
-      "sizes": "1024x768",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
-  ],
+  "background_color": "#0f1724",
+  "theme_color": "#0f1724",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-    "src": "icon-1024x1024.png",
-    "sizes": "1024x1024",
-    "type": "image/png"
-  },
-  {
-    "src": "icon-96x96.png",
-      "sizes": "96x96", 
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "icon-192x192.png",
+      "src": "icon.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     },
     {
-      "src": "icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "icon-512x512.png",
+      "src": "icon.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     }
-  ],
-  "shortcuts": [
-    {
-      "name": "Create Test",
-      "short_name": "New Test",
-      "description": "Create a new mock test",
-      "url": "/?action=create-test",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "My Tests",
-      "short_name": "Tests",
-      "description": "View saved tests", 
-      "url": "/?action=my-tests",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Results",
-      "short_name": "Results",
-      "description": "View test results",
-      "url": "/?action=results", 
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
-    }
-  ],
-  "prefer_related_applications": false,
-  "related_applications": [],
-  "edge_side_panel": {
-    "preferred_width": 400
-  }
+  ]
 }
